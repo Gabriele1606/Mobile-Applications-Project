@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="/Users/Gabri/.android/build-cache/bf4a7eac93138e1c83da7aeed817e54d803d4360/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.2"
+        sha1="47471eb19df288158b00b8d9cfa41bce7373f5cc">
+        <dex dex="/Users/Gabri/AndroidStudioProjects/FirstApp/app/build/intermediates/pre-dexed/debug/classes_75aae04af773d4e19be54968e7a0c21d9c4708fa.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Gabri/Library/Android/sdk/extras/m2repository/com/android/support/constraint/constraint-layout-solver/1.0.2/constraint-layout-solver-1.0.2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.2"
+        sha1="b9cd8fc6bd15cb915735d34535db30ece0c44603">
+        <dex dex="/Users/Gabri/AndroidStudioProjects/FirstApp/app/build/intermediates/pre-dexed/debug/constraint-layout-solver-1.0.2_46e33241654fc09615d75231a8d8854f6c87f638.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Gabri/.android/build-cache/f20d477ab8928b99d89a1390a3dfe50223f26c2a/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.2"
+        sha1="fcd01fd11233459f546c437ec927e9b61bf7caf1">
+        <dex dex="/Users/Gabri/AndroidStudioProjects/FirstApp/app/build/intermediates/pre-dexed/debug/classes_9b1203a701a545e9ff3133b65ec533c283498f8d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Gabri/.android/build-cache/cbb74785ec95651e72db3484cc92048b3cac3799/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.2"
+        sha1="8df0e365e40beb151bc42dee20817721a6cab7b0">
+        <dex dex="/Users/Gabri/AndroidStudioProjects/FirstApp/app/build/intermediates/pre-dexed/debug/classes_6707d14caea8b0d6f6a7dc7b7e40f5804604389e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Gabri/.android/build-cache/0943a6fe71ad0ca36e42d1776e760ab552367394/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.2"
+        sha1="18d31838aa4fcc768a8a0516e22cc13b94655d89">
+        <dex dex="/Users/Gabri/AndroidStudioProjects/FirstApp/app/build/intermediates/pre-dexed/debug/classes_b0400cdde7af20b7c236a1c0c236a458468c349a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Gabri/.android/build-cache/8d90f9648e2077b67e16e25723f07c9792d2f8e9/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.2"
+        sha1="952944218ecedea1554a513dec0c14d570642843">
+        <dex dex="/Users/Gabri/AndroidStudioProjects/FirstApp/app/build/intermediates/pre-dexed/debug/classes_5f33faf330e96c26a9aa27c58bd83e6be12f98f3.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Gabri/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/26.0.0-alpha1/support-annotations-26.0.0-alpha1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.2"
+        sha1="023ee503b631f69511e335a061ea008f8da60f40">
+        <dex dex="/Users/Gabri/AndroidStudioProjects/FirstApp/app/build/intermediates/pre-dexed/debug/support-annotations-26.0.0-alpha1_a8cddb21f8b621f689d15b99788d447b6a723cd4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Gabri/.android/build-cache/bb29fa0ce6bdd0bf86d07b8a2d2299ad9e1408e1/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.2"
+        sha1="2e92aa0163544a804a0b34f169ca61801770839a">
+        <dex dex="/Users/Gabri/AndroidStudioProjects/FirstApp/app/build/intermediates/pre-dexed/debug/classes_e99cc7c01eb411e29aafd9d73317cc82ad3575b9.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Gabri/.android/build-cache/e37c97decbb61bc801592f785195984aab33a6bf/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.2"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="/Users/Gabri/AndroidStudioProjects/FirstApp/app/build/intermediates/pre-dexed/debug/classes_0f163f0e2032cb903a3458b4029b11edb98f6aff.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Gabri/.android/build-cache/4c41004f57804c6eed3124c89ce4a07b78191718/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.2"
+        sha1="88246166d5afb106f532f6e6deae683c66b42c89">
+        <dex dex="/Users/Gabri/AndroidStudioProjects/FirstApp/app/build/intermediates/pre-dexed/debug/classes_5b4721c73a06053509cf5e41ea53e3c4e7657212.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Gabri/.android/build-cache/0b49f039a923b4e4794fedd2f8e5cac9aae979bc/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.2"
+        sha1="9935891f23923f39d002087085d9696568a9f657">
+        <dex dex="/Users/Gabri/AndroidStudioProjects/FirstApp/app/build/intermediates/pre-dexed/debug/classes_9422f31d7205197b33109d1f1a4d5131084faa51.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/Gabri/.android/build-cache/b8feb5d89752c8cf6ec922cf5da6bc735a6dd617/output/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.2"
+        sha1="44ee06abb66da30f5855e6bf54574e64cdcd982a">
+        <dex dex="/Users/Gabri/AndroidStudioProjects/FirstApp/app/build/intermediates/pre-dexed/debug/classes_dce80a93c2cffa7c97f1d7f1beed105db9d4eabc.jar" />
+    </item>
+
+</items>
