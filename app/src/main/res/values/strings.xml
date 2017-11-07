@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">FirstApp</string>
     <string name="login">LogIn</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="mail">Mail Address</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm your password</string>
 </resources>
