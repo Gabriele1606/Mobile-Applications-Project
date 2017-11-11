@@ -18,4 +18,10 @@ public class Login extends AppCompatActivity {
         startActivity(registrationActivity);
 
     }
+
+    public void login(View view){
+        Intent homePage=new Intent(this, HomePage.class);
+        startActivity(homePage);
+
+    }
 }
