@@ -1,0 +1,7 @@
+dima.iml
+build/android-profile/*
+app/build/*
+.gradle/*
+.idea/*
+local.properties
+app/app.iml
