@@ -2,7 +2,9 @@ package com.example.gabri.firstapp.Controller;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -13,6 +15,7 @@ import android.view.animation.AnimationUtils;
 import com.example.gabri.firstapp.API.PossibleAPI;
 import com.example.gabri.firstapp.Adapter.CoverFlowAdapter;
 import com.example.gabri.firstapp.Adapter.GameAdapter;
+import com.example.gabri.firstapp.Adapter.SampleFragmentPagerAdapter;
 import com.example.gabri.firstapp.GameEntity;
 import com.example.gabri.firstapp.GameXML;
 import com.example.gabri.firstapp.Model.Game;
@@ -20,7 +23,6 @@ import com.example.gabri.firstapp.Model.GameCover;
 import com.example.gabri.firstapp.Model.Platform;
 import com.example.gabri.firstapp.PlatformXML;
 import com.example.gabri.firstapp.R;
-import com.example.gabri.firstapp.PlatformRequestAPI;
 
 import junit.framework.Assert;
 
@@ -28,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import it.moondroid.coverflow.components.ui.containers.FeatureCoverFlow;
+//import it.moondroid.coverflow.components.ui.containers.FeatureCoverFlow;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,9 +38,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
 
-public class HomePage extends ActionBarActivity {
+public class HomePage extends AppCompatActivity {
 
-    private FeatureCoverFlow mCoverFlow;
+    //private FeatureCoverFlow mCoverFlow;
     private CoverFlowAdapter mAdapter;
     private ArrayList<GameEntity> mData = new ArrayList<>(0);
     private RecyclerView recyclerView;
@@ -47,17 +49,26 @@ public class HomePage extends ActionBarActivity {
     private RecyclerView recyclerViewTwo;
     private RecyclerView.Adapter adapterTwo;
     private List<GameCover> gameCoverListTwo;
-    public static final String BASE_URL = "http://thegamesdb.net/api/";
+    APIManager apiManager;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
+        apiManager=new APIManager();
 
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.setAdapter(new SampleFragmentPagerAdapter(getSupportFragmentManager(),
+                this));
 
+        // Give the TabLayout the ViewPager
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(viewPager);
 
-
+/*
         mData.add(new GameEntity(R.drawable.image_1, R.string.title1));
         mData.add(new GameEntity(R.drawable.image_2, R.string.title2));
         mData.add(new GameEntity(R.drawable.image_3, R.string.title3));
@@ -74,45 +85,17 @@ public class HomePage extends ActionBarActivity {
         mAdapter = new CoverFlowAdapter(this);
         mAdapter.setData(mData);
         mCoverFlow = (FeatureCoverFlow) findViewById(R.id.coverflow);
-        mCoverFlow.setAdapter(mAdapter);
+        mCoverFlow.setAdapter(mAdapter);*/
 
 
 
-        recyclerView= (RecyclerView) findViewById((R.id.toptenrecycleview));
-        recyclerView.setHasFixedSize(true);
-        LinearLayoutManager LayoutManager = new LinearLayoutManager(this);
-        LayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        recyclerView.setLayoutManager(LayoutManager);
-        gameCoverList=new ArrayList<>();
-
-        for(int i=0; i<200;i++){
-            GameCover temp= new GameCover(null,"wooooo");
-            gameCoverList.add(temp);
-        }
-
-        adapter=new GameAdapter(gameCoverList,this);
-        recyclerView.setAdapter(adapter);
 
 
-        recyclerViewTwo= (RecyclerView) findViewById((R.id.mostdownloadedrecycleview));
-        recyclerViewTwo.setHasFixedSize(true);
-        LinearLayoutManager LayoutManagerTwo = new LinearLayoutManager(this);
-        LayoutManagerTwo.setOrientation(LinearLayoutManager.HORIZONTAL);
-        recyclerViewTwo.setLayoutManager(LayoutManagerTwo);
-        gameCoverListTwo=new ArrayList<>();
-
-        for(int i=0; i<100;i++){
-            GameCover temp= new GameCover(null,"wooooo");
-            gameCoverListTwo.add(temp);
-        }
-
-        adapterTwo=new GameAdapter(gameCoverListTwo,this);
-        recyclerViewTwo.setAdapter(adapterTwo);
+    apiManager.getPlatformList();
 
 
-    getPlatformList();
     }
-
+/*
     public static int getDrawable(Context context, String name)
     {
         Assert.assertNotNull(context);
@@ -144,47 +127,7 @@ public class HomePage extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void getPlatformList() {
-        final Filter filter = new Filter();
-        Retrofit retrofitObject = new Retrofit.Builder().baseUrl(BASE_URL)
-                .addConverterFactory(SimpleXmlConverterFactory.create())
-                .build();
 
-        final PossibleAPI possibleAPI = retrofitObject.create(PossibleAPI.class);
-        Call<PlatformXML> callToPlatform = possibleAPI.getPlatform();
-        callToPlatform.enqueue(new Callback<PlatformXML>() {
-            @Override
-            public void onResponse(Call<PlatformXML> call, Response<PlatformXML> response) {
-                List<Platform> platformList= response.body().getPlatformList();
-                final List<List<Game>> gameListForEachPlatform = new ArrayList<List<Game>>();
-                Call<GameXML> callToGame;
-                for(int i=0;i<platformList.size();i++){
-                    System.out.println(platformList.get(i).getName());
-                    callToGame=possibleAPI.getGame(platformList.get(i).getName());
-                    callToGame.enqueue(new Callback<GameXML>() {
-                        @Override
-                        public void onResponse(Call<GameXML> call, Response<GameXML> response) {
-                            List<Game> gameList=response.body().getGameList();
-                            System.out.println("Lista ricevuta dimensione: "+gameList.size());
-                            filter.getNewestGame(gameList);
-                            gameListForEachPlatform.add(gameList);
-                        }
+*/
 
-                        @Override
-                        public void onFailure(Call<GameXML> call, Throwable t) {
-
-                        }
-                    });
-                }
-
-
-
-            }
-
-            @Override
-            public void onFailure(Call<PlatformXML> call, Throwable t) {
-
-            }
-        });
-    }
 }
