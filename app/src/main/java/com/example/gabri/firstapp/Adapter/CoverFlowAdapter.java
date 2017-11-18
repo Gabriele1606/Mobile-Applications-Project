@@ -1,4 +1,4 @@
-package com.example.gabri.firstapp;
+package com.example.gabri.firstapp.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.gabri.firstapp.GameEntity;
+import com.example.gabri.firstapp.R;
 
 import java.util.ArrayList;
 

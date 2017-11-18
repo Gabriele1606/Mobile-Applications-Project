@@ -1,9 +1,11 @@
-package com.example.gabri.firstapp;
+package com.example.gabri.firstapp.Controller;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import com.example.gabri.firstapp.R;
 
 public class Login extends AppCompatActivity {
 
