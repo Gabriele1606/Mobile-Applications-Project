@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by Ravi Tamada on 18/05/16.
  */
-public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHolder> {
+public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.MyViewHolder> {
 
     private Context mContext;
     private List<Game> gameList;
@@ -40,7 +40,7 @@ public class AlbumsAdapter extends RecyclerView.Adapter<AlbumsAdapter.MyViewHold
     }
 
 
-    public AlbumsAdapter(Context mContext, List<Game> gameList) {
+    public HorizontalAdapter(Context mContext, List<Game> gameList) {
         this.mContext = mContext;
         this.gameList = gameList;
     }

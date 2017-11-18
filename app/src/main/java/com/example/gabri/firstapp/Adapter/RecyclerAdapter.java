@@ -31,7 +31,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecHol
 
     public class RecHolder extends RecyclerView.ViewHolder {
         public RecyclerView recelement;
-       public AlbumsAdapter adapter;
+       public HorizontalAdapter adapter;
 
         public RecHolder(View view) {
             super(view);
@@ -65,7 +65,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecHol
         RecyclerView recyclerElem;
 
         List<Game> listAlbum = listGameList.get(position);
-        holder.adapter= new AlbumsAdapter(mContext,listAlbum);
+        holder.adapter= new HorizontalAdapter(mContext,listAlbum);
         holder.recelement.setAdapter(holder.adapter);
         holder.recelement.setNestedScrollingEnabled(false);
 
