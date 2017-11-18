@@ -21,14 +21,14 @@ public class Filter {
                 for(int i=0;i<gameList.size();i++){
                     tempGame=gameList.get(i);
                     if(tempGame.getReleaseDate()==null) {
-                        gameList.remove(i);
+                       // gameList.remove(i);
                     }
                     else{
                         intYear = Integer.parseInt(tempGame.getReleaseDate().split("/")[2]);
                         System.out.println(intYear);
                         if (intYear < 2015) {
                             System.out.println("ho rimosso " + tempGame.getGameTitle());
-                            gameList.remove(i);
+                            //gameList.remove(i);
                         }
                     }
 

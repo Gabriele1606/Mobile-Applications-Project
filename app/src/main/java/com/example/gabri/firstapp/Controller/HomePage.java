@@ -166,7 +166,7 @@ public class HomePage extends ActionBarActivity {
                         public void onResponse(Call<GameXML> call, Response<GameXML> response) {
                             List<Game> gameList=response.body().getGameList();
                             System.out.println("Lista ricevuta dimensione: "+gameList.size());
-                            filter.getNewestGame(gameList);
+                            //filter.getNewestGame(gameList);
                             gameListForEachPlatform.add(gameList);
                         }
 
