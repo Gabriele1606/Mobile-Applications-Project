@@ -10,7 +10,7 @@ import com.example.gabri.firstapp.FragmentPage1;
 import java.util.ArrayList;
 
 public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
-    final int PAGE_COUNT = 1;
+    private int PAGE_COUNT = 1;
     private String tabTitles[] = new String[] { "Tab1", "Tab2", "Tab3" };
     private Context context;
 

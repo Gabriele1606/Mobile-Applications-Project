@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.example.gabri.firstapp.Adapter.RecyclerAdapter;
 import com.example.gabri.firstapp.Model.Game;
+import com.example.gabri.firstapp.Model.RowGame;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +36,15 @@ public class FragmentPage1 extends Fragment {
         View view = inflater.inflate(R.layout.fragment_page1, container, false);
 
         vrecyclerView= (RecyclerView) view.findViewById(R.id.v_recyclerView);
+
+
         albumList = new ArrayList<>();
         listAlbumlist= new ArrayList<List<Game>>();
-        recyclerAdapter= new RecyclerAdapter(view.getContext(),listAlbumlist);
+
+        RowGame rowGame;
+        ArrayList<Object> listObject = new ArrayList<Object>();
+
+        recyclerAdapter= new RecyclerAdapter(view.getContext(),listObject);
         RecyclerView.LayoutManager vLayoutManager= new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL,false);
         vrecyclerView.setLayoutManager(vLayoutManager);
         vrecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -50,7 +57,8 @@ public class FragmentPage1 extends Fragment {
 
         prepareAlbums();
         for (int i=0; i<100;i++) {
-            listAlbumlist.add(albumList);
+            listObject.add(new RowGame(albumList));
+            //listAlbumlist.add(albumList);
         }
         recyclerAdapter.notifyDataSetChanged();
 

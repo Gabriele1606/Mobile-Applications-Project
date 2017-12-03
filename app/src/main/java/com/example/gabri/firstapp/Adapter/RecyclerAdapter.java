@@ -15,19 +15,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.gabri.firstapp.Model.Game;
+import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.R;
 
 import java.util.List;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
-/**
- * Created by Ravi Tamada on 18/05/16.
- */
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecHolder> {
 
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private final int ROWGAME = 0;
     private Context mContext;
-    private List<List<Game>> listGameList;
+    private List<Object> listObject;
 
     public class RecHolder extends RecyclerView.ViewHolder {
         public RecyclerView recelement;
@@ -43,38 +43,81 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecHol
             //System.out.println(this.adapter);
 
         }
+
+
     }
 
 
-    public RecyclerAdapter(Context mContext, List<List<Game>> listGameList) {
+    public RecyclerAdapter(Context mContext, List<Object> listObject) {
         this.mContext = mContext;
-        this.listGameList = listGameList;
+        this.listObject = listObject;
+    }
+    @Override
+    public int getItemViewType(int position) {
+        if (listObject.get(position) instanceof RowGame) {
+            return ROWGAME;
+        } /*else if (items.get(position) instanceof String) {
+                return IMAGE;
+            }*/
+        return -1;
+    }
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder viewHolder;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+        switch (viewType) {
+            case ROWGAME:
+                View itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.horizontal_recycler, parent, false);
+                viewHolder = new RecHolder(itemView);
+                break;
+            /*case IMAGE:
+                View v2 = inflater.inflate(R.layout.layout_viewholder2, viewGroup, false);
+                viewHolder = new ViewHolder2(v2);
+                break;*/
+            default:
+                View v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.horizontal_recycler, parent, false);
+                viewHolder = new RecHolder(v);
+                break;
+        }
+
+        return viewHolder;
     }
 
     @Override
-    public RecHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        switch (viewHolder.getItemViewType()) {
+            case ROWGAME:
+                RecHolder vh1 = (RecHolder) viewHolder;
+                configureRecHolder(vh1, position);
+                break;
+            /*case IMAGE:
+                ViewHolder2 vh2 = (ViewHolder2) viewHolder;
+                configureViewHolder2(vh2, position);
+                break;
+            default:
+                RecyclerViewSimpleTextViewHolder vh = (RecyclerViewSimpleTextViewHolder) viewHolder;
+                configureDefaultViewHolder(vh, position);
+                break;*/
+        }
 
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.horizontal_recycler, parent, false);
-
-        return new RecHolder(itemView);
     }
 
-    @Override
-    public void onBindViewHolder(final RecHolder holder, int position) {
+    private void configureRecHolder(RecHolder holder, int position) {
+
         RecyclerView recyclerElem;
 
-        List<Game> listAlbum = listGameList.get(position);
-        holder.adapter= new HorizontalAdapter(mContext,listAlbum);
+        RowGame rowGame = (RowGame) listObject.get(position);
+        holder.adapter= new HorizontalAdapter(mContext,rowGame.getList());
         holder.recelement.setAdapter(holder.adapter);
         holder.recelement.setNestedScrollingEnabled(false);
 
         //prova
         holder.recelement.setItemAnimator(new SlideInUpAnimator());
         //holder.recelement.setHasFixedSize(true);
-
     }
-
 
 
     /**
@@ -95,6 +138,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.RecHol
 
     @Override
     public int getItemCount() {
-        return listGameList.size();
+        return listObject.size();
     }
 }
