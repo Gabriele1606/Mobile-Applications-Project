@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.News;
 import com.example.gabri.firstapp.Model.RowGame;
@@ -27,6 +29,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private final int SLIDER = 2;
     private final int NEWS = 1;
     private final int ROWGAME = 0;
     private Context mContext;
@@ -54,6 +57,23 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
+    public class SliderHolder extends RecyclerView.ViewHolder{
+        SliderLayout sliderShow;
+        TextSliderView textSliderView;
+        public SliderHolder(View itemView) {
+            super(itemView);
+            this.sliderShow = (SliderLayout) itemView.findViewById(R.id.main_slider);
+            //this.textSliderView = new TextSliderView(itemView.getContext());
+        }
+        public void addImage(String url){
+           /* textSliderView
+                    .description("Game of Thrones")
+                    .image(url);
+            sliderShow.addSlider(textSliderView);*/
+
+        }
+    }
+
     public RecyclerAdapter(Context mContext, List<Object> listObject) {
         this.mContext = mContext;
         this.listObject = listObject;
@@ -61,6 +81,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemViewType(int position) {
         if (listObject.get(position) instanceof RowGame) {
+            if (((RowGame) listObject.get(position)).isSlider())
+                return SLIDER;
             return ROWGAME;
         }else if (listObject.get(position) instanceof News){
             return NEWS;
@@ -86,6 +108,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         .inflate(R.layout.news_element, parent, false);
                 viewHolder = new NewsHolder(newsView);
                 break;
+
+            case SLIDER:
+                View sliderView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.slider_layout, parent, false);
+                viewHolder = new SliderHolder(sliderView);
+                break;
+
             /*case IMAGE:
                 View v2 = inflater.inflate(R.layout.layout_viewholder2, viewGroup, false);
                 viewHolder = new ViewHolder2(v2);
@@ -109,7 +138,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 break;
             case NEWS:
                 NewsHolder newsHolder= (NewsHolder) viewHolder;
-                newsHolder.testonews.setText("PROVA NEWS");
+                newsHolder.testonews.setText(((News)listObject.get(position)).getText());
+                break;
+            case SLIDER:
+                SliderHolder sliderHolder= (SliderHolder) viewHolder;
+                //sliderHolder.addImage("http://thegamesdb.net/banners/fanart/original/17097-1.jpg");
+                break;
             /*case IMAGE:
                 ViewHolder2 vh2 = (ViewHolder2) viewHolder;
                 configureViewHolder2(vh2, position);
