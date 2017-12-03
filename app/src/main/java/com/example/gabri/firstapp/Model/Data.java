@@ -9,11 +9,21 @@ import java.util.List;
 
 public class Data {
     private static List<Object> instance = new ArrayList<Object>();
-
+    private boolean inizialized=false;
+    private static Data data= new Data();
     private Data(){
 
     }
     public static List<Object> getInstance(){
         return instance;
+    }
+    public static Data getData(){
+    return data;
+    }
+    public boolean isInizialized(){
+        return inizialized;
+    }
+    public void setInizialized(){
+        inizialized=true;
     }
 }

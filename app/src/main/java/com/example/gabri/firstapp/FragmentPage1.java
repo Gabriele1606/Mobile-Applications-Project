@@ -41,13 +41,6 @@ public class FragmentPage1 extends Fragment {
 
         vrecyclerView= (RecyclerView) view.findViewById(R.id.v_recyclerView);
 
-
-        albumList = new ArrayList<>();
-        listAlbumlist= new ArrayList<List<Game>>();
-
-        RowGame rowGame;
-        //ArrayList<Object> listObject = new ArrayList<Object>();
-
         recyclerAdapter= new RecyclerAdapter(view.getContext(),listObject);
         RecyclerView.LayoutManager vLayoutManager= new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL,false);
         vrecyclerView.setLayoutManager(vLayoutManager);
@@ -57,6 +50,23 @@ public class FragmentPage1 extends Fragment {
         animatorAdapter.setFirstOnly(false);
         animatorAdapter.setDuration(300);
         vrecyclerView.setAdapter(animatorAdapter);
+
+            if(!Data.getData().isInizialized()){
+                initializeData();
+                Data.getData().setInizialized();
+            }
+
+        return view;
+    }
+
+    private void initializeData(){
+
+        albumList = new ArrayList<>();
+        listAlbumlist= new ArrayList<List<Game>>();
+
+        RowGame rowGame;
+
+
 
 
         prepareAlbums();
@@ -71,12 +81,9 @@ public class FragmentPage1 extends Fragment {
 
         APIManager apiManager= new APIManager();
         apiManager.getRssList(listObject,recyclerAdapter);
-
-        
-        // TextView textView = (TextView) view;
-        //  textView.setText("Fragment #" + mPage);
-        return view;
     }
+
+
     public void notifyDataChange(){
         recyclerAdapter.notifyDataSetChanged();
     }
