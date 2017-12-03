@@ -20,7 +20,10 @@ import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.News;
 import com.example.gabri.firstapp.Model.RowGame;
+import com.example.gabri.firstapp.Model.Title;
 import com.example.gabri.firstapp.R;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -29,6 +32,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private final int TITLE = 3;
     private final int SLIDER = 2;
     private final int NEWS = 1;
     private final int ROWGAME = 0;
@@ -73,7 +77,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         }
     }
-
+    public class TitleHolder extends RecyclerView.ViewHolder{
+        TextView textView;
+        public TitleHolder(View itemView) {
+            super(itemView);
+            this.textView= (TextView) itemView.findViewById(R.id.title_section);
+        }
+        public void setTitle(String title){
+            this.textView.setText(title);
+        }
+    }
     public RecyclerAdapter(Context mContext, List<Object> listObject) {
         this.mContext = mContext;
         this.listObject = listObject;
@@ -81,11 +94,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemViewType(int position) {
         if (listObject.get(position) instanceof RowGame) {
-            if (((RowGame) listObject.get(position)).isSlider())
-                return SLIDER;
+            //if (((RowGame) listObject.get(position)).isSlider())
+                //return SLIDER;
             return ROWGAME;
         }else if (listObject.get(position) instanceof News){
             return NEWS;
+        }else if (listObject.get(position) instanceof Title){
+            return TITLE;
         }/*else if (items.get(position) instanceof String) {
                 return IMAGE;
             }*/
@@ -114,7 +129,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         .inflate(R.layout.slider_layout, parent, false);
                 viewHolder = new SliderHolder(sliderView);
                 break;
-
+            case TITLE:
+                View titleView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.section_title_layout, parent, false);
+                viewHolder= new TitleHolder(titleView);
+                break;
             /*case IMAGE:
                 View v2 = inflater.inflate(R.layout.layout_viewholder2, viewGroup, false);
                 viewHolder = new ViewHolder2(v2);
@@ -143,6 +162,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case SLIDER:
                 SliderHolder sliderHolder= (SliderHolder) viewHolder;
                 //sliderHolder.addImage("http://thegamesdb.net/banners/fanart/original/17097-1.jpg");
+                break;
+            case TITLE:
+                TitleHolder titleHolder= (TitleHolder) viewHolder;
+                titleHolder.setTitle(((Title)listObject.get(position)).getTitle());
                 break;
             /*case IMAGE:
                 ViewHolder2 vh2 = (ViewHolder2) viewHolder;
