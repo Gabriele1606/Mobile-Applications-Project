@@ -2,7 +2,9 @@ package com.example.gabri.firstapp.API;
 
 
 import com.example.gabri.firstapp.GameXML;
+import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.PlatformXML;
+import com.example.gabri.firstapp.RSSList;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -18,4 +20,7 @@ public interface PossibleAPI {
 
     @GET("GetPlatformsList.php")
     Call<PlatformXML> getPlatform();
+
+    @GET("/feed/rss/news/")
+    Call<RSSList> getRssList();
 }

@@ -1,6 +1,7 @@
 package com.example.gabri.firstapp.Controller;
 
 import com.example.gabri.firstapp.Model.Game;
+import com.example.gabri.firstapp.Model.RSSFeed;
 
 import java.util.List;
 
@@ -35,5 +36,17 @@ public class Filter {
 
                 }
         }
+
+    public void setImageLink(List<RSSFeed> rssList){
+        String tempDescription;
+        int start;
+        int end;
+        for(int i=0;i<rssList.size();i++){
+            tempDescription=rssList.get(i).getDescription();
+            start = tempDescription.indexOf("src=\"") + 5;
+            end = tempDescription.indexOf("\"", start);
+            rssList.get(i).setImageLink(tempDescription.substring(start, end));
+        }
+    }
     }
 

@@ -1,0 +1,27 @@
+package com.example.gabri.firstapp.Model;
+
+import java.util.List;
+
+/**
+ * Created by simon on 03/12/2017.
+ */
+
+public class RowGame {
+    private List<Game> listGame;
+    private boolean isSlider=false;
+    public RowGame(){
+
+    }
+    public RowGame(List<Game> listGame){
+        this.listGame=listGame;
+    }
+    public List<Game> getList(){
+        return listGame;
+    }
+    public void setSlider(boolean isSlider){
+        this.isSlider=isSlider;
+    }
+    public boolean isSlider(){
+        return isSlider;
+    }
+}
