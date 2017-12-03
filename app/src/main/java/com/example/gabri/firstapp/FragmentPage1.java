@@ -14,6 +14,7 @@ import com.example.gabri.firstapp.Adapter.RecyclerAdapter;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.News;
 import com.example.gabri.firstapp.Model.RowGame;
+import com.example.gabri.firstapp.Model.Title;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,12 +63,15 @@ public class FragmentPage1 extends Fragment {
             listObject.add(new RowGame(albumList));
             //listAlbumlist.add(albumList);
         }
+        Title title = new Title();
+        title.setTitle("QUESTA E' UNA NEEEWS");
+        listObject.add(title);
         News news = new News();
         news.setText("PROVA NEEEWS");
         listObject.add(news);
         RowGame slider= new RowGame();
         slider.setSlider(true);
-        listObject.add(slider);
+
         recyclerAdapter.notifyDataSetChanged();
 
         // TextView textView = (TextView) view;
