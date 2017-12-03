@@ -18,6 +18,7 @@ import com.example.gabri.firstapp.Adapter.GameAdapter;
 import com.example.gabri.firstapp.Adapter.SampleFragmentPagerAdapter;
 import com.example.gabri.firstapp.GameEntity;
 import com.example.gabri.firstapp.GameXML;
+import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.GameCover;
 import com.example.gabri.firstapp.Model.Platform;
@@ -51,7 +52,7 @@ public class HomePage extends AppCompatActivity {
     private RecyclerView recyclerViewTwo;
     private RecyclerView.Adapter adapterTwo;
     private List<GameCover> gameCoverListTwo;
-    ArrayList<Object> listObject;
+    List<Object> listObject;
     APIManager apiManager;
 
 
@@ -65,7 +66,7 @@ public class HomePage extends AppCompatActivity {
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 
-        listObject= new ArrayList<Object>();
+        listObject= Data.getInstance();
 
         SampleFragmentPagerAdapter sampleFragmentPagerAdapter = new SampleFragmentPagerAdapter(getSupportFragmentManager(), this, listObject);
         viewPager.setAdapter(sampleFragmentPagerAdapter);
@@ -107,13 +108,6 @@ public class HomePage extends AppCompatActivity {
 
     }
 
-
-    public void UpdateRssList(List<RSSFeed> rssFeedList){
-        Title title = new Title();
-        title.setTitle("QUESTA E' UNA NEEEWS");
-        listObject.add(title);
-        this.listObject.addAll(rssFeedList);
-    }
 /*
     public static int getDrawable(Context context, String name)
     {
