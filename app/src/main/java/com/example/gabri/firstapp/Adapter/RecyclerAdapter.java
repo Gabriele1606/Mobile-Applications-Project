@@ -13,8 +13,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.gabri.firstapp.Model.Game;
+import com.example.gabri.firstapp.Model.News;
 import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.R;
 
@@ -25,6 +27,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private final int NEWS = 1;
     private final int ROWGAME = 0;
     private Context mContext;
     private List<Object> listObject;
@@ -39,14 +42,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             recelement=(RecyclerView) view.findViewById(R.id.rec_element_id);
             recelement.setLayoutManager(mLayoutManager);
             recelement.setItemAnimator(new DefaultItemAnimator());
-
             //System.out.println(this.adapter);
+        }
+    }
+    public class NewsHolder extends RecyclerView.ViewHolder{
+        public TextView testonews;
+        public NewsHolder(View itemView) {
+            super(itemView);
+            testonews = (TextView) itemView.findViewById(R.id.testo_news);
 
         }
-
-
     }
-
 
     public RecyclerAdapter(Context mContext, List<Object> listObject) {
         this.mContext = mContext;
@@ -56,7 +62,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getItemViewType(int position) {
         if (listObject.get(position) instanceof RowGame) {
             return ROWGAME;
-        } /*else if (items.get(position) instanceof String) {
+        }else if (listObject.get(position) instanceof News){
+            return NEWS;
+        }/*else if (items.get(position) instanceof String) {
                 return IMAGE;
             }*/
         return -1;
@@ -71,6 +79,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 View itemView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.horizontal_recycler, parent, false);
                 viewHolder = new RecHolder(itemView);
+                break;
+
+            case NEWS:
+                View newsView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.news_element, parent, false);
+                viewHolder = new NewsHolder(newsView);
                 break;
             /*case IMAGE:
                 View v2 = inflater.inflate(R.layout.layout_viewholder2, viewGroup, false);
@@ -93,6 +107,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 RecHolder vh1 = (RecHolder) viewHolder;
                 configureRecHolder(vh1, position);
                 break;
+            case NEWS:
+                NewsHolder newsHolder= (NewsHolder) viewHolder;
+                newsHolder.testonews.setText("PROVA NEWS");
             /*case IMAGE:
                 ViewHolder2 vh2 = (ViewHolder2) viewHolder;
                 configureViewHolder2(vh2, position);
@@ -113,7 +130,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.adapter= new HorizontalAdapter(mContext,rowGame.getList());
         holder.recelement.setAdapter(holder.adapter);
         holder.recelement.setNestedScrollingEnabled(false);
-
         //prova
         holder.recelement.setItemAnimator(new SlideInUpAnimator());
         //holder.recelement.setHasFixedSize(true);

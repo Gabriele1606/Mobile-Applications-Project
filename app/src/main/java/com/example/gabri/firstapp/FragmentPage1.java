@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.example.gabri.firstapp.Adapter.RecyclerAdapter;
 import com.example.gabri.firstapp.Model.Game;
+import com.example.gabri.firstapp.Model.News;
 import com.example.gabri.firstapp.Model.RowGame;
 
 import java.util.ArrayList;
@@ -56,10 +57,11 @@ public class FragmentPage1 extends Fragment {
 
 
         prepareAlbums();
-        for (int i=0; i<100;i++) {
+        for (int i=0; i<10;i++) {
             listObject.add(new RowGame(albumList));
             //listAlbumlist.add(albumList);
         }
+       listObject.add(new News());
         recyclerAdapter.notifyDataSetChanged();
 
         // TextView textView = (TextView) view;
