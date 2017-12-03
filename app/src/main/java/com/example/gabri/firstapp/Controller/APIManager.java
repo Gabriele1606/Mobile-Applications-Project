@@ -4,7 +4,9 @@ import com.example.gabri.firstapp.API.PossibleAPI;
 import com.example.gabri.firstapp.GameXML;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.Platform;
+import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.PlatformXML;
+import com.example.gabri.firstapp.RSSList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,4 +76,30 @@ public class APIManager {
             }
         });
     }
+
+    public void getRssList(){
+        Retrofit retrofitObject = new Retrofit.Builder().baseUrl("https://multiplayer.it")
+                .addConverterFactory(SimpleXmlConverterFactory.create())
+                .build();
+
+        final PossibleAPI possibleAPI = retrofitObject.create(PossibleAPI.class);
+        Call<RSSList> callToRss = possibleAPI.getRssList();
+        callToRss.enqueue(new Callback<RSSList>() {
+            @Override
+            public void onResponse(Call<RSSList> call, Response<RSSList> response) {
+                List<RSSFeed> rssList=response.body().getRssList();
+                Filter filter=new Filter();
+                filter.setImageLink(rssList);
+                for(int i=0;i<rssList.size();i++) {
+                    System.out.println(rssList.get(i).getImageLink());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RSSList> call, Throwable t) {
+                System.out.println(t.getCause().toString());
+            }
+        });
+
+}
 }

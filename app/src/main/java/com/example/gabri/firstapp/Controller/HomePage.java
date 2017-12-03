@@ -91,7 +91,8 @@ public class HomePage extends AppCompatActivity {
 
 
 
-    apiManager.getPlatformList();
+
+    apiManager.getRssList();
 
 
     }
