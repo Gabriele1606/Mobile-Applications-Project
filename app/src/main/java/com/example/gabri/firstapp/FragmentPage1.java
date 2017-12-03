@@ -70,6 +70,7 @@ public class FragmentPage1 extends Fragment {
 
         APIManager apiManager= new APIManager();
         apiManager.getRssList(listObject,recyclerAdapter);
+
         
         // TextView textView = (TextView) view;
         //  textView.setText("Fragment #" + mPage);

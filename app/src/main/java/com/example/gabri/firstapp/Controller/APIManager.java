@@ -80,7 +80,7 @@ public class APIManager {
         });
     }
 
-    public void getRssList(List<Object> objectList, RecyclerAdapter recyclerAdapter){
+    public void getRssList(List<Object> objectList, final RecyclerAdapter recyclerAdapter){
         final List<Object> list= objectList;
         final RecyclerAdapter recycler = recyclerAdapter;
 
@@ -100,7 +100,8 @@ public class APIManager {
                     System.out.println(rssList.get(i).getImageLink());
                 }
                 list.addAll(rssList);
-                recycler.notifyDataSetChanged();
+                recyclerAdapter.notifyDataSetChanged();
+
             }
 
             @Override

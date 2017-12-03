@@ -50,10 +50,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
     public class RssFeedHolder extends RecyclerView.ViewHolder{
-        public TextView testonews;
+        public TextView rssText;
+        public TextView rssTitle;
         public RssFeedHolder(View itemView) {
             super(itemView);
-            testonews = (TextView) itemView.findViewById(R.id.testo_news);
+            rssText = (TextView) itemView.findViewById(R.id.text_news);
+            rssTitle=(TextView) itemView.findViewById(R.id.title_news);
 
         }
     }
@@ -154,7 +156,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 break;
             case RSSFEED:
                 RssFeedHolder rssFeedHolder = (RssFeedHolder) viewHolder;
-                rssFeedHolder.testonews.setText(((RSSFeed)listObject.get(position)).getTitle());
+                setRssCard(rssFeedHolder,position);
                 break;
             case SLIDER:
                 SliderHolder sliderHolder= (SliderHolder) viewHolder;
@@ -187,6 +189,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         //prova
         holder.recelement.setItemAnimator(new SlideInUpAnimator());
         //holder.recelement.setHasFixedSize(true);
+    }
+
+    private void setRssCard(RssFeedHolder rssFeedHolder, int position){
+        rssFeedHolder.rssText.setText(((RSSFeed)listObject.get(position)).getTitle());
+        rssFeedHolder.rssTitle.setText(((RSSFeed)listObject.get(position)).getTitle());
     }
 
 
