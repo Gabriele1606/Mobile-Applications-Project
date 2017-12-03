@@ -11,9 +11,6 @@ public class RSSFeed {
     @Element(name = "title", required = false)
     private String title;
 
-    @Element(name = "link", required = false)
-    private String link;
-
     @Element(name = "description", required = false)
     private String description;
 
@@ -31,13 +28,6 @@ public class RSSFeed {
         this.title = title;
     }
 
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
 
     public String getDescription() {
         return description;
