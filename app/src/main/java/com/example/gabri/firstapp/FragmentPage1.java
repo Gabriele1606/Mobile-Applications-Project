@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.example.gabri.firstapp.Adapter.RecyclerAdapter;
 import com.example.gabri.firstapp.Controller.APIManager;
+import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.Model.Title;
@@ -30,7 +31,7 @@ public class FragmentPage1 extends Fragment {
     private List<Game> albumList;
     private List<List<Game>> listAlbumlist;
     private RecyclerAdapter recyclerAdapter;
-    private List<Object> listObject;
+    private List<Object> listObject= Data.getInstance();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,7 +61,7 @@ public class FragmentPage1 extends Fragment {
 
         prepareAlbums();
         for (int i=0; i<10;i++) {
-            listObject.add(new RowGame(albumList));
+            Data.getInstance().add(new RowGame(albumList));
             //listAlbumlist.add(albumList);
         }
         RowGame slider= new RowGame();
