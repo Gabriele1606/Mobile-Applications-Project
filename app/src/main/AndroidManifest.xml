@@ -12,7 +12,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/mioTheme"
-        android:hardwareAccelerated="false"
         android:largeHeap="true">
         <activity
             android:name=".Controller.Login"
