@@ -17,13 +17,10 @@ import android.widget.TextView;
 
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
-import com.example.gabri.firstapp.Model.Game;
-import com.example.gabri.firstapp.Model.News;
+import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.Model.Title;
 import com.example.gabri.firstapp.R;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -34,7 +31,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private final int TITLE = 3;
     private final int SLIDER = 2;
-    private final int NEWS = 1;
+    private final int RSSFEED = 1;
     private final int ROWGAME = 0;
     private Context mContext;
     private List<Object> listObject;
@@ -52,9 +49,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             //System.out.println(this.adapter);
         }
     }
-    public class NewsHolder extends RecyclerView.ViewHolder{
+    public class RssFeedHolder extends RecyclerView.ViewHolder{
         public TextView testonews;
-        public NewsHolder(View itemView) {
+        public RssFeedHolder(View itemView) {
             super(itemView);
             testonews = (TextView) itemView.findViewById(R.id.testo_news);
 
@@ -97,8 +94,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             //if (((RowGame) listObject.get(position)).isSlider())
                 //return SLIDER;
             return ROWGAME;
-        }else if (listObject.get(position) instanceof News){
-            return NEWS;
+        }else if (listObject.get(position) instanceof RSSFeed){
+            return RSSFEED;
         }else if (listObject.get(position) instanceof Title){
             return TITLE;
         }/*else if (items.get(position) instanceof String) {
@@ -118,10 +115,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 viewHolder = new RecHolder(itemView);
                 break;
 
-            case NEWS:
+            case RSSFEED:
                 View newsView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.news_element, parent, false);
-                viewHolder = new NewsHolder(newsView);
+                viewHolder = new RssFeedHolder(newsView);
                 break;
 
             case SLIDER:
@@ -155,9 +152,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 RecHolder vh1 = (RecHolder) viewHolder;
                 configureRecHolder(vh1, position);
                 break;
-            case NEWS:
-                NewsHolder newsHolder= (NewsHolder) viewHolder;
-                newsHolder.testonews.setText(((News)listObject.get(position)).getText());
+            case RSSFEED:
+                RssFeedHolder rssFeedHolder = (RssFeedHolder) viewHolder;
+                rssFeedHolder.testonews.setText(((RSSFeed)listObject.get(position)).getTitle());
                 break;
             case SLIDER:
                 SliderHolder sliderHolder= (SliderHolder) viewHolder;

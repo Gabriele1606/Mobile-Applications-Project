@@ -1,6 +1,9 @@
 package com.example.gabri.firstapp.Controller;
 
+import android.support.v7.widget.RecyclerView;
+
 import com.example.gabri.firstapp.API.PossibleAPI;
+import com.example.gabri.firstapp.Adapter.RecyclerAdapter;
 import com.example.gabri.firstapp.GameXML;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.Platform;
@@ -23,7 +26,7 @@ import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
 public class APIManager {
     public static final String BASE_URL = "http://thegamesdb.net/api/";
-
+    private ArrayList<Object> listObject;
 
 
     public void getPlatformList() {
@@ -77,7 +80,10 @@ public class APIManager {
         });
     }
 
-    public void getRssList(){
+    public void getRssList(List<Object> objectList, RecyclerAdapter recyclerAdapter){
+        final List<Object> list= objectList;
+        final RecyclerAdapter recycler = recyclerAdapter;
+
         Retrofit retrofitObject = new Retrofit.Builder().baseUrl("https://multiplayer.it")
                 .addConverterFactory(SimpleXmlConverterFactory.create())
                 .build();
@@ -93,6 +99,8 @@ public class APIManager {
                 for(int i=0;i<rssList.size();i++) {
                     System.out.println(rssList.get(i).getImageLink());
                 }
+                list.addAll(rssList);
+                recycler.notifyDataSetChanged();
             }
 
             @Override
@@ -102,4 +110,6 @@ public class APIManager {
         });
 
 }
+
+
 }

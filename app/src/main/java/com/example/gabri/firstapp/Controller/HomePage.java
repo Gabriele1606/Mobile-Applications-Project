@@ -21,6 +21,8 @@ import com.example.gabri.firstapp.GameXML;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.GameCover;
 import com.example.gabri.firstapp.Model.Platform;
+import com.example.gabri.firstapp.Model.RSSFeed;
+import com.example.gabri.firstapp.Model.Title;
 import com.example.gabri.firstapp.PlatformXML;
 import com.example.gabri.firstapp.R;
 
@@ -49,6 +51,7 @@ public class HomePage extends AppCompatActivity {
     private RecyclerView recyclerViewTwo;
     private RecyclerView.Adapter adapterTwo;
     private List<GameCover> gameCoverListTwo;
+    ArrayList<Object> listObject;
     APIManager apiManager;
 
 
@@ -61,12 +64,20 @@ public class HomePage extends AppCompatActivity {
         apiManager=new APIManager();
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new SampleFragmentPagerAdapter(getSupportFragmentManager(),
-                this));
+
+        listObject= new ArrayList<Object>();
+
+        SampleFragmentPagerAdapter sampleFragmentPagerAdapter = new SampleFragmentPagerAdapter(getSupportFragmentManager(), this, listObject);
+        viewPager.setAdapter(sampleFragmentPagerAdapter);
 
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+
+
+
+
 
 /*
         mData.add(new GameEntity(R.drawable.image_1, R.string.title1));
@@ -92,9 +103,16 @@ public class HomePage extends AppCompatActivity {
 
 
 
-    apiManager.getRssList();
 
 
+    }
+
+
+    public void UpdateRssList(List<RSSFeed> rssFeedList){
+        Title title = new Title();
+        title.setTitle("QUESTA E' UNA NEEEWS");
+        listObject.add(title);
+        this.listObject.addAll(rssFeedList);
     }
 /*
     public static int getDrawable(Context context, String name)

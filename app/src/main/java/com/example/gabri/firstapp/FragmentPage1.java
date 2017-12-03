@@ -1,6 +1,5 @@
 package com.example.gabri.firstapp;
 
-import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -11,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.gabri.firstapp.Adapter.RecyclerAdapter;
+import com.example.gabri.firstapp.Controller.APIManager;
 import com.example.gabri.firstapp.Model.Game;
-import com.example.gabri.firstapp.Model.News;
 import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.Model.Title;
 
@@ -31,6 +30,7 @@ public class FragmentPage1 extends Fragment {
     private List<Game> albumList;
     private List<List<Game>> listAlbumlist;
     private RecyclerAdapter recyclerAdapter;
+    private List<Object> listObject;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,7 +45,7 @@ public class FragmentPage1 extends Fragment {
         listAlbumlist= new ArrayList<List<Game>>();
 
         RowGame rowGame;
-        ArrayList<Object> listObject = new ArrayList<Object>();
+        //ArrayList<Object> listObject = new ArrayList<Object>();
 
         recyclerAdapter= new RecyclerAdapter(view.getContext(),listObject);
         RecyclerView.LayoutManager vLayoutManager= new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL,false);
@@ -63,17 +63,14 @@ public class FragmentPage1 extends Fragment {
             listObject.add(new RowGame(albumList));
             //listAlbumlist.add(albumList);
         }
-        Title title = new Title();
-        title.setTitle("QUESTA E' UNA NEEEWS");
-        listObject.add(title);
-        News news = new News();
-        news.setText("PROVA NEEEWS");
-        listObject.add(news);
         RowGame slider= new RowGame();
         slider.setSlider(true);
 
         recyclerAdapter.notifyDataSetChanged();
 
+        APIManager apiManager= new APIManager();
+        apiManager.getRssList(listObject,recyclerAdapter);
+        
         // TextView textView = (TextView) view;
         //  textView.setText("Fragment #" + mPage);
         return view;
@@ -129,4 +126,7 @@ public class FragmentPage1 extends Fragment {
         //adapter.notifyDataSetChanged();
     }
 
+    public void setList(List<Object> list) {
+        this.listObject = list;
+    }
 }
