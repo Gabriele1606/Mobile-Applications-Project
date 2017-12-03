@@ -96,6 +96,7 @@ public class APIManager {
                 List<RSSFeed> rssList=response.body().getRssList();
                 Filter filter=new Filter();
                 filter.setImageLink(rssList);
+                filter.cleanDescriptionFromHTML(rssList);
                 for(int i=0;i<rssList.size();i++) {
                     System.out.println(rssList.get(i).getImageLink());
                 }

@@ -197,7 +197,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void setRssCard(RssFeedHolder rssFeedHolder, int position){
-        rssFeedHolder.rssText.setText(((RSSFeed)listObject.get(position)).getTitle());
+        rssFeedHolder.rssText.setText(((RSSFeed)listObject.get(position)).getDescription());
         rssFeedHolder.rssTitle.setText(((RSSFeed)listObject.get(position)).getTitle());
         Glide.with(mContext).load(((RSSFeed)listObject.get(position)).getImageLink()).into(rssFeedHolder.imageView);
     }

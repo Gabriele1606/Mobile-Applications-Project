@@ -48,5 +48,16 @@ public class Filter {
             rssList.get(i).setImageLink(tempDescription.substring(start, end));
         }
     }
+
+    public void cleanDescriptionFromHTML(List<RSSFeed> rssList){
+        String tempDescription;
+        int start;
+        for(int i=0;i<rssList.size();i++){
+            tempDescription=rssList.get(i).getDescription();
+            start = tempDescription.indexOf("/>")+2;
+            System.out.println(tempDescription);
+            rssList.get(i).setDescription(tempDescription.substring(start));
+        }
+    }
     }
 
