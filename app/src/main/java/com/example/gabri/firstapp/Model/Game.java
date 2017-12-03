@@ -21,6 +21,7 @@ public class Game {
     private String platform;
     private int thumbnail;
 
+
     public Game(String s, int i, int cover) {
         gameTitle=s;
         thumbnail=cover;

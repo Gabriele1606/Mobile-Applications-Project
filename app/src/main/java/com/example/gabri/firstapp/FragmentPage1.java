@@ -1,5 +1,6 @@
 package com.example.gabri.firstapp;
 
+import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -61,7 +62,12 @@ public class FragmentPage1 extends Fragment {
             listObject.add(new RowGame(albumList));
             //listAlbumlist.add(albumList);
         }
-       listObject.add(new News());
+        News news = new News();
+        news.setText("PROVA NEEEWS");
+        listObject.add(news);
+        RowGame slider= new RowGame();
+        slider.setSlider(true);
+        listObject.add(slider);
         recyclerAdapter.notifyDataSetChanged();
 
         // TextView textView = (TextView) view;

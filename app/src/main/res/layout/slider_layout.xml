@@ -1,0 +1,6 @@
+<com.daimajia.slider.library.SliderLayout
+    android:id="@+id/main_slider"
+    android:layout_width="200dp"
+    android:layout_height="200dp"
+    layout_height="200dp"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
