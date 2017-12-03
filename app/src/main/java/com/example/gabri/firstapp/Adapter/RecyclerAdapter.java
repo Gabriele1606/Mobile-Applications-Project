@@ -5,6 +5,7 @@ package com.example.gabri.firstapp.Adapter;
  */
 
 import android.content.Context;
+import android.media.Image;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -13,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.example.gabri.firstapp.Model.RSSFeed;
@@ -52,10 +55,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public class RssFeedHolder extends RecyclerView.ViewHolder{
         public TextView rssText;
         public TextView rssTitle;
+        public ImageView imageView;
         public RssFeedHolder(View itemView) {
             super(itemView);
             rssText = (TextView) itemView.findViewById(R.id.text_news);
             rssTitle=(TextView) itemView.findViewById(R.id.title_news);
+            imageView=(ImageView)itemView.findViewById(R.id.image_rss);
 
         }
     }
@@ -194,6 +199,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private void setRssCard(RssFeedHolder rssFeedHolder, int position){
         rssFeedHolder.rssText.setText(((RSSFeed)listObject.get(position)).getTitle());
         rssFeedHolder.rssTitle.setText(((RSSFeed)listObject.get(position)).getTitle());
+        Glide.with(mContext).load(((RSSFeed)listObject.get(position)).getImageLink()).into(rssFeedHolder.imageView);
     }
 
 
