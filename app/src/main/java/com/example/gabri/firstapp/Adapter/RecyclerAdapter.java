@@ -42,7 +42,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private final int ROWGAME = 0;
     private Context mContext;
     private List<Object> listObject;
-
+    boolean timerStarted =false;
     public class RecHolder extends RecyclerView.ViewHolder {
         public RecyclerView recelement;
        public HorizontalAdapter adapter;
@@ -219,9 +219,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ViewPagerImgSliderAdapter viewPagerImgSliderAdapter= new ViewPagerImgSliderAdapter(mContext);
         viewPagerImgSliderAdapter.setUrlImages(((ImgSlider)listObject.get(position)).getUrlImages());
         holder.getViewPager().setAdapter(viewPagerImgSliderAdapter);
-        Timer timer= new Timer();
-        timer.scheduleAtFixedRate(new TimerSlider(mContext,holder.getViewPager(),viewPagerImgSliderAdapter.getUrlImages()),2000,3000);
-
+        if(!timerStarted) {
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerSlider(mContext, holder.getViewPager(), viewPagerImgSliderAdapter.getUrlImages()), 2000, 3000);
+            timerStarted =true;
+        }
     }
 
     private void configureRecHolder(RecHolder holder, int position) {
