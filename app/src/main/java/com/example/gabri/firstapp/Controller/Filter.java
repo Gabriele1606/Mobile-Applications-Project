@@ -54,10 +54,26 @@ public class Filter {
         int start;
         for(int i=0;i<rssList.size();i++){
             tempDescription=rssList.get(i).getDescription();
-            start = tempDescription.indexOf("/>")+2;
-            System.out.println(tempDescription);
+            start = tempDescription.indexOf("\n")+2;
             rssList.get(i).setDescription(tempDescription.substring(start));
         }
+    }
+
+    public String getConsoleSuitable(List<Game> gameList){
+        return gameList.get(0).getPlatform();
+    }
+
+    public int averageYearOfGame(List<Game>gameList){
+        String dateString;
+        String arrayDate[];
+        int average=0;
+        for (int i=0;i<gameList.size();i++){
+            dateString=gameList.get(i).getReleaseDate();
+            arrayDate=dateString.split("/");
+            average+=Integer.parseInt(arrayDate[2]);
+        }
+        System.out.println(average/gameList.size());
+        return average/gameList.size();
     }
     }
 

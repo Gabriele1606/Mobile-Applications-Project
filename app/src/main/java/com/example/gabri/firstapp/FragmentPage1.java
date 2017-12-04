@@ -81,6 +81,8 @@ public class FragmentPage1 extends Fragment {
 
         APIManager apiManager= new APIManager();
         apiManager.getRssList(listObject,recyclerAdapter);
+        apiManager.getPlatformFactory();
+        apiManager.getPlatformList();
     }
 
 
