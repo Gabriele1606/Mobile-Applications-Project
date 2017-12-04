@@ -8,6 +8,8 @@ import com.example.gabri.firstapp.GameXML;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.Platform;
 import com.example.gabri.firstapp.Model.RSSFeed;
+import com.example.gabri.firstapp.PlatformDetail;
+import com.example.gabri.firstapp.PlatformDetailXML;
 import com.example.gabri.firstapp.PlatformXML;
 import com.example.gabri.firstapp.RSSList;
 
@@ -45,7 +47,7 @@ public class APIManager {
             public void onResponse(Call<PlatformXML> call, Response<PlatformXML> response) {
 
                 List<Platform> platformList= response.body().getPlatformList();
-                System.out.println(platformList.size());
+
 
                 Call<GameXML> callToGame;
                 for(int i=0;i<platformList.size();i++){
@@ -55,7 +57,6 @@ public class APIManager {
                         public void onResponse(Call<GameXML> call, Response<GameXML> response) {
                             List<Game> gameList=response.body().getGameList();
                             // filter.getNewestGame(gameList);
-                            System.out.println(gameList.size());
                             synchronized (gameListForEachPlatform) {
                                 gameListForEachPlatform.add(gameList);
                             }
@@ -74,7 +75,7 @@ public class APIManager {
 
             @Override
             public void onFailure(Call<PlatformXML> call, Throwable t) {
-
+                System.out.println("non ho ricevuto console");
             }
         });
     }
@@ -109,10 +110,11 @@ public class APIManager {
 
     }
 
-    public void getPlatformFactory(){
+    public void getPlatformFactory() {
+        final List<Platform> platformList =new ArrayList<Platform>();
+
+
         final Filter filter = new Filter();
-
-
         Retrofit retrofitObject = new Retrofit.Builder().baseUrl(BASE_URL)
                 .addConverterFactory(SimpleXmlConverterFactory.create())
                 .build();
@@ -124,34 +126,44 @@ public class APIManager {
             @Override
             public void onResponse(Call<PlatformXML> call, Response<PlatformXML> response) {
 
-                final List<Platform> platformList= response.body().getPlatformList();
-
+                List<Platform> tempPlatformList = response.body().getPlatformList();
 
                 Call<GameXML> callToGame;
-                for(int i=0;i<platformList.size();i++){
-                    callToGame=possibleAPI.getGame(platformList.get(i).getName());
+                for (int i = 0; i < tempPlatformList.size(); i++) {
+                    platformList.add(tempPlatformList.get(i));
+                    callToGame = possibleAPI.getGame(tempPlatformList.get(i).getName());
                     callToGame.enqueue(new Callback<GameXML>() {
                         @Override
                         public void onResponse(Call<GameXML> call, Response<GameXML> response) {
-                            List<Game> gameList=response.body().getGameList();
+                            List<Game> gameList = response.body().getGameList();
+                            filter.addAverageYearToPlatform(platformList,gameList);
 
-                                for(int j=0;j<platformList.size();j++){
-                                    if(platformList.get(j).getName().equals(gameList.get(0).getPlatform()))
-                                        platformList.get(j).setAverageYearOfItsGame(filter.averageYearOfGame(gameList));
-                                }
+                            //Simo da qui in poi dobbiamo risolvere il problema delle richieste 
+                            Call<PlatformDetailXML> callToPlatformDetail;
+                            for (int j=0;j<6;j++){
+                                callToPlatformDetail = possibleAPI.getPlatformDetail(platformList.get(j).getId());
+                                callToPlatformDetail.enqueue(new Callback<PlatformDetailXML>() {
+                                    @Override
+                                    public void onResponse(Call<PlatformDetailXML> call, Response<PlatformDetailXML> response) {
+                                        System.out.println(response.body().getPlatformDetail().getId());
+                                    }
 
-                            for (int k=0;k<platformList.size();k++){
-                                System.out.println(platformList.get(k).getName());
-                                System.out.println(platformList.get(k).getAverageYearOfItsGame());
+                                    @Override
+                                    public void onFailure(Call<PlatformDetailXML> call, Throwable t) {
+
+                                    }
+                                });
                             }
+
                         }
 
                         @Override
                         public void onFailure(Call<GameXML> call, Throwable t) {
-                        System.out.println("non sono riuscito");
+
                         }
                     });
                 }
+
 
 
 
@@ -159,11 +171,12 @@ public class APIManager {
 
             @Override
             public void onFailure(Call<PlatformXML> call, Throwable t) {
-                System.out.println("non sono riuscito platform");
+                System.out.println("non ho ricevuto console");
             }
         });
 
+
+
+
     }
-
-
 }

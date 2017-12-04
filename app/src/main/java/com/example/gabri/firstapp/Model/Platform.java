@@ -53,5 +53,6 @@ public class Platform {
     public void setAverageYearOfItsGame(int averageYearOfItsGame) {
         this.averageYearOfItsGame = averageYearOfItsGame;
     }
+
 }
 

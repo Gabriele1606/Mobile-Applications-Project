@@ -3,6 +3,8 @@ package com.example.gabri.firstapp.API;
 
 import com.example.gabri.firstapp.GameXML;
 import com.example.gabri.firstapp.Model.RSSFeed;
+import com.example.gabri.firstapp.PlatformDetail;
+import com.example.gabri.firstapp.PlatformDetailXML;
 import com.example.gabri.firstapp.PlatformXML;
 import com.example.gabri.firstapp.RSSList;
 
@@ -23,4 +25,7 @@ public interface PossibleAPI {
 
     @GET("/feed/rss/news/")
     Call<RSSList> getRssList();
+
+    @GET("GetPlatform.php")
+    Call<PlatformDetailXML> getPlatformDetail(@Query("id") int id);
 }
