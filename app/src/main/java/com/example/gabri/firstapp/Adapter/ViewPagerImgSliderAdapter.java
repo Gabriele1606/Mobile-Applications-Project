@@ -52,6 +52,11 @@ public class ViewPagerImgSliderAdapter extends PagerAdapter {
         vp.addView(view,0);
         return view;
     }
+
+    public List<String> getUrlImages() {
+        return urlImages;
+    }
+
     public void setUrlImages(List<String> urlImages) {
         this.urlImages = urlImages;
     }

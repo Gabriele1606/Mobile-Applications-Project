@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
+import com.example.gabri.firstapp.Controller.TimerSlider;
 import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.Model.RowGame;
@@ -27,6 +28,7 @@ import com.example.gabri.firstapp.Model.Title;
 import com.example.gabri.firstapp.R;
 
 import java.util.List;
+import java.util.Timer;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
@@ -198,9 +200,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 break;
             case IMGSLIDER:
                 ImgSliderHolder imgSliderHolder=(ImgSliderHolder) viewHolder;
-                ViewPagerImgSliderAdapter viewPagerImgSliderAdapter= new ViewPagerImgSliderAdapter(mContext);
-                viewPagerImgSliderAdapter.setUrlImages(((ImgSlider)listObject.get(position)).getUrlImages());
-                imgSliderHolder.getViewPager().setAdapter(viewPagerImgSliderAdapter);
+                startImgSlider(imgSliderHolder,position);
                 break;
             /*case IMAGE:
                 ViewHolder2 vh2 = (ViewHolder2) viewHolder;
@@ -211,6 +211,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 configureDefaultViewHolder(vh, position);
                 break;*/
         }
+
+    }
+
+    private  void startImgSlider(ImgSliderHolder holder,int position ){
+
+        ViewPagerImgSliderAdapter viewPagerImgSliderAdapter= new ViewPagerImgSliderAdapter(mContext);
+        viewPagerImgSliderAdapter.setUrlImages(((ImgSlider)listObject.get(position)).getUrlImages());
+        holder.getViewPager().setAdapter(viewPagerImgSliderAdapter);
+        Timer timer= new Timer();
+        timer.scheduleAtFixedRate(new TimerSlider(mContext,holder.getViewPager(),viewPagerImgSliderAdapter.getUrlImages()),2000,3000);
 
     }
 
