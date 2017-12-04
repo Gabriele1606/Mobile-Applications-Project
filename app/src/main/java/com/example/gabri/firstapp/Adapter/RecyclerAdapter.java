@@ -5,7 +5,7 @@ package com.example.gabri.firstapp.Adapter;
  */
 
 import android.content.Context;
-import android.media.Image;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
+import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.Model.Title;
@@ -32,6 +33,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private final int IMGSLIDER = 4;
     private final int TITLE = 3;
     private final int SLIDER = 2;
     private final int RSSFEED = 1;
@@ -91,6 +93,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.textView.setText(title);
         }
     }
+    public class ImgSliderHolder extends RecyclerView.ViewHolder{
+        ViewPager viewPager;
+        Context context;
+        public ImgSliderHolder(View itemView) {
+            super(itemView);
+            this.viewPager= (ViewPager) itemView.findViewById(R.id.img_slider_viewpager);
+             context = itemView.getContext();
+        }
+        public ViewPager getViewPager(){
+            return viewPager;
+        }
+        public Context getContext(){
+            return context;
+        }
+    }
     public RecyclerAdapter(Context mContext, List<Object> listObject) {
         this.mContext = mContext;
         this.listObject = listObject;
@@ -105,6 +122,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return RSSFEED;
         }else if (listObject.get(position) instanceof Title){
             return TITLE;
+        } else if (listObject.get(position) instanceof ImgSlider){
+            return IMGSLIDER;
         }/*else if (items.get(position) instanceof String) {
                 return IMAGE;
             }*/
@@ -138,6 +157,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         .inflate(R.layout.section_title_layout, parent, false);
                 viewHolder= new TitleHolder(titleView);
                 break;
+
+            case IMGSLIDER:
+                View imgsliderView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.image_slider, parent, false);
+                viewHolder = new ImgSliderHolder(imgsliderView);
+                break;
             /*case IMAGE:
                 View v2 = inflater.inflate(R.layout.layout_viewholder2, viewGroup, false);
                 viewHolder = new ViewHolder2(v2);
@@ -170,6 +195,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case TITLE:
                 TitleHolder titleHolder= (TitleHolder) viewHolder;
                 titleHolder.setTitle(((Title)listObject.get(position)).getTitle());
+                break;
+            case IMGSLIDER:
+                ImgSliderHolder imgSliderHolder=(ImgSliderHolder) viewHolder;
+                ViewPagerImgSliderAdapter viewPagerImgSliderAdapter= new ViewPagerImgSliderAdapter(mContext);
+                viewPagerImgSliderAdapter.setUrlImages(((ImgSlider)listObject.get(position)).getUrlImages());
+                imgSliderHolder.getViewPager().setAdapter(viewPagerImgSliderAdapter);
                 break;
             /*case IMAGE:
                 ViewHolder2 vh2 = (ViewHolder2) viewHolder;
