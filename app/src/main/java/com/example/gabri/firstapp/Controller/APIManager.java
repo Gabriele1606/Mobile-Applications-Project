@@ -45,18 +45,17 @@ public class APIManager {
             public void onResponse(Call<PlatformXML> call, Response<PlatformXML> response) {
 
                 List<Platform> platformList= response.body().getPlatformList();
-
+                System.out.println(platformList.size());
 
                 Call<GameXML> callToGame;
                 for(int i=0;i<platformList.size();i++){
-                    System.out.println(platformList.get(i).getName());
                     callToGame=possibleAPI.getGame(platformList.get(i).getName());
                     callToGame.enqueue(new Callback<GameXML>() {
                         @Override
                         public void onResponse(Call<GameXML> call, Response<GameXML> response) {
                             List<Game> gameList=response.body().getGameList();
-                            System.out.println("Lista ricevuta dimensione: "+gameList.size());
                             // filter.getNewestGame(gameList);
+                            System.out.println(gameList.size());
                             synchronized (gameListForEachPlatform) {
                                 gameListForEachPlatform.add(gameList);
                             }
@@ -97,9 +96,6 @@ public class APIManager {
                 Filter filter=new Filter();
                 filter.setImageLink(rssList);
                 filter.cleanDescriptionFromHTML(rssList);
-                for(int i=0;i<rssList.size();i++) {
-                    System.out.println(rssList.get(i).getImageLink());
-                }
                 list.addAll(rssList);
                 recyclerAdapter.notifyDataSetChanged();
 
@@ -111,7 +107,63 @@ public class APIManager {
             }
         });
 
-}
+    }
+
+    public void getPlatformFactory(){
+        final Filter filter = new Filter();
+
+
+        Retrofit retrofitObject = new Retrofit.Builder().baseUrl(BASE_URL)
+                .addConverterFactory(SimpleXmlConverterFactory.create())
+                .build();
+
+        final PossibleAPI possibleAPI = retrofitObject.create(PossibleAPI.class);
+        Call<PlatformXML> callToPlatform = possibleAPI.getPlatform();
+        callToPlatform.enqueue(new Callback<PlatformXML>() {
+
+            @Override
+            public void onResponse(Call<PlatformXML> call, Response<PlatformXML> response) {
+
+                final List<Platform> platformList= response.body().getPlatformList();
+
+
+                Call<GameXML> callToGame;
+                for(int i=0;i<platformList.size();i++){
+                    callToGame=possibleAPI.getGame(platformList.get(i).getName());
+                    callToGame.enqueue(new Callback<GameXML>() {
+                        @Override
+                        public void onResponse(Call<GameXML> call, Response<GameXML> response) {
+                            List<Game> gameList=response.body().getGameList();
+
+                                for(int j=0;j<platformList.size();j++){
+                                    if(platformList.get(j).getName().equals(gameList.get(0).getPlatform()))
+                                        platformList.get(j).setAverageYearOfItsGame(filter.averageYearOfGame(gameList));
+                                }
+
+                            for (int k=0;k<platformList.size();k++){
+                                System.out.println(platformList.get(k).getName());
+                                System.out.println(platformList.get(k).getAverageYearOfItsGame());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<GameXML> call, Throwable t) {
+                        System.out.println("non sono riuscito");
+                        }
+                    });
+                }
+
+
+
+            }
+
+            @Override
+            public void onFailure(Call<PlatformXML> call, Throwable t) {
+                System.out.println("non sono riuscito platform");
+            }
+        });
+
+    }
 
 
 }

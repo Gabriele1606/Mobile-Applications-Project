@@ -20,6 +20,8 @@ public class Platform {
     @Element(name="alias",required = false)
     private String alias;
 
+    private int averageYearOfItsGame;
+
     public int getId() {
         return id;
     }
@@ -42,6 +44,14 @@ public class Platform {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public int getAverageYearOfItsGame() {
+        return averageYearOfItsGame;
+    }
+
+    public void setAverageYearOfItsGame(int averageYearOfItsGame) {
+        this.averageYearOfItsGame = averageYearOfItsGame;
     }
 }
 
