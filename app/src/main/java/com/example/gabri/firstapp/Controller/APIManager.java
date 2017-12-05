@@ -133,7 +133,7 @@ public class APIManager {
                 for (int i = 0; i < tempPlatformList.size(); i++) {
                     platformList.add(tempPlatformList.get(i));
                     callToGame = possibleAPI.getGame(tempPlatformList.get(i).getName());
-                    
+
                     callToGame.enqueue(new Callback<GameXML>() {
                         @Override
                         public void onResponse(Call<GameXML> call, Response<GameXML> response) {
@@ -200,9 +200,9 @@ public class APIManager {
 
     private void checkFinished(List<Platform> platformList) {
         if (numReceivedPlatformGame.equals(totPlatform)&&numReceivedPlatformDetail.equals(totPlatform)){
-            if(Data.getListPlatform().isEmpty()){
-                Data.getListPlatform().addAll(platformList);
-                System.out.println("HO CARICATO TUTTTI I DATI DENTRO DATA------------>"+Data.getListPlatform().size());
+            if(Data.getData().getListPlatform().isEmpty()){
+                Data.getData().getListPlatform().addAll(platformList);
+                System.out.println("HO CARICATO TUTTTI I DATI DENTRO DATA------------>"+Data.getData().getListPlatform().size());
             }
         }
     }

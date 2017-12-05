@@ -28,7 +28,7 @@ public class Data {
         inizialized=true;
     }
 
-    public static synchronized List<Platform> getListPlatform() {
+    public synchronized List<Platform> getListPlatform() {
         return listPlatform;
     }
 }
