@@ -126,14 +126,14 @@ public class APIManager {
             @Override
             public void onResponse(Call<PlatformXML> call, Response<PlatformXML> response) {
 
-                final List<Platform> tempPlatformList = response.body().getPlatformList();
+                List<Platform> tempPlatformList = response.body().getPlatformList();
 
                 Call<GameXML> callToGame;
                 totPlatform= new Integer(tempPlatformList.size());
                 for (int i = 0; i < tempPlatformList.size(); i++) {
                     platformList.add(tempPlatformList.get(i));
                     callToGame = possibleAPI.getGame(tempPlatformList.get(i).getName());
-                    final int finalI = i;
+                    
                     callToGame.enqueue(new Callback<GameXML>() {
                         @Override
                         public void onResponse(Call<GameXML> call, Response<GameXML> response) {
@@ -173,7 +173,10 @@ public class APIManager {
 
                         @Override
                         public void onFailure(Call<PlatformDetailXML> call, Throwable t) {
-
+                            synchronized (numReceivedPlatformDetail){
+                                numReceivedPlatformDetail= numReceivedPlatformDetail+1;
+                                checkFinished(platformList);
+                            }
                         }
                     });
 
