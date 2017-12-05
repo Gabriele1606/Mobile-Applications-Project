@@ -11,6 +11,7 @@ public class Data {
     private static List<Object> instance = new ArrayList<Object>();
     private boolean inizialized=false;
     private static Data data= new Data();
+    private static List<Platform> listPlatform= new ArrayList<Platform>();
     private Data(){
 
     }
@@ -25,5 +26,9 @@ public class Data {
     }
     public void setInizialized(){
         inizialized=true;
+    }
+
+    public static synchronized List<Platform> getListPlatform() {
+        return listPlatform;
     }
 }
