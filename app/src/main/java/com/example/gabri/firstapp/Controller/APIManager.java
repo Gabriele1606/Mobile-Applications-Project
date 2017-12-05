@@ -114,7 +114,7 @@ public class APIManager {
         final List<Platform> platformList =new ArrayList<Platform>();
 
 
-        final Filter filter = new Filter();
+
         Retrofit retrofitObject = new Retrofit.Builder().baseUrl(BASE_URL)
                 .addConverterFactory(SimpleXmlConverterFactory.create())
                 .build();
@@ -136,6 +136,7 @@ public class APIManager {
                         @Override
                         public void onResponse(Call<GameXML> call, Response<GameXML> response) {
                             List<Game> gameList = response.body().getGameList();
+                            Filter filter = new Filter();
                             filter.addAverageYearToPlatform(platformList,gameList);
 
                         }
