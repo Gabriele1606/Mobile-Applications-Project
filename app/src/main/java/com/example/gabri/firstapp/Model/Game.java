@@ -15,7 +15,7 @@ public class Game {
     private String gameTitle;
 
     @Element(name="ReleaseDate",required = false)
-    private String releaseDate;
+    private String releaseDate="null";
 
     @Element(name="Platform",required = false)
     private String platform;
@@ -25,6 +25,11 @@ public class Game {
     public Game(String s, int i, int cover) {
         gameTitle=s;
         thumbnail=cover;
+    }
+
+
+    public Game() {
+
     }
 
     public int getId() {
@@ -61,5 +66,11 @@ public class Game {
 
     public int getThumbnail() {
         return thumbnail;
+    }
+
+    public boolean releaseDateIsPresent(){
+        if (this.releaseDate.equals(null))
+            return false;
+        return true;
     }
 }

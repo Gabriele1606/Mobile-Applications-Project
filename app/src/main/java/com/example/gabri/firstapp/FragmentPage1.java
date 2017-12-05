@@ -13,6 +13,7 @@ import com.example.gabri.firstapp.Adapter.RecyclerAdapter;
 import com.example.gabri.firstapp.Controller.APIManager;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
+import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.Model.Title;
 
@@ -61,26 +62,37 @@ public class FragmentPage1 extends Fragment {
 
     private void initializeData(){
 
+        ImgSlider imgSlider= new ImgSlider();
+        List<String> urlImages= new ArrayList<String>();
+        urlImages.add("http://thegamesdb.net/banners/fanart/original/17097-1.jpg");
+        urlImages.add("https://multiplayer.net-cdn.it/thumbs/images/2017/12/03/banner-residentevilrevelations_jpg_100x55_crop_upscale_q85.jpg");
+        urlImages.add("https://multiplayer.net-cdn.it/thumbs/images/2017/12/04/playstationawards2017_jpg_100x55_crop_upscale_q85.jpg");
+        imgSlider.setUrlImages(urlImages);
+        Data.getInstance().add(imgSlider);
+        recyclerAdapter.notifyDataSetChanged();
+
+
         albumList = new ArrayList<>();
         listAlbumlist= new ArrayList<List<Game>>();
 
         RowGame rowGame;
 
-
-
-
         prepareAlbums();
-        for (int i=0; i<10;i++) {
+        for (int i=10; i<10;i++) {
             Data.getInstance().add(new RowGame(albumList));
             //listAlbumlist.add(albumList);
         }
         RowGame slider= new RowGame();
         slider.setSlider(true);
 
+
+
         recyclerAdapter.notifyDataSetChanged();
 
         APIManager apiManager= new APIManager();
         apiManager.getRssList(listObject,recyclerAdapter);
+        apiManager.getPlatformFactory();
+        //apiManager.getPlatformList();
     }
 
 

@@ -5,7 +5,7 @@ package com.example.gabri.firstapp.Adapter;
  */
 
 import android.content.Context;
-import android.media.Image;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -20,25 +20,29 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
+import com.example.gabri.firstapp.Controller.TimerSlider;
+import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.Model.Title;
 import com.example.gabri.firstapp.R;
 
 import java.util.List;
+import java.util.Timer;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private final int IMGSLIDER = 4;
     private final int TITLE = 3;
     private final int SLIDER = 2;
     private final int RSSFEED = 1;
     private final int ROWGAME = 0;
     private Context mContext;
     private List<Object> listObject;
-
+    boolean timerStarted =false;
     public class RecHolder extends RecyclerView.ViewHolder {
         public RecyclerView recelement;
        public HorizontalAdapter adapter;
@@ -91,6 +95,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.textView.setText(title);
         }
     }
+    public class ImgSliderHolder extends RecyclerView.ViewHolder{
+        ViewPager viewPager;
+        Context context;
+        public ImgSliderHolder(View itemView) {
+            super(itemView);
+            this.viewPager= (ViewPager) itemView.findViewById(R.id.img_slider_viewpager);
+             context = itemView.getContext();
+        }
+        public ViewPager getViewPager(){
+            return viewPager;
+        }
+        public Context getContext(){
+            return context;
+        }
+    }
     public RecyclerAdapter(Context mContext, List<Object> listObject) {
         this.mContext = mContext;
         this.listObject = listObject;
@@ -105,6 +124,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return RSSFEED;
         }else if (listObject.get(position) instanceof Title){
             return TITLE;
+        } else if (listObject.get(position) instanceof ImgSlider){
+            return IMGSLIDER;
         }/*else if (items.get(position) instanceof String) {
                 return IMAGE;
             }*/
@@ -137,6 +158,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 View titleView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.section_title_layout, parent, false);
                 viewHolder= new TitleHolder(titleView);
+                break;
+
+            case IMGSLIDER:
+                View imgsliderView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.image_slider, parent, false);
+                viewHolder = new ImgSliderHolder(imgsliderView);
                 break;
             /*case IMAGE:
                 View v2 = inflater.inflate(R.layout.layout_viewholder2, viewGroup, false);
@@ -171,6 +198,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 TitleHolder titleHolder= (TitleHolder) viewHolder;
                 titleHolder.setTitle(((Title)listObject.get(position)).getTitle());
                 break;
+            case IMGSLIDER:
+                ImgSliderHolder imgSliderHolder=(ImgSliderHolder) viewHolder;
+                startImgSlider(imgSliderHolder,position);
+                break;
             /*case IMAGE:
                 ViewHolder2 vh2 = (ViewHolder2) viewHolder;
                 configureViewHolder2(vh2, position);
@@ -181,6 +212,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 break;*/
         }
 
+    }
+
+    private  void startImgSlider(ImgSliderHolder holder,int position ){
+
+        ViewPagerImgSliderAdapter viewPagerImgSliderAdapter= new ViewPagerImgSliderAdapter(mContext);
+        viewPagerImgSliderAdapter.setUrlImages(((ImgSlider)listObject.get(position)).getUrlImages());
+        holder.getViewPager().setAdapter(viewPagerImgSliderAdapter);
+        if(!timerStarted) {
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new TimerSlider(mContext, holder.getViewPager(), viewPagerImgSliderAdapter.getUrlImages()), 2000, 3000);
+            timerStarted =true;
+        }
     }
 
     private void configureRecHolder(RecHolder holder, int position) {
