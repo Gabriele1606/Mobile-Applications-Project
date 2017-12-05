@@ -138,23 +138,6 @@ public class APIManager {
                             List<Game> gameList = response.body().getGameList();
                             filter.addAverageYearToPlatform(platformList,gameList);
 
-                            //Simo da qui in poi dobbiamo risolvere il problema delle richieste 
-                            Call<PlatformDetailXML> callToPlatformDetail;
-                            for (int j=0;j<6;j++){
-                                callToPlatformDetail = possibleAPI.getPlatformDetail(platformList.get(j).getId());
-                                callToPlatformDetail.enqueue(new Callback<PlatformDetailXML>() {
-                                    @Override
-                                    public void onResponse(Call<PlatformDetailXML> call, Response<PlatformDetailXML> response) {
-                                        System.out.println(response.body().getPlatformDetail().getId());
-                                    }
-
-                                    @Override
-                                    public void onFailure(Call<PlatformDetailXML> call, Throwable t) {
-
-                                    }
-                                });
-                            }
-
                         }
 
                         @Override
@@ -162,6 +145,21 @@ public class APIManager {
 
                         }
                     });
+
+
+                    Call<PlatformDetailXML> callToPlatformDetail = possibleAPI.getPlatformDetail(platformList.get(i).getId());
+                    callToPlatformDetail.enqueue(new Callback<PlatformDetailXML>() {
+                        @Override
+                        public void onResponse(Call<PlatformDetailXML> call, Response<PlatformDetailXML> response) {
+                            System.out.println(response.body().getPlatformDetail().getName());
+                        }
+
+                        @Override
+                        public void onFailure(Call<PlatformDetailXML> call, Throwable t) {
+
+                        }
+                    });
+
                 }
 
 
