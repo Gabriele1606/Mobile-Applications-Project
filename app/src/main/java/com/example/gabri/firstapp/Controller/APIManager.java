@@ -2,6 +2,7 @@ package com.example.gabri.firstapp.Controller;
 
 import com.example.gabri.firstapp.API.PossibleAPI;
 import com.example.gabri.firstapp.Adapter.RecyclerAdapter;
+import com.example.gabri.firstapp.Adapter.SampleFragmentPagerAdapter;
 import com.example.gabri.firstapp.GameXML;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
@@ -30,6 +31,7 @@ public class APIManager {
     private Integer totPlatform= new Integer(0);
     private Integer numReceivedPlatformGame = new Integer(0);
     private Integer numReceivedPlatformDetail= new Integer(0);
+    private SampleFragmentPagerAdapter observer;
 
     public void getPlatformList() {
         final List<List<Game>> gameListForEachPlatform = new ArrayList<List<Game>>();
@@ -203,8 +205,13 @@ public class APIManager {
             if(Data.getData().getListPlatform().isEmpty()){
                 Data.getData().getListPlatform().addAll(platformList);
                 System.out.println("HO CARICATO TUTTTI I DATI DENTRO DATA------------>"+Data.getData().getListPlatform().size());
+                if (this.observer!=null)
+                    this.observer.notifyDataSetChanged();
             }
         }
     }
 
+    public void setObserver(SampleFragmentPagerAdapter observer) {
+        this.observer = observer;
+    }
 }

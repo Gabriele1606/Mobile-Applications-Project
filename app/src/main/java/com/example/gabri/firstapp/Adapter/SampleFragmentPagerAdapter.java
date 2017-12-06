@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.gabri.firstapp.FragmentPage1;
+import com.example.gabri.firstapp.Model.Data;
+import com.example.gabri.firstapp.Model.Platform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,7 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
     private List<Object> objectList;
 
     private ArrayList<Fragment> listFragment;
+    private List<Platform> listPlatform;
 
     public SampleFragmentPagerAdapter(FragmentManager fm, Context context, List<Object> objectList) {
         super(fm);
@@ -43,6 +46,7 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
             listFragment.add(current);
             return current;
         }
+
             return null;
         //return PageFragment.newInstance(position + 1);
     }
@@ -53,7 +57,10 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
         return tabTitles[position];
     }
 
-
-
-
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        this.listPlatform = Data.getData().getListPlatform();
+        //DA COMPLETARE
+    }
 }

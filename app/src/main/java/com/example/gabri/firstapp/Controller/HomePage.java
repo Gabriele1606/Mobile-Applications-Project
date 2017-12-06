@@ -70,7 +70,8 @@ public class HomePage extends AppCompatActivity {
 
         SampleFragmentPagerAdapter sampleFragmentPagerAdapter = new SampleFragmentPagerAdapter(getSupportFragmentManager(), this, listObject);
         viewPager.setAdapter(sampleFragmentPagerAdapter);
-
+        apiManager.setObserver(sampleFragmentPagerAdapter);
+        apiManager.getPlatformFactory();
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
