@@ -22,6 +22,8 @@ public class Platform {
 
     private int averageYearOfItsGame;
 
+    private String manufacturer;
+
     public int getId() {
         return id;
     }
@@ -54,5 +56,12 @@ public class Platform {
         this.averageYearOfItsGame = averageYearOfItsGame;
     }
 
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
 }
 
