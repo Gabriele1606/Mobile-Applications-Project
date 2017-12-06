@@ -1,5 +1,7 @@
 package com.example.gabri.firstapp.Model;
 
+import com.example.gabri.firstapp.PlatformDetail;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
@@ -22,7 +24,7 @@ public class Platform {
 
     private int averageYearOfItsGame;
 
-    private String manufacturer;
+    private PlatformDetail platformDetail;
 
     public int getId() {
         return id;
@@ -56,12 +58,12 @@ public class Platform {
         this.averageYearOfItsGame = averageYearOfItsGame;
     }
 
-    public String getManufacturer() {
-        return manufacturer;
+    public PlatformDetail getPlatformDetail() {
+        return platformDetail;
     }
 
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
+    public void setPlatformDetail(PlatformDetail platformDetail) {
+        this.platformDetail = platformDetail;
     }
 }
 
