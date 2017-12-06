@@ -5,6 +5,8 @@ import com.example.gabri.firstapp.PlatformDetail;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
+import java.util.List;
+
 /**
  * Created by Gabri on 16/11/17.
  */
@@ -25,6 +27,8 @@ public class Platform {
     private int averageYearOfItsGame;
 
     private PlatformDetail platformDetail;
+
+    private List<Game> gameList;
 
     public int getId() {
         return id;
@@ -64,6 +68,14 @@ public class Platform {
 
     public void setPlatformDetail(PlatformDetail platformDetail) {
         this.platformDetail = platformDetail;
+    }
+
+    public List<Game> getGameList() {
+        return gameList;
+    }
+
+    public void setGameList(List<Game> gameList) {
+        this.gameList = gameList;
     }
 }
 

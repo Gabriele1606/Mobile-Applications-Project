@@ -3,6 +3,7 @@ package com.example.gabri.firstapp.Controller;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.Platform;
 import com.example.gabri.firstapp.Model.RSSFeed;
+import com.example.gabri.firstapp.PlatformDetail;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -109,5 +110,26 @@ public class Filter {
         System.out.println(average/gameList.size());
         return average/gameList.size();
     }
+
+
+    public void addDetailsToPlatform(List<Platform> platformList, PlatformDetail platformDetail){
+        for(int i=0; i<platformList.size();i++){
+            if(platformDetail.getId()==platformList.get(i).getId()) {
+                platformList.get(i).setPlatformDetail(platformDetail);
+                System.out.println("Confronto "+ platformDetail.getName()+" con "+ platformList.get(i).getName());
+            }
+        }
     }
+
+    public void addGameListPlatform(List<Platform> platformList, List<Game> gameList){
+        for(int i=0; i<platformList.size();i++){
+            if(gameList!=null && gameList.size()>0) {
+                if (gameList.get(0).getPlatform().equals(platformList.get(i).getName())) {
+                    platformList.get(i).setGameList(gameList);
+                }
+            }
+        }
+    }
+
+}
 

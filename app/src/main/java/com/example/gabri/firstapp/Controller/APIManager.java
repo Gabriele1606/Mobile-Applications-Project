@@ -142,6 +142,7 @@ public class APIManager {
                             List<Game> gameList = response.body().getGameList();
                             Filter filter = new Filter();
                             filter.addAverageYearToPlatform(platformList,gameList);
+                            filter.addGameListPlatform(platformList,gameList);
 
                             synchronized (numReceivedPlatformGame){
                                 numReceivedPlatformGame = numReceivedPlatformGame +1;
@@ -164,9 +165,8 @@ public class APIManager {
                     callToPlatformDetail.enqueue(new Callback<PlatformDetailXML>() {
                         @Override
                         public void onResponse(Call<PlatformDetailXML> call, Response<PlatformDetailXML> response) {
-                            System.out.println(response.body().getPlatformDetail().getName());
-
-
+                            Filter filter= new Filter();
+                            filter.addDetailsToPlatform(platformList,response.body().getPlatformDetail());
                             synchronized (numReceivedPlatformDetail){
                                 numReceivedPlatformDetail= numReceivedPlatformDetail+1;
                                 checkFinished(platformList);
@@ -203,6 +203,8 @@ public class APIManager {
     private void checkFinished(List<Platform> platformList) {
         if (numReceivedPlatformGame.equals(totPlatform)&&numReceivedPlatformDetail.equals(totPlatform)){
             if(Data.getData().getListPlatform().isEmpty()){
+                Filter filter = new Filter();
+                filter.orderListFromNewestToHolder(platformList);
                 Data.getData().getListPlatform().addAll(platformList);
                 System.out.println("HO CARICATO TUTTTI I DATI DENTRO DATA------------>"+Data.getData().getListPlatform().size());
                 if (this.observer!=null)
