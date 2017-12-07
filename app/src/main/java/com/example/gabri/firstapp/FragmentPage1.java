@@ -16,6 +16,7 @@ import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.Model.Title;
+import com.github.florent37.materialviewpager.header.MaterialViewPagerHeaderDecorator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +51,9 @@ public class FragmentPage1 extends Fragment {
         ScaleInAnimationAdapter animatorAdapter= new ScaleInAnimationAdapter(recyclerAdapter);
         animatorAdapter.setFirstOnly(false);
         animatorAdapter.setDuration(300);
+
+        vrecyclerView.addItemDecoration(new MaterialViewPagerHeaderDecorator());
+
         vrecyclerView.setAdapter(animatorAdapter);
 
             if(!Data.getData().isInizialized()){

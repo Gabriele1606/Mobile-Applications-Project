@@ -9,9 +9,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.example.gabri.firstapp.API.PossibleAPI;
 import com.example.gabri.firstapp.Adapter.CoverFlowAdapter;
 import com.example.gabri.firstapp.Adapter.GameAdapter;
@@ -26,6 +28,8 @@ import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.Model.Title;
 import com.example.gabri.firstapp.PlatformXML;
 import com.example.gabri.firstapp.R;
+import com.github.florent37.materialviewpager.MaterialViewPager;
+import com.github.florent37.materialviewpager.header.HeaderDesign;
 
 import junit.framework.Assert;
 
@@ -64,18 +68,53 @@ public class HomePage extends AppCompatActivity {
 
         apiManager=new APIManager();
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        MaterialViewPager mViewPager = (MaterialViewPager) findViewById(R.id.viewpager);
+        ViewPager viewPager= mViewPager.getViewPager();
+        //ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 
         listObject= Data.getInstance();
 
         SampleFragmentPagerAdapter sampleFragmentPagerAdapter = new SampleFragmentPagerAdapter(getSupportFragmentManager(), this, listObject);
         viewPager.setAdapter(sampleFragmentPagerAdapter);
+
+
+        mViewPager.getPagerTitleStrip().setViewPager(mViewPager.getViewPager());
+        mViewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {
+            @Override
+            public HeaderDesign getHeaderDesign(int page) {
+                switch (page) {
+                    case 0:
+                        return HeaderDesign.fromColorResAndUrl(
+                                R.color.blue,
+                                "http://cdn1.tnwcdn.com/wp-content/blogs.dir/1/files/2014/06/wallpaper_51.jpg");
+                    case 1:
+                        return HeaderDesign.fromColorResAndUrl(
+                                R.color.green,
+                                "https://fs01.androidpit.info/a/63/0e/android-l-wallpapers-630ea6-h900.jpg");
+                    case 2:
+                        return HeaderDesign.fromColorResAndUrl(
+                                R.color.cyan,
+                                "http://www.droid-life.com/wp-content/uploads/2014/10/lollipop-wallpapers10.jpg");
+                    case 3:
+                        return HeaderDesign.fromColorResAndUrl(
+                                R.color.red,
+                                "http://www.tothemobile.com/wp-content/uploads/2014/07/original.jpg");
+                }
+
+                //execute others actions if needed (ex : modify your header logo)
+
+                return null;
+            }
+        });
+
         apiManager.setObserver(sampleFragmentPagerAdapter);
         apiManager.getPlatformFactory();
         // Give the TabLayout the ViewPager
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(viewPager);
 
+
+        //TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        //tabLayout.setupWithViewPager(viewPager);
+        PagerSlidingTabStrip pagerSlidingTabStrip = (PagerSlidingTabStrip) findViewById(R.id.materialviewpager_pagerTitleStrip);
 
 
 
