@@ -21,6 +21,8 @@ public class Game {
     private String platform;
     private int thumbnail;
 
+    private int yearOfRelease;
+
 
     public Game(String s, int i, int cover) {
         gameTitle=s;
@@ -72,5 +74,13 @@ public class Game {
         if (this.releaseDate.equals(null))
             return false;
         return true;
+    }
+
+    public int getYearOfRelease() {
+        return yearOfRelease;
+    }
+
+    public void setYearOfRelease(int yearOfRelease) {
+        this.yearOfRelease = yearOfRelease;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.gabri.firstapp.Controller;
 
+import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.Platform;
 import com.example.gabri.firstapp.Model.RSSFeed;
@@ -45,13 +46,35 @@ public class Filter {
         }
     }
 
-    public void orderListFromNewestToHolder(List<Platform> platformList){
+    public void orderPlatformFromNewestToHolder(List<Platform> platformList){
         Collections.sort(platformList, new Comparator<Platform>() {
             @Override
             public int compare(Platform p1, Platform p2) {
                 if (p1.getAverageYearOfItsGame() < p2.getAverageYearOfItsGame())
                     return 1;
                 if (p1.getAverageYearOfItsGame() > p2.getAverageYearOfItsGame())
+                    return -1;
+                return 0;
+            }
+        });
+    }
+
+    public void orderGameFromNewestToHolder(List<Game> gameList){
+        int year;
+        for(int i=0;i<gameList.size();i++) {
+            if (!gameList.get(i).getReleaseDate().equals("null")) {
+               year= getYearFromReleaseDate(gameList.get(i).getReleaseDate());
+                gameList.get(i).setYearOfRelease(year);
+
+            }
+        }
+
+        Collections.sort(gameList, new Comparator<Game>() {
+            @Override
+            public int compare(Game g1, Game g2) {
+                if (g1.getYearOfRelease() < g2.getYearOfRelease())
+                    return 1;
+                if (g1.getYearOfRelease() > g2.getYearOfRelease())
                     return -1;
                 return 0;
             }
@@ -146,6 +169,29 @@ public class Filter {
 
         return manufacturerList;
 
+    }
+
+    public List<Platform> getPlatformFromDeveloper(String developerName){
+        List<Platform> allPlatform= Data.getData().getListPlatform();
+        List<Platform> filteredPlatform=new ArrayList<Platform>();
+        for(int i=0;i<allPlatform.size();i++){
+            if(developerName.equals(allPlatform.get(i).getPlatformDetail().getDeveloper())){
+                filteredPlatform.add(allPlatform.get(i));
+            }
+        }
+
+        return filteredPlatform;
+
+    }
+
+    public List<String> getImageOfNewestGame(List<Platform> platformList){
+        List<String> images=new ArrayList<String>();
+        for(int i=0;i<platformList.size();i++){
+            if(platformList.get(i).getGameList().size()>0 && platformList.get(i).getGameList()!=null){
+                images.add("http://thegamesdb.net/banners/fanart/original/"+platformList.get(i).getGameList().get(0).getId()+"-1.jpg");
+            }
+        }
+        return images;
     }
 
 }

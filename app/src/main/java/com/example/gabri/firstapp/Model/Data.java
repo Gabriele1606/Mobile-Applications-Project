@@ -9,11 +9,11 @@ import java.util.List;
 
 public class Data {
     private static List<Object> instance = new ArrayList<Object>();
-    private boolean inizialized=false;
+    private List<Boolean> inizialized=new ArrayList<Boolean>();
     private static Data data= new Data();
     private static List<Platform> listPlatform= new ArrayList<Platform>();
     private Data(){
-
+        this.inizialized.add(new Boolean(false));
     }
     public static List<Object> getInstance(){
         return instance;
@@ -21,11 +21,11 @@ public class Data {
     public static Data getData(){
     return data;
     }
-    public boolean isInizialized(){
-        return inizialized;
+    public boolean isInizialized(int id){
+        return inizialized.get(id);
     }
-    public void setInizialized(){
-        inizialized=true;
+    public void setInizialized( int id){
+        inizialized.get();
     }
 
     public synchronized List<Platform> getListPlatform() {

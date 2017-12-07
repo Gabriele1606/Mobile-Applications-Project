@@ -142,6 +142,7 @@ public class APIManager {
                             List<Game> gameList = response.body().getGameList();
                             Filter filter = new Filter();
                             filter.addAverageYearToPlatform(platformList,gameList);
+
                             filter.addGameListPlatform(platformList,gameList);
 
                             synchronized (numReceivedPlatformGame){
@@ -204,7 +205,7 @@ public class APIManager {
         if (numReceivedPlatformGame.equals(totPlatform)&&numReceivedPlatformDetail.equals(totPlatform)){
             if(Data.getData().getListPlatform().isEmpty()){
                 Filter filter = new Filter();
-                filter.orderListFromNewestToHolder(platformList);
+                filter.orderPlatformFromNewestToHolder(platformList);
                 for(int i=0;i<platformList.size();i++)
                     System.out.println(platformList.get(i).getName());
                 Data.getData().getListPlatform().addAll(platformList);

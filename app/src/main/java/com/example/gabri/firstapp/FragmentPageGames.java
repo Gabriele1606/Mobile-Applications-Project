@@ -11,9 +11,11 @@ import android.view.ViewGroup;
 
 import com.example.gabri.firstapp.Adapter.RecyclerAdapter;
 import com.example.gabri.firstapp.Controller.APIManager;
+import com.example.gabri.firstapp.Controller.Filter;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.ImgSlider;
+import com.example.gabri.firstapp.Model.Platform;
 import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.Model.Title;
 
@@ -33,12 +35,16 @@ public class FragmentPageGames extends Fragment {
     private List<List<Game>> listAlbumlist;
     private RecyclerAdapter recyclerAdapter;
     private List<Object> listObject= Data.getInstance();
+    private String developName;
+
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_page1, container, false);
+        View view = inflater.inflate(R.layout.fragment_page_game, container, false);
 
         vrecyclerView= (RecyclerView) view.findViewById(R.id.v_recyclerView);
 
@@ -61,12 +67,15 @@ public class FragmentPageGames extends Fragment {
     }
 
     private void initializeData(){
-
+        Filter filter=new Filter();
         ImgSlider imgSlider= new ImgSlider();
-        List<String> urlImages= new ArrayList<String>();
-        urlImages.add("http://thegamesdb.net/banners/fanart/original/17097-1.jpg");
-        urlImages.add("https://multiplayer.net-cdn.it/thumbs/images/2017/12/03/banner-residentevilrevelations_jpg_100x55_crop_upscale_q85.jpg");
-        urlImages.add("https://multiplayer.net-cdn.it/thumbs/images/2017/12/04/playstationawards2017_jpg_100x55_crop_upscale_q85.jpg");
+        List<Platform> platformListOfSpecificDeveloper;
+        platformListOfSpecificDeveloper=filter.getPlatformFromDeveloper(this.developName);
+
+
+        List<String> urlImages=filter.getImageOfNewestGame(platformListOfSpecificDeveloper);
+
+
         imgSlider.setUrlImages(urlImages);
         Data.getInstance().add(imgSlider);
         recyclerAdapter.notifyDataSetChanged();
@@ -149,5 +158,9 @@ public class FragmentPageGames extends Fragment {
 
     public void setList(List<Object> list) {
         this.listObject = list;
+    }
+
+    public void setDevelopName(String developName){
+        this.developName=developName;
     }
 }
