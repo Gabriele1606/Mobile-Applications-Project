@@ -1,7 +1,9 @@
 package com.example.gabri.firstapp.Model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by simon on 03/12/2017.
@@ -9,11 +11,10 @@ import java.util.List;
 
 public class Data {
     private static List<Object> instance = new ArrayList<Object>();
-    private List<Boolean> inizialized=new ArrayList<Boolean>();
+    private Map<String,Boolean> initialized = new HashMap<>();
     private static Data data= new Data();
     private static List<Platform> listPlatform= new ArrayList<Platform>();
     private Data(){
-        this.inizialized.add(new Boolean(false));
     }
     public static List<Object> getInstance(){
         return instance;
@@ -21,11 +22,14 @@ public class Data {
     public static Data getData(){
     return data;
     }
-    public boolean isInizialized(int id){
-        return inizialized.get(id);
+    public boolean isInitialized(String id){
+        if (initialized.get(id)!=null){
+            return initialized.get(id);
+        }
+        return false;
     }
-    public void setInizialized( int id){
-        inizialized.get();
+    public void setInitialized(String id){
+        initialized.put(id,new Boolean(true));
     }
 
     public synchronized List<Platform> getListPlatform() {

@@ -15,7 +15,6 @@ import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.RowGame;
-import com.example.gabri.firstapp.Model.Title;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,9 +51,9 @@ public class FragmentPage1 extends Fragment {
         animatorAdapter.setDuration(300);
         vrecyclerView.setAdapter(animatorAdapter);
 
-            if(!Data.getData().isInizialized()){
+            if(!Data.getData().isInitialized("NEWS")){
                 initializeData();
-                Data.getData().setInizialized();
+                Data.getData().setInitialized("NEWS");
             }
 
         return view;
@@ -65,6 +64,8 @@ public class FragmentPage1 extends Fragment {
         ImgSlider imgSlider= new ImgSlider();
         List<String> urlImages= new ArrayList<String>();
         urlImages.add("http://thegamesdb.net/banners/fanart/original/17097-1.jpg");
+        urlImages.add("http://thegamesdb.net/banners/fanart/original/2-5.jpg");
+        urlImages.add("http://thegamesdb.net/banners/fanart/original/2-3.jpg");
         urlImages.add("https://multiplayer.net-cdn.it/thumbs/images/2017/12/03/banner-residentevilrevelations_jpg_100x55_crop_upscale_q85.jpg");
         urlImages.add("https://multiplayer.net-cdn.it/thumbs/images/2017/12/04/playstationawards2017_jpg_100x55_crop_upscale_q85.jpg");
         imgSlider.setUrlImages(urlImages);

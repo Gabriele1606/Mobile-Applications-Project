@@ -61,7 +61,6 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
         else{
             f2= new FragmentPageGames();
             f2.setDevelopName(getPageTitle(position).toString());
-            f2.setList(objectList);
             current=f2;
             listFragment.add(current);
             return current;

@@ -17,7 +17,6 @@ import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.Platform;
 import com.example.gabri.firstapp.Model.RowGame;
-import com.example.gabri.firstapp.Model.Title;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +33,8 @@ public class FragmentPageGames extends Fragment {
     private List<Game> albumList;
     private List<List<Game>> listAlbumlist;
     private RecyclerAdapter recyclerAdapter;
-    private List<Object> listObject= Data.getInstance();
     private String developName;
-
-
+    private List<Object> listObject= new ArrayList<Object>();
 
 
     @Override
@@ -57,11 +54,11 @@ public class FragmentPageGames extends Fragment {
         animatorAdapter.setFirstOnly(false);
         animatorAdapter.setDuration(300);
         vrecyclerView.setAdapter(animatorAdapter);
-
-        if(!Data.getData().isInizialized()){
+        if(!Data.getData().isInitialized(this.developName)){
             initializeData();
-            Data.getData().setInizialized();
+            Data.getData().setInitialized(this.developName);
         }
+
 
         return view;
     }
@@ -74,34 +71,18 @@ public class FragmentPageGames extends Fragment {
 
 
         List<String> urlImages=filter.getImageOfNewestGame(platformListOfSpecificDeveloper);
-
-
-        imgSlider.setUrlImages(urlImages);
-        Data.getInstance().add(imgSlider);
-        recyclerAdapter.notifyDataSetChanged();
-
-
-        albumList = new ArrayList<>();
-        listAlbumlist= new ArrayList<List<Game>>();
-
-        RowGame rowGame;
-
-        prepareAlbums();
-        for (int i=10; i<10;i++) {
-            Data.getInstance().add(new RowGame(albumList));
-            //listAlbumlist.add(albumList);
+        for (String s :
+                urlImages) {
+            System.out.println(s);
         }
-        RowGame slider= new RowGame();
-        slider.setSlider(true);
 
-
-
+        urlImages=new ArrayList<String>();
+        urlImages.add("http://thegamesdb.net/banners/fanart/original/34280-1.jpg");
+        imgSlider.setUrlImages(urlImages);
+        listObject.add(imgSlider);
         recyclerAdapter.notifyDataSetChanged();
 
-        APIManager apiManager= new APIManager();
-        apiManager.getRssList(listObject,recyclerAdapter);
-        //apiManager.getPlatformFactory();
-        //apiManager.getPlatformList();
+
     }
 
 
@@ -109,52 +90,7 @@ public class FragmentPageGames extends Fragment {
         recyclerAdapter.notifyDataSetChanged();
     }
 
-    private void prepareAlbums() {
-        int[] covers = new int[]{
-                R.drawable.album1,
-                R.drawable.album2,
-                R.drawable.album3,
-                R.drawable.album4,
-                R.drawable.album5,
-                R.drawable.album6,
-                R.drawable.album7,
-                R.drawable.album8,
-                R.drawable.album9,
-                R.drawable.album10,
-                R.drawable.album11};
 
-        Game a = new Game("True Romance", 13, covers[0]);
-        albumList.add(a);
-
-        a = new Game("Xscpae", 8, covers[1]);
-        albumList.add(a);
-
-        a = new Game("Maroon 5", 11, covers[2]);
-        albumList.add(a);
-
-        a = new Game("Born to Die", 12, covers[3]);
-        albumList.add(a);
-
-        a = new Game("Honeymoon", 14, covers[4]);
-        albumList.add(a);
-
-        a = new Game("I Need a Doctor", 1, covers[5]);
-        albumList.add(a);
-
-        a = new Game("Loud", 11, covers[6]);
-        albumList.add(a);
-
-        a = new Game("Legend", 14, covers[7]);
-        albumList.add(a);
-
-        a = new Game("Hello", 11, covers[8]);
-        albumList.add(a);
-
-        a = new Game("Greatest Hits", 17, covers[9]);
-        albumList.add(a);
-
-        //adapter.notifyDataSetChanged();
-    }
 
     public void setList(List<Object> list) {
         this.listObject = list;
@@ -162,5 +98,6 @@ public class FragmentPageGames extends Fragment {
 
     public void setDevelopName(String developName){
         this.developName=developName;
+
     }
 }
