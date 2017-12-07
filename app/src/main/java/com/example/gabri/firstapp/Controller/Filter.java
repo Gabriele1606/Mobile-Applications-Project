@@ -5,6 +5,7 @@ import com.example.gabri.firstapp.Model.Platform;
 import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.PlatformDetail;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -48,9 +49,9 @@ public class Filter {
         Collections.sort(platformList, new Comparator<Platform>() {
             @Override
             public int compare(Platform p1, Platform p2) {
-                if (p1.getAverageYearOfItsGame() > p2.getAverageYearOfItsGame())
-                    return 1;
                 if (p1.getAverageYearOfItsGame() < p2.getAverageYearOfItsGame())
+                    return 1;
+                if (p1.getAverageYearOfItsGame() > p2.getAverageYearOfItsGame())
                     return -1;
                 return 0;
             }
@@ -129,6 +130,22 @@ public class Filter {
                 }
             }
         }
+    }
+
+    public List<String> getDistinctDeveloperOrderedByNew(List<Platform> platformList){
+        List<String> manufacturerList= new ArrayList<String>();
+        String developer;
+        for(int i=0;i<platformList.size();i++) {
+            if (platformList.get(i).getPlatformDetail().getDeveloper() != null) {
+                developer = platformList.get(i).getPlatformDetail().getDeveloper();
+                if (!manufacturerList.contains(developer))
+                    manufacturerList.add(developer);
+
+            }
+        }
+
+        return manufacturerList;
+
     }
 
 }

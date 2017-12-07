@@ -205,6 +205,8 @@ public class APIManager {
             if(Data.getData().getListPlatform().isEmpty()){
                 Filter filter = new Filter();
                 filter.orderListFromNewestToHolder(platformList);
+                for(int i=0;i<platformList.size();i++)
+                    System.out.println(platformList.get(i).getName());
                 Data.getData().getListPlatform().addAll(platformList);
                 System.out.println("HO CARICATO TUTTTI I DATI DENTRO DATA------------>"+Data.getData().getListPlatform().size());
                 if (this.observer!=null)
