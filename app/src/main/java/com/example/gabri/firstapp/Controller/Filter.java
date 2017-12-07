@@ -131,7 +131,6 @@ public class Filter {
             arrayDate=dateString.split("/");
             average+=Integer.parseInt(arrayDate[2]);
         }
-        System.out.println(average/gameList.size());
         return average/gameList.size();
     }
 
@@ -140,7 +139,6 @@ public class Filter {
         for(int i=0; i<platformList.size();i++){
             if(platformDetail.getId()==platformList.get(i).getId()) {
                 platformList.get(i).setPlatformDetail(platformDetail);
-                System.out.println("Confronto "+ platformDetail.getName()+" con "+ platformList.get(i).getName());
             }
         }
     }

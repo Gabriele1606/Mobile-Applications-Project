@@ -71,10 +71,7 @@ public class FragmentPageGames extends Fragment {
 
 
         List<String> urlImages=filter.getImageOfNewestGame(platformListOfSpecificDeveloper);
-        for (String s :
-                urlImages) {
-            System.out.println(s);
-        }
+
 
         urlImages=new ArrayList<String>();
         urlImages.add("http://thegamesdb.net/banners/fanart/original/34280-1.jpg");

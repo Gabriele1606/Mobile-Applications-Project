@@ -42,7 +42,6 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
 
         Fragment current;
-        System.out.println("--------------------------LA POSIZIONE E'"+ position);
         return createFragment(position);
 
     }
