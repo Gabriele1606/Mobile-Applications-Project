@@ -3,6 +3,8 @@ package com.example.gabri.firstapp.Controller;
 import com.example.gabri.firstapp.API.PossibleAPI;
 import com.example.gabri.firstapp.Adapter.RecyclerAdapter;
 import com.example.gabri.firstapp.Adapter.SampleFragmentPagerAdapter;
+import com.example.gabri.firstapp.GameDetail;
+import com.example.gabri.firstapp.GameDetailXML;
 import com.example.gabri.firstapp.GameXML;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
@@ -62,6 +64,7 @@ public class APIManager {
                             synchronized (gameListForEachPlatform) {
                                 gameListForEachPlatform.add(gameList);
                             }
+
                         }
 
                         @Override
@@ -80,6 +83,43 @@ public class APIManager {
                 System.out.println("non ho ricevuto console");
             }
         });
+    }
+
+    public void getGameDetail(final List<Platform> platformOfSpecifiedDeveloper, final RecyclerAdapter recyclerAdapter){
+        int gameId;
+        Retrofit retrofitObject = new Retrofit.Builder().baseUrl(BASE_URL)
+                .addConverterFactory(SimpleXmlConverterFactory.create())
+                .build();
+
+        for(int i=0;i<platformOfSpecifiedDeveloper.size();i++){
+            for(int j=0;j<platformOfSpecifiedDeveloper.get(i).getGameList().size();j++){
+                gameId=platformOfSpecifiedDeveloper.get(i).getGameList().get(j).getId();
+                System.out.println(gameId);
+
+                final PossibleAPI possibleAPI = retrofitObject.create(PossibleAPI.class);
+                Call<GameDetailXML> callToGameDetail = possibleAPI.getGameDetail(gameId);
+                callToGameDetail.enqueue(new Callback<GameDetailXML>() {
+                    @Override
+                    public void onResponse(Call<GameDetailXML> call, Response<GameDetailXML> response) {
+                        GameDetail gameDetail=response.body().gameDetail;
+                        Filter filter=new Filter();
+                        synchronized (platformOfSpecifiedDeveloper) {
+                            filter.addDetailToGame(platformOfSpecifiedDeveloper, gameDetail);
+                        }
+
+                        recyclerAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onFailure(Call<GameDetailXML> call, Throwable t) {
+                        System.out.println(t.getCause().toString());
+                        System.out.println(t.getMessage());
+                    }
+                });
+
+            }
+        }
+
     }
 
     public void getRssList(List<Object> objectList, final RecyclerAdapter recyclerAdapter){
@@ -141,9 +181,10 @@ public class APIManager {
                         public void onResponse(Call<GameXML> call, Response<GameXML> response) {
                             List<Game> gameList = response.body().getGameList();
                             Filter filter = new Filter();
-                            filter.addAverageYearToPlatform(platformList,gameList);
-
-                            filter.addGameListPlatform(platformList,gameList);
+                            synchronized (platformList) {
+                                filter.addAverageYearToPlatform(platformList, gameList);
+                                filter.addGameListPlatform(platformList, gameList);
+                            }
 
                             synchronized (numReceivedPlatformGame){
                                 numReceivedPlatformGame = numReceivedPlatformGame +1;
@@ -167,7 +208,9 @@ public class APIManager {
                         @Override
                         public void onResponse(Call<PlatformDetailXML> call, Response<PlatformDetailXML> response) {
                             Filter filter= new Filter();
-                            filter.addDetailsToPlatform(platformList,response.body().getPlatformDetail());
+                            synchronized (platformList) {
+                                filter.addDetailsToPlatform(platformList, response.body().getPlatformDetail());
+                            }
                             synchronized (numReceivedPlatformDetail){
                                 numReceivedPlatformDetail= numReceivedPlatformDetail+1;
                                 checkFinished(platformList);

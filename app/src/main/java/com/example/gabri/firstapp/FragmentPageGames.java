@@ -1,5 +1,6 @@
 package com.example.gabri.firstapp;
 
+import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -35,6 +36,7 @@ public class FragmentPageGames extends Fragment {
     private RecyclerAdapter recyclerAdapter;
     private String developName;
     private List<Object> listObject= new ArrayList<Object>();
+    private List<Platform> platformOfSpecifiedDeveloper=new ArrayList<Platform>();
 
 
     @Override
@@ -59,22 +61,24 @@ public class FragmentPageGames extends Fragment {
             Data.getData().setInitialized(this.developName);
         }
 
-
+        APIManager apiManager=new APIManager();
+        Filter filter=new Filter();
+        platformOfSpecifiedDeveloper=filter.getPlatformFromDeveloper(this.developName);
+        apiManager.getGameDetail(platformOfSpecifiedDeveloper,recyclerAdapter);
         return view;
     }
 
     private void initializeData(){
         Filter filter=new Filter();
         ImgSlider imgSlider= new ImgSlider();
-        List<Platform> platformListOfSpecificDeveloper;
-        platformListOfSpecificDeveloper=filter.getPlatformFromDeveloper(this.developName);
+        List<Platform> platformListOfSpecificDeveloper=filter.getPlatformFromDeveloper(this.developName);
 
 
-        List<String> urlImages=filter.getImageOfNewestGame(platformListOfSpecificDeveloper);
 
 
-        urlImages=new ArrayList<String>();
-        urlImages.add("http://thegamesdb.net/banners/fanart/original/34280-1.jpg");
+
+        List<String> urlImages=filter.getLinkImagesForSlider(platformListOfSpecificDeveloper);
+
         imgSlider.setUrlImages(urlImages);
         listObject.add(imgSlider);
         recyclerAdapter.notifyDataSetChanged();

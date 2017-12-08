@@ -1,5 +1,6 @@
 package com.example.gabri.firstapp.Controller;
 
+import com.example.gabri.firstapp.GameDetail;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.Platform;
@@ -41,6 +42,7 @@ public class Filter {
             for(int i=0;i<platformList.size();i++){
                 if(platformList.get(i).getName().equals(gameList.get(0).getPlatform()))
                     platformList.get(i).setAverageYearOfItsGame(avg);
+
             }
 
         }
@@ -182,15 +184,38 @@ public class Filter {
 
     }
 
-    public List<String> getImageOfNewestGame(List<Platform> platformList){
-        List<String> images=new ArrayList<String>();
-        for(int i=0;i<platformList.size();i++){
-            if(platformList.get(i).getGameList().size()>0 && platformList.get(i).getGameList()!=null){
-                images.add("http://thegamesdb.net/banners/fanart/original/"+platformList.get(i).getGameList().get(0).getId()+"-1.jpg");
+
+    public void addDetailToGame(List<Platform> platformOfSpecifiedDeveloper, GameDetail gameDetail) {
+        if(gameDetail!=null){
+            for (int i=0;i<platformOfSpecifiedDeveloper.size();i++){
+                if(gameDetail.getPlatform()==platformOfSpecifiedDeveloper.get(i).getName()){
+                    for (int j=0;i<platformOfSpecifiedDeveloper.get(i).getGameList().size();j++) {
+                        if (gameDetail.getId() == platformOfSpecifiedDeveloper.get(i).getGameList().get(j).getId()) {
+                            platformOfSpecifiedDeveloper.get(i).getGameList().get(j).setGameDetail(gameDetail);
+                            if (gameDetail.getImages().getFanartList() != null)
+                                platformOfSpecifiedDeveloper.get(i).getGameList().get(j).setGameHasFanart(true);
+                            if (gameDetail.getImages().getBoxart() != null)
+                                platformOfSpecifiedDeveloper.get(i).getGameList().get(j).setGameHasBoxart(true);
+                        }
+                    }
+                }
             }
         }
-        return images;
     }
 
+    public List<String> getLinkImagesForSlider(List<Platform> platformList){
+        List<String> imagesLink=new ArrayList<String>();
+        int k=0;
+        for(int i=0;i<platformList.size();i++){
+            for(int j=0;j<platformList.get(i).getGameList().size() && k<3;j++){
+                if(platformList.get(i).getGameList().get(j).hasGameFanart())
+                    imagesLink.add("http://thegamesdb.net/banners/"+platformList.get(i).getGameList().get(j).getGameDetail().getImages().getFanartList().get(0).getOriginalFanart());
+                    k++;
+
+            }
+
+        }
+        return imagesLink;
+    }
 }
 

@@ -1,5 +1,7 @@
 package com.example.gabri.firstapp.Model;
 
+import com.example.gabri.firstapp.GameDetail;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
@@ -23,6 +25,10 @@ public class Game {
 
     private int yearOfRelease;
 
+    private GameDetail gameDetail=null;
+
+    private boolean gameHasFanart=false;
+    private boolean gameHasBoxart=false;
 
     public Game(String s, int i, int cover) {
         gameTitle=s;
@@ -82,5 +88,29 @@ public class Game {
 
     public void setYearOfRelease(int yearOfRelease) {
         this.yearOfRelease = yearOfRelease;
+    }
+
+    public GameDetail getGameDetail() {
+        return gameDetail;
+    }
+
+    public void setGameDetail(GameDetail gameDetail) {
+        this.gameDetail = gameDetail;
+    }
+
+    public boolean hasGameFanart() {
+        return gameHasFanart;
+    }
+
+    public void setGameHasFanart(boolean gameHasFanart) {
+        this.gameHasFanart = gameHasFanart;
+    }
+
+    public boolean hasGameBoxart() {
+        return gameHasBoxart;
+    }
+
+    public void setGameHasBoxart(boolean gameHasBoxart) {
+        this.gameHasBoxart = gameHasBoxart;
     }
 }

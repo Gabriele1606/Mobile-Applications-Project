@@ -1,6 +1,7 @@
 package com.example.gabri.firstapp.API;
 
 
+import com.example.gabri.firstapp.GameDetailXML;
 import com.example.gabri.firstapp.GameXML;
 import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.PlatformDetail;
@@ -28,4 +29,7 @@ public interface PossibleAPI {
 
     @GET("GetPlatform.php")
     Call<PlatformDetailXML> getPlatformDetail(@Query("id") int id);
+
+    @GET("GetGame.php")
+    Call<GameDetailXML> getGameDetail(@Query("id") int id);
 }
