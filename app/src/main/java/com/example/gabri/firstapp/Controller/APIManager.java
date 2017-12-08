@@ -13,6 +13,7 @@ import com.example.gabri.firstapp.PlatformXML;
 import com.example.gabri.firstapp.RSSList;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
@@ -141,9 +142,14 @@ public class APIManager {
                         public void onResponse(Call<GameXML> call, Response<GameXML> response) {
                             List<Game> gameList = response.body().getGameList();
                             Filter filter = new Filter();
+
+
                             filter.addAverageYearToPlatform(platformList,gameList);
 
+
+
                             filter.addGameListPlatform(platformList,gameList);
+
 
                             synchronized (numReceivedPlatformGame){
                                 numReceivedPlatformGame = numReceivedPlatformGame +1;
@@ -167,7 +173,9 @@ public class APIManager {
                         @Override
                         public void onResponse(Call<PlatformDetailXML> call, Response<PlatformDetailXML> response) {
                             Filter filter= new Filter();
+
                             filter.addDetailsToPlatform(platformList,response.body().getPlatformDetail());
+
                             synchronized (numReceivedPlatformDetail){
                                 numReceivedPlatformDetail= numReceivedPlatformDetail+1;
                                 checkFinished(platformList);
@@ -208,6 +216,7 @@ public class APIManager {
                 filter.orderPlatformFromNewestToHolder(platformList);
                 Data.getData().getListPlatform().addAll(platformList);
                 System.out.println("HO CARICATO TUTTTI I DATI DENTRO DATA------------>"+Data.getData().getListPlatform().size());
+
                 if (this.observer!=null)
                     this.observer.notifyDataSetChanged();
             }

@@ -18,6 +18,7 @@ import com.example.gabri.firstapp.Adapter.GameAdapter;
 import com.example.gabri.firstapp.Adapter.SampleFragmentPagerAdapter;
 import com.example.gabri.firstapp.GameEntity;
 import com.example.gabri.firstapp.GameXML;
+import com.example.gabri.firstapp.Model.AppDatabase;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.GameCover;
@@ -26,10 +27,14 @@ import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.Model.Title;
 import com.example.gabri.firstapp.PlatformXML;
 import com.example.gabri.firstapp.R;
+import com.raizlabs.android.dbflow.config.DatabaseConfig;
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
 
 import junit.framework.Assert;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -66,11 +71,19 @@ public class HomePage extends AppCompatActivity {
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 
+
+        FlowManager.init(this);
+        //To RESET DATABASE ---- PAY ATTENTION
+        //FlowManager.getDatabase(AppDatabase.class).reset(this);
+
+
         listObject= Data.getInstance();
 
         SampleFragmentPagerAdapter sampleFragmentPagerAdapter = new SampleFragmentPagerAdapter(getSupportFragmentManager(), this, listObject);
         viewPager.setAdapter(sampleFragmentPagerAdapter);
         apiManager.setObserver(sampleFragmentPagerAdapter);
+
+        System.out.println("START RICHIESTE API: "+ Calendar.getInstance().getTime());
         apiManager.getPlatformFactory();
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
