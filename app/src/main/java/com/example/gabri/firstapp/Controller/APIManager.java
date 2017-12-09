@@ -110,6 +110,8 @@ public class APIManager {
                         Filter filter=new Filter();
                         synchronized (platformOfSpecifiedDeveloper) {
                             filter.addDetailToGame(platformOfSpecifiedDeveloper, gameDetail);
+                            notifyObserver();
+
                             if(gameDetail!=null) {
                                 if(gameDetail.getImages()!=null)
                                     if(gameDetail.getImages().getFanartList()!=null) {
@@ -272,13 +274,18 @@ public class APIManager {
                 filter.orderPlatformFromNewestToHolder(platformList);
                 Data.getData().getListPlatform().addAll(platformList);
                 System.out.println("HO CARICATO TUTTTI I DATI DENTRO DATA------------>"+Data.getData().getListPlatform().size());
-                if (this.observer!=null)
-                    this.observer.notifyDataSetChanged();
+
+                notifyObserver();
             }
         }
     }
 
     public void setObserver(SampleFragmentPagerAdapter observer) {
         this.observer = observer;
+    }
+
+    public void notifyObserver(){
+        if (this.observer!=null)
+            this.observer.notifyDataSetChanged();
     }
 }

@@ -86,6 +86,13 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
     public void notifyDataSetChanged() {
         this.listPlatform = Data.getData().getListPlatform();
         loadTab(listPlatform);
+        for (Fragment f :
+                listFragment) {
+            if (f instanceof FragmentPageGames){
+                FragmentPageGames f1 = (FragmentPageGames) f;
+                f1.notifyDataChange();
+            }
+        }
         super.notifyDataSetChanged();//questo deve essere lasciato per ultimo in quanto permette il refresh della pagina
     }
 

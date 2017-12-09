@@ -15,9 +15,12 @@ import com.example.gabri.firstapp.Controller.APIManager;
 import com.example.gabri.firstapp.Controller.Filter;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
+import com.example.gabri.firstapp.Model.Game_Table;
 import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.Platform;
+import com.example.gabri.firstapp.Model.Platform_Table;
 import com.example.gabri.firstapp.Model.RowGame;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,30 +61,60 @@ public class FragmentPageGames extends Fragment {
         vrecyclerView.setAdapter(animatorAdapter);
 
         if(!Data.getData().isInitialized(this.developName)){
+            System.out.println("INIZIALIZZO FRAGMENT");
             initializeData();
             Data.getData().setInitialized(this.developName);
         }
 
-        APIManager apiManager=new APIManager();
-        Filter filter=new Filter();
-        platformOfSpecifiedDeveloper=filter.getPlatformFromDeveloper(this.developName);
-        listObject.add(new ImgSlider());
-        apiManager.getGameDetail(platformOfSpecifiedDeveloper,recyclerAdapter,listObject);
+
 
 
         return view;
     }
 
     private void initializeData(){
+        listObject.clear();
         Filter filter=new Filter();
         ImgSlider imgSlider= new ImgSlider();
-        List<Platform> platformListOfSpecificDeveloper=filter.getPlatformFromDeveloper(this.developName);
+        //carico alcuni dati
+        APIManager apiManager=new APIManager();
 
+        platformOfSpecifiedDeveloper=filter.getPlatformFromDeveloper(this.developName);
+        listObject.add(new ImgSlider());
+        //apiManager.getGameDetail(platformOfSpecifiedDeveloper,recyclerAdapter,listObject);
+        ArrayList<Integer> ids = new ArrayList<>();
+        System.out.println("NOME PRODUTTORE "+developName);
+        List<PlatformDetail> platformDetails = SQLite.select().from(PlatformDetail.class).where(PlatformDetail_Table.developer.eq(this.developName.toString())).queryList();
+        for (PlatformDetail pd :
+                platformDetails) {
+            ids.add(pd.getId());
+        }
+        List<Platform> platforms =  SQLite.select().from(Platform.class).where(Platform_Table.id.in(ids)).queryList();
+        System.out.println("NUMERO DI PLATFORM:-----"+platforms.size());
+        ids.clear();
+        for (Platform p :
+                platforms) {
+            ids.add(p.getId());
+        }
+        List<Game> games = SQLite.select().from(Game.class).where(Game_Table.idPlatform.in(ids)).queryList();
+        ids.clear();
+        for (Game g :
+                games) {
+            ids.add(g.getId());
+            System.out.println("GIOCHI:----"+g.getId());
+        }
 
-
-
-
-        List<String> urlImages=filter.getLinkImagesForSlider(platformListOfSpecificDeveloper);
+        List<Fanart> fanarts = SQLite.select().from(Fanart.class).where(Fanart_Table.idGame.in(ids)).queryList();
+        List<String> urlImages= new ArrayList<String>();
+        for (Fanart f :
+                fanarts) {
+            if (urlImages.size()>4)
+                break;
+            System.out.println("THUMB--------"+f.getThumb());
+            urlImages.add(new String("http://thegamesdb.net/banners/"+f.getThumb()));
+        }
+        
+        //List<String> urlImages=filter.getLinkImagesForSlider(platformListOfSpecificDeveloper);
 
         imgSlider.setUrlImages(urlImages);
         listObject.add(imgSlider);
@@ -92,6 +125,7 @@ public class FragmentPageGames extends Fragment {
 
 
     public void notifyDataChange(){
+        initializeData();
         recyclerAdapter.notifyDataSetChanged();
     }
 
