@@ -67,6 +67,8 @@ public class FragmentPageGames extends Fragment {
         platformOfSpecifiedDeveloper=filter.getPlatformFromDeveloper(this.developName);
         listObject.add(new ImgSlider());
         apiManager.getGameDetail(platformOfSpecifiedDeveloper,recyclerAdapter,listObject);
+
+
         return view;
     }
 

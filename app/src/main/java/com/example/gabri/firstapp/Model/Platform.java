@@ -105,7 +105,6 @@ public class Platform {
         for (Game g :
                 objects) {
             g.setIdPlatform(this.id);
-            System.out.println("DETTAGLI GIOCOO---"+g.getGameDetail());
         }
         DatabaseDefinition databaseDefinition= FlowManager.getDatabase(AppDatabase.class);
         Transaction transactionGame= databaseDefinition.beginTransactionAsync(new ITransaction() {
@@ -123,8 +122,6 @@ public class Platform {
         for (Game g :
                 objects) {
             gameDetails.add(g.getGameDetail());
-            if (g.getGameDetail()!=null)
-                System.out.println("GAMEDETAIL--------------------------------");
         }
 
         Transaction transactionGameDetail= databaseDefinition.beginTransactionAsync(new ITransaction() {
@@ -134,57 +131,13 @@ public class Platform {
                         gameDetails) {
                     if (gd!=null){
                         FlowManager.getModelAdapter(GameDetail.class).save(gd);
+                        if (gd.getImages()!=null)
+                            gd.getImages().save();
                     }
                 }
             }
         }).build();
         transactionGameDetail.execute();
-
-        final ArrayList<Boxart> boxarts = new ArrayList<>();
-        final ArrayList<Fanart> fanarts = new ArrayList<>();
-        for (GameDetail gd :
-                gameDetails) {
-            if(gd!=null) {
-                if (gd.getImages() != null) {
-                    List<Boxart> boxart = gd.getImages().getBoxart();
-                    List<Fanart> fanartList = gd.getImages().getFanartList();
-                    for (Boxart b :
-                            boxart) {
-                        b.setIdBoxart(UUID.randomUUID());
-                        b.setIdGame(gd.getId());
-                    }
-                    boxarts.addAll(boxart);
-                    for (Fanart f :
-                            fanartList) {
-                        f.setIdFanart(UUID.randomUUID());
-                        f.setIdGame(gd.getId());
-                    }
-                    fanarts.addAll(fanartList);
-                }
-            }
-        }
-
-        Transaction transactionBoxart= databaseDefinition.beginTransactionAsync(new ITransaction() {
-            @Override
-            public void execute(DatabaseWrapper databaseWrapper) {
-                for (Boxart b :
-                        boxarts) {
-                    FlowManager.getModelAdapter(Boxart.class).save(b);
-                }
-            }
-        }).build();
-        transactionBoxart.execute();
-
-        Transaction transactionFanart= databaseDefinition.beginTransactionAsync(new ITransaction() {
-            @Override
-            public void execute(DatabaseWrapper databaseWrapper) {
-                for (Fanart f :
-                        fanarts) {
-                    FlowManager.getModelAdapter(Fanart.class).save(f);
-                }
-            }
-        }).build();
-        transactionFanart.execute();
 
     }
 }

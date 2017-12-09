@@ -1,9 +1,17 @@
 package com.example.gabri.firstapp.Model;
 
+import com.example.gabri.firstapp.*;
+import com.example.gabri.firstapp.GameDetail_Table;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
-import com.example.gabri.firstapp.GameDetail;
+import com.raizlabs.android.dbflow.config.DatabaseDefinition;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
+import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
+import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
@@ -109,10 +117,19 @@ public class Game {
     }
 
     public GameDetail getGameDetail() {
-        return gameDetail;
+        this.gameDetail=SQLite.select().from(GameDetail.class).where(GameDetail_Table.id.eq(this.id)).querySingle();
+        return this.gameDetail;
     }
 
-    public void setGameDetail(GameDetail gameDetail) {
+    public void setGameDetail(final GameDetail gameDetail) {
+        DatabaseDefinition databaseDefinition= FlowManager.getDatabase(AppDatabase.class);
+        Transaction transactionGameDetail= databaseDefinition.beginTransactionAsync(new ITransaction() {
+            @Override
+            public void execute(DatabaseWrapper databaseWrapper) {
+                FlowManager.getModelAdapter(GameDetail.class).save(gameDetail);
+            }
+        }).build();
+        transactionGameDetail.execute();
         this.gameDetail = gameDetail;
     }
 

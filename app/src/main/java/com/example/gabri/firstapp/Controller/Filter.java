@@ -235,9 +235,10 @@ public class Filter {
 
         if(gameDetail!=null){
             for (int i=0;i<platformOfSpecifiedDeveloper.size();i++){
-                if(gameDetail.getPlatform()==platformOfSpecifiedDeveloper.get(i).getName()){
-                    for (int j=0;i<platformOfSpecifiedDeveloper.get(i).getGameList().size();j++) {
+                if(gameDetail.getPlatformId()==platformOfSpecifiedDeveloper.get(i).getId()){
+                    for (int j=0;j<platformOfSpecifiedDeveloper.get(i).getGameList().size();j++) {
                         if (gameDetail.getId() == platformOfSpecifiedDeveloper.get(i).getGameList().get(j).getId()) {
+                            System.out.println("IMPOSTO I DETAILGAME--------------");
                             platformOfSpecifiedDeveloper.get(i).getGameList().get(j).setGameDetail(gameDetail);
                             if (gameDetail.getImages().getFanartList() != null)
                                 platformOfSpecifiedDeveloper.get(i).getGameList().get(j).setGameHasFanart(true);
@@ -248,6 +249,7 @@ public class Filter {
                 }
             }
             //UPDATE DATABASE
+            System.out.println("AGGIORNO I GIOCHI");
             for (Platform p :
                     platformOfSpecifiedDeveloper) {
                 p.updateGame();

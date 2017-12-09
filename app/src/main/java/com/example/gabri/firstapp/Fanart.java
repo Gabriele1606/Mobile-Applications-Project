@@ -4,6 +4,11 @@ import com.example.gabri.firstapp.Model.AppDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.config.DatabaseDefinition;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
+import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
+import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
@@ -60,5 +65,17 @@ public class Fanart {
 
     public void setThumb(String thumb) {
         this.thumb = thumb;
+    }
+
+    public void save(){
+        final Fanart fanart = this;
+        DatabaseDefinition databaseDefinition= FlowManager.getDatabase(AppDatabase.class);
+        Transaction transactionFanart= databaseDefinition.beginTransactionAsync(new ITransaction() {
+            @Override
+            public void execute(DatabaseWrapper databaseWrapper) {
+                FlowManager.getModelAdapter(Fanart.class).save(fanart);
+            }
+        }).build();
+        transactionFanart.execute();
     }
 }

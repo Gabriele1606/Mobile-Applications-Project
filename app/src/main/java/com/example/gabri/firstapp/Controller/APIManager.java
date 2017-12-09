@@ -95,15 +95,18 @@ public class APIManager {
                 .build();
 
         for(int i=0;i<platformOfSpecifiedDeveloper.size();i++){
-            for(int j=0;j<platformOfSpecifiedDeveloper.get(i).getGameList().size();j++){
+            for(int j=0;j<platformOfSpecifiedDeveloper.get(i).getGameList().size()&&j<2;j++){
                 gameId=platformOfSpecifiedDeveloper.get(i).getGameList().get(j).getId();
-
                 final PossibleAPI possibleAPI = retrofitObject.create(PossibleAPI.class);
                 Call<GameDetailXML> callToGameDetail = possibleAPI.getGameDetail(gameId);
                 callToGameDetail.enqueue(new Callback<GameDetailXML>() {
                     @Override
                     public void onResponse(Call<GameDetailXML> call, Response<GameDetailXML> response) {
                         GameDetail gameDetail=response.body().gameDetail;
+                        //IMPOSTO ULTERIORI DATI PER IL DB E SALVO LE IMMAGINI CON FANART E BOX NEL DB
+                        gameDetail.getImages().setIdGame(gameDetail.getId());
+                        gameDetail.getImages().save();
+
                         Filter filter=new Filter();
                         synchronized (platformOfSpecifiedDeveloper) {
                             filter.addDetailToGame(platformOfSpecifiedDeveloper, gameDetail);
@@ -112,8 +115,8 @@ public class APIManager {
                                     if(gameDetail.getImages().getFanartList()!=null) {
                                         List<String> urlImages = ((ImgSlider) listObject.get(0)).getUrlImages();
                                         if(urlImages.size()<6) {
-                                            System.out.println("http://thegamesdb.net/banners/" + gameDetail.getImages().getFanartList().get(0).getOriginalFanart());
-                                            urlImages.add("http://thegamesdb.net/banners/" + gameDetail.getImages().getFanartList().get(0));
+                                            //System.out.println("http://thegamesdb.net/banners/" + gameDetail.getImages().getFanartList().get(0).getOriginalFanart());
+                                            //urlImages.add("http://thegamesdb.net/banners/" + gameDetail.getImages().getFanartList().get(0));
                                         }
                                     }
 
@@ -135,6 +138,9 @@ public class APIManager {
         }
 
     }
+
+
+
 
     public void getRssList(List<Object> objectList, final RecyclerAdapter recyclerAdapter){
         final List<Object> list= objectList;
