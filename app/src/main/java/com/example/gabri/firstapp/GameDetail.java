@@ -1,5 +1,10 @@
 package com.example.gabri.firstapp;
 
+import com.example.gabri.firstapp.Model.AppDatabase;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementArray;
 import org.simpleframework.xml.ElementList;
@@ -13,23 +18,27 @@ import java.util.List;
 /**
  * Created by Gabri on 07/12/17.
  */
-
+@Table(database = AppDatabase.class)
 @Root(name="Game", strict=false)
 public class GameDetail {
 
-
+    @PrimaryKey
     @Element(name = "id", required = false)
     private int id;
 
+    @Column
     @Element(name = "GameTitle", required = false)
     private String gameTitle;
 
+    @Column
     @Element(name = "PlatformId", required = false)
     private int platformId;
 
+    @Column
     @Element(name = "Platform", required = false)
     private String platform;
 
+    @Column
     @Element(name = "Overview", required = false)
     private String overView;
 
@@ -37,23 +46,30 @@ public class GameDetail {
     //@org.simpleframework.xml.Path("Genres")
     //private String genres;
 
+    @Column
     @Element(name = "Players", required = false)
     private String players;
 
+    @Column
     @Element(name = "Co-op", required = false)
     private String coop;
 
+    @Column
     @Element(name = "Youtube", required = false)
     private String youtubeLink;
 
+    @Column
     @Element(name = "Publisher", required = false)
     private String publisher;
 
+    @Column
     @Element(name = "Developer", required = false)
     private String developer;
 
+    @Column
     @Element(name = "Rating", required = false)
     private float rating;
+
 
     @Element(name = "Images", required = false)
     private Images images;

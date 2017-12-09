@@ -1,16 +1,26 @@
 package com.example.gabri.firstapp.Model;
 
+import com.example.gabri.firstapp.Boxart;
+import com.example.gabri.firstapp.Fanart;
+import com.example.gabri.firstapp.GameDetail;
 import com.example.gabri.firstapp.PlatformDetail;
 import com.example.gabri.firstapp.PlatformDetail_Table;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.config.DatabaseDefinition;
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
+import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
+import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by Gabri on 16/11/17.
@@ -81,11 +91,101 @@ public class Platform {
     }
 
     public List<Game> getGameList() {
+        this.gameList = SQLite.select().from(Game.class).where(Game_Table.idPlatform.eq(this.id)).queryList();
         return gameList;
     }
 
     public void setGameList(List<Game> gameList) {
         this.gameList = gameList;
+    }
+
+    public void updateGame(){
+        final ArrayList<Game> objects = new ArrayList<Game>();
+        objects.addAll(this.gameList);
+        for (Game g :
+                objects) {
+            g.setIdPlatform(this.id);
+            System.out.println("DETTAGLI GIOCOO---"+g.getGameDetail());
+        }
+        DatabaseDefinition databaseDefinition= FlowManager.getDatabase(AppDatabase.class);
+        Transaction transactionGame= databaseDefinition.beginTransactionAsync(new ITransaction() {
+            @Override
+            public void execute(DatabaseWrapper databaseWrapper) {
+                for (Game g :
+                        objects) {
+                    FlowManager.getModelAdapter(Game.class).save(g);
+                }
+            }
+        }).build();
+        transactionGame.execute();
+
+        final ArrayList<GameDetail> gameDetails = new ArrayList<>();
+        for (Game g :
+                objects) {
+            gameDetails.add(g.getGameDetail());
+            if (g.getGameDetail()!=null)
+                System.out.println("GAMEDETAIL--------------------------------");
+        }
+
+        Transaction transactionGameDetail= databaseDefinition.beginTransactionAsync(new ITransaction() {
+            @Override
+            public void execute(DatabaseWrapper databaseWrapper) {
+                for (GameDetail gd :
+                        gameDetails) {
+                    if (gd!=null){
+                        FlowManager.getModelAdapter(GameDetail.class).save(gd);
+                    }
+                }
+            }
+        }).build();
+        transactionGameDetail.execute();
+
+        final ArrayList<Boxart> boxarts = new ArrayList<>();
+        final ArrayList<Fanart> fanarts = new ArrayList<>();
+        for (GameDetail gd :
+                gameDetails) {
+            if(gd!=null) {
+                if (gd.getImages() != null) {
+                    List<Boxart> boxart = gd.getImages().getBoxart();
+                    List<Fanart> fanartList = gd.getImages().getFanartList();
+                    for (Boxart b :
+                            boxart) {
+                        b.setIdBoxart(UUID.randomUUID());
+                        b.setIdGame(gd.getId());
+                    }
+                    boxarts.addAll(boxart);
+                    for (Fanart f :
+                            fanartList) {
+                        f.setIdFanart(UUID.randomUUID());
+                        f.setIdGame(gd.getId());
+                    }
+                    fanarts.addAll(fanartList);
+                }
+            }
+        }
+
+        Transaction transactionBoxart= databaseDefinition.beginTransactionAsync(new ITransaction() {
+            @Override
+            public void execute(DatabaseWrapper databaseWrapper) {
+                for (Boxart b :
+                        boxarts) {
+                    FlowManager.getModelAdapter(Boxart.class).save(b);
+                }
+            }
+        }).build();
+        transactionBoxart.execute();
+
+        Transaction transactionFanart= databaseDefinition.beginTransactionAsync(new ITransaction() {
+            @Override
+            public void execute(DatabaseWrapper databaseWrapper) {
+                for (Fanart f :
+                        fanarts) {
+                    FlowManager.getModelAdapter(Fanart.class).save(f);
+                }
+            }
+        }).build();
+        transactionFanart.execute();
+
     }
 }
 

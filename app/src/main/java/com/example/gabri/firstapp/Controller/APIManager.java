@@ -97,7 +97,6 @@ public class APIManager {
         for(int i=0;i<platformOfSpecifiedDeveloper.size();i++){
             for(int j=0;j<platformOfSpecifiedDeveloper.get(i).getGameList().size();j++){
                 gameId=platformOfSpecifiedDeveloper.get(i).getGameList().get(j).getId();
-                System.out.println(gameId);
 
                 final PossibleAPI possibleAPI = retrofitObject.create(PossibleAPI.class);
                 Call<GameDetailXML> callToGameDetail = possibleAPI.getGameDetail(gameId);

@@ -37,10 +37,10 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
         tabTitles[0]="News";
         Filter filter= new Filter();
         //LOAD DATA ALREADY IN DB
-       /* System.out.println("QUESTO E' IL DATABASE: ----->"+FlowManager.getDatabase(AppDatabase.class).getDatabaseName());
+       System.out.println("QUESTO E' IL DATABASE: ----->"+FlowManager.getDatabase(AppDatabase.class).getDatabaseName());
         List<Platform> platforms = SQLite.select().from(Platform.class).queryList();
         filter.orderPlatformFromNewestToHolder(platforms);
-        loadTab(platforms);*/
+        loadTab(platforms);
     }
 
     @Override

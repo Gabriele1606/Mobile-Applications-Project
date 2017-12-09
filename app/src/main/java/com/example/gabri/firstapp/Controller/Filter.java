@@ -232,6 +232,7 @@ public class Filter {
 
 
     public void addDetailToGame(List<Platform> platformOfSpecifiedDeveloper, GameDetail gameDetail) {
+
         if(gameDetail!=null){
             for (int i=0;i<platformOfSpecifiedDeveloper.size();i++){
                 if(gameDetail.getPlatform()==platformOfSpecifiedDeveloper.get(i).getName()){
@@ -245,6 +246,11 @@ public class Filter {
                         }
                     }
                 }
+            }
+            //UPDATE DATABASE
+            for (Platform p :
+                    platformOfSpecifiedDeveloper) {
+                p.updateGame();
             }
         }
     }

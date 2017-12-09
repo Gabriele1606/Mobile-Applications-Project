@@ -74,7 +74,7 @@ public class HomePage extends AppCompatActivity {
 
         FlowManager.init(this);
         //To RESET DATABASE ---- PAY ATTENTION
-        //FlowManager.getDatabase(AppDatabase.class).reset(this);
+        FlowManager.getDatabase(AppDatabase.class).reset(this);
 
 
         listObject= Data.getInstance();
