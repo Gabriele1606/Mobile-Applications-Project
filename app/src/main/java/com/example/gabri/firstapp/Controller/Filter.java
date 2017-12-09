@@ -1,11 +1,17 @@
 package com.example.gabri.firstapp.Controller;
 
 import com.example.gabri.firstapp.GameDetail;
+import com.example.gabri.firstapp.Model.AppDatabase;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.Platform;
 import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.PlatformDetail;
+import com.raizlabs.android.dbflow.config.DatabaseDefinition;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
+import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
+import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +28,7 @@ public class Filter {
 
     }
 
-    public void addAverageYearToPlatform(List<Platform> platformList, List<Game> gameList) {
+    public void addAverageYearToPlatform(final List<Platform> platformList, List<Game> gameList) {
         if(platformList.size()>0 && gameList.size()>0){
             int avg;
             int sum=0;
@@ -42,9 +48,20 @@ public class Filter {
             for(int i=0;i<platformList.size();i++){
                 if(platformList.get(i).getName().equals(gameList.get(0).getPlatform()))
                     platformList.get(i).setAverageYearOfItsGame(avg);
-
             }
-
+            //Begin transaction to store platformList
+            DatabaseDefinition databaseDefinition= FlowManager.getDatabase(AppDatabase.class);
+            Transaction transaction= databaseDefinition.beginTransactionAsync(new ITransaction() {
+                @Override
+                public void execute(DatabaseWrapper databaseWrapper) {
+                    List<Platform> platformList1 = platformList;
+                    for (Platform p :
+                            platformList1) {
+                        FlowManager.getModelAdapter(Platform.class).save(p);
+                    }
+                }
+            }).build();
+            transaction.execute();
         }
     }
 
@@ -137,33 +154,62 @@ public class Filter {
     }
 
 
-    public void addDetailsToPlatform(List<Platform> platformList, PlatformDetail platformDetail){
+    public void addDetailsToPlatform(List<Platform> platformList, final PlatformDetail platformDetail){
         for(int i=0; i<platformList.size();i++){
             if(platformDetail.getId()==platformList.get(i).getId()) {
                 platformList.get(i).setPlatformDetail(platformDetail);
             }
         }
+        //Begin transaction to store platformDetail
+        DatabaseDefinition databaseDefinition= FlowManager.getDatabase(AppDatabase.class);
+        Transaction transaction= databaseDefinition.beginTransactionAsync(new ITransaction() {
+            @Override
+            public void execute(DatabaseWrapper databaseWrapper) {
+                    FlowManager.getModelAdapter(PlatformDetail.class).save(platformDetail);
+            }
+        }).build();
+        transaction.execute();
     }
 
-    public void addGameListPlatform(List<Platform> platformList, List<Game> gameList){
+    public void addGameListPlatform(List<Platform> platformList, final List<Game> gameList){
         for(int i=0; i<platformList.size();i++){
             if(gameList!=null && gameList.size()>0) {
                 if (gameList.get(0).getPlatform().equals(platformList.get(i).getName())) {
                     platformList.get(i).setGameList(gameList);
+                    for (Game g :
+                            gameList) {
+                        g.setIdPlatform(platformList.get(i).getId());
+                    }
                 }
             }
         }
+
+        //Begin transaction to store gameList
+        DatabaseDefinition databaseDefinition= FlowManager.getDatabase(AppDatabase.class);
+        Transaction transaction= databaseDefinition.beginTransactionAsync(new ITransaction() {
+            @Override
+            public void execute(DatabaseWrapper databaseWrapper) {
+                for (Game g :
+                        gameList) {
+                    FlowManager.getModelAdapter(Game.class).save(g);
+                }
+            }
+        }).build();
+        transaction.execute();
+
     }
 
     public List<String> getDistinctDeveloperOrderedByNew(List<Platform> platformList){
         List<String> manufacturerList= new ArrayList<String>();
         String developer;
         for(int i=0;i<platformList.size();i++) {
-            if (platformList.get(i).getPlatformDetail().getDeveloper() != null) {
-                developer = platformList.get(i).getPlatformDetail().getDeveloper();
-                if (!manufacturerList.contains(developer))
-                    manufacturerList.add(developer);
+            if(platformList.get(i).getPlatformDetail()!=null) {
+                if (platformList.get(i).getPlatformDetail().getDeveloper() != null) {
+                    developer = platformList.get(i).getPlatformDetail().getDeveloper();
+                    if (!manufacturerList.contains(developer))
+                        manufacturerList.add(developer);
 
+                }
             }
         }
 

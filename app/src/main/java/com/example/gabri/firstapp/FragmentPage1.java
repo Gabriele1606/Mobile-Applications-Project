@@ -79,7 +79,7 @@ public class FragmentPage1 extends Fragment {
         RowGame rowGame;
 
         prepareAlbums();
-        for (int i=10; i<10;i++) {
+        for (int i=0; i<10;i++) {
             Data.getInstance().add(new RowGame(albumList));
             //listAlbumlist.add(albumList);
         }

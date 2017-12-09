@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 
+
 android {
     compileSdkVersion 26
     defaultConfig {
@@ -16,7 +17,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+    }
 }
+
+def dbflow_version = "4.0.4"
+def sqlcipher_version="3.5.7"
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -42,5 +50,19 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.daimajia.slider:library:1.1.5@aar'
 
+// if Java use this. If using Kotlin do NOT use this.
+    annotationProcessor "com.github.raizlabs.dbflow:dbflow-processor:${dbflow_version}"
+
+    // sql-cipher database encryption (optional)
+    compile "com.github.raizlabs.dbflow:dbflow-sqlcipher:${dbflow_version}"
+    compile "net.zetetic:android-database-sqlcipher:${sqlcipher_version}@aar"
+
+
+    // RXJava 1 support
+    compile "com.github.raizlabs.dbflow:dbflow-rx:${dbflow_version}"
+
+
+    // RXJava 2 support
+    compile "com.github.raizlabs.dbflow:dbflow-rx2:${dbflow_version}"
 
 }

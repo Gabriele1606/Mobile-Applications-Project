@@ -3,11 +3,13 @@ package com.example.gabri.firstapp.Controller;
 import com.example.gabri.firstapp.API.PossibleAPI;
 import com.example.gabri.firstapp.Adapter.RecyclerAdapter;
 import com.example.gabri.firstapp.Adapter.SampleFragmentPagerAdapter;
+import com.example.gabri.firstapp.Fanart;
 import com.example.gabri.firstapp.GameDetail;
 import com.example.gabri.firstapp.GameDetailXML;
 import com.example.gabri.firstapp.GameXML;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
+import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.Platform;
 import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.PlatformDetailXML;
@@ -15,6 +17,7 @@ import com.example.gabri.firstapp.PlatformXML;
 import com.example.gabri.firstapp.RSSList;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
@@ -85,7 +88,7 @@ public class APIManager {
         });
     }
 
-    public void getGameDetail(final List<Platform> platformOfSpecifiedDeveloper, final RecyclerAdapter recyclerAdapter){
+    public void getGameDetail(final List<Platform> platformOfSpecifiedDeveloper, final RecyclerAdapter recyclerAdapter, final List<Object> listObject){
         int gameId;
         Retrofit retrofitObject = new Retrofit.Builder().baseUrl(BASE_URL)
                 .addConverterFactory(SimpleXmlConverterFactory.create())
@@ -105,6 +108,18 @@ public class APIManager {
                         Filter filter=new Filter();
                         synchronized (platformOfSpecifiedDeveloper) {
                             filter.addDetailToGame(platformOfSpecifiedDeveloper, gameDetail);
+                            if(gameDetail!=null) {
+                                if(gameDetail.getImages()!=null)
+                                    if(gameDetail.getImages().getFanartList()!=null) {
+                                        List<String> urlImages = ((ImgSlider) listObject.get(0)).getUrlImages();
+                                        if(urlImages.size()<6) {
+                                            System.out.println("http://thegamesdb.net/banners/" + gameDetail.getImages().getFanartList().get(0).getOriginalFanart());
+                                            urlImages.add("http://thegamesdb.net/banners/" + gameDetail.getImages().getFanartList().get(0));
+                                        }
+                                    }
+
+                            }
+
                         }
 
                         recyclerAdapter.notifyDataSetChanged();
@@ -185,6 +200,7 @@ public class APIManager {
                                 filter.addAverageYearToPlatform(platformList, gameList);
                                 filter.addGameListPlatform(platformList, gameList);
                             }
+
 
                             synchronized (numReceivedPlatformGame){
                                 numReceivedPlatformGame = numReceivedPlatformGame +1;

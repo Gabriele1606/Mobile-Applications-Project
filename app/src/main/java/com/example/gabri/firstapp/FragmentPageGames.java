@@ -56,6 +56,7 @@ public class FragmentPageGames extends Fragment {
         animatorAdapter.setFirstOnly(false);
         animatorAdapter.setDuration(300);
         vrecyclerView.setAdapter(animatorAdapter);
+
         if(!Data.getData().isInitialized(this.developName)){
             initializeData();
             Data.getData().setInitialized(this.developName);
@@ -64,7 +65,8 @@ public class FragmentPageGames extends Fragment {
         APIManager apiManager=new APIManager();
         Filter filter=new Filter();
         platformOfSpecifiedDeveloper=filter.getPlatformFromDeveloper(this.developName);
-        apiManager.getGameDetail(platformOfSpecifiedDeveloper,recyclerAdapter);
+        listObject.add(new ImgSlider());
+        apiManager.getGameDetail(platformOfSpecifiedDeveloper,recyclerAdapter,listObject);
         return view;
     }
 
