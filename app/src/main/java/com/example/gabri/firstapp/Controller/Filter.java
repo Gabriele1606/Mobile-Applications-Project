@@ -54,7 +54,8 @@ public class Filter {
             Transaction transaction= databaseDefinition.beginTransactionAsync(new ITransaction() {
                 @Override
                 public void execute(DatabaseWrapper databaseWrapper) {
-                    List<Platform> platformList1 = platformList;
+                    List<Platform> platformList1 = new ArrayList<Platform>();
+                            platformList1.addAll(platformList);
                     for (Platform p :
                             platformList1) {
                         FlowManager.getModelAdapter(Platform.class).save(p);
@@ -221,8 +222,12 @@ public class Filter {
         List<Platform> allPlatform= Data.getData().getListPlatform();
         List<Platform> filteredPlatform=new ArrayList<Platform>();
         for(int i=0;i<allPlatform.size();i++){
-            if(developerName.equals(allPlatform.get(i).getPlatformDetail().getDeveloper())){
-                filteredPlatform.add(allPlatform.get(i));
+            if(allPlatform.get(i)!=null) {
+                if (allPlatform.get(i).getPlatformDetail()!=null) {
+                    if (developerName.equals(allPlatform.get(i).getPlatformDetail().getDeveloper())) {
+                        filteredPlatform.add(allPlatform.get(i));
+                    }
+                }
             }
         }
 

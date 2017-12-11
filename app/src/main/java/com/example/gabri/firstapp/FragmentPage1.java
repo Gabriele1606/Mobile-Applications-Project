@@ -2,6 +2,7 @@ package com.example.gabri.firstapp;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import jp.wasabeef.recyclerview.animators.FadeInUpAnimator;
+import jp.wasabeef.recyclerview.animators.FlipInTopXAnimator;
+import jp.wasabeef.recyclerview.animators.LandingAnimator;
+import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
+import jp.wasabeef.recyclerview.animators.SlideInDownAnimator;
+import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 /**
  * Created by simon on 18/11/2017.
@@ -33,6 +40,7 @@ public class FragmentPage1 extends Fragment{
     private List<List<Game>> listAlbumlist;
     private RecyclerAdapter recyclerAdapter;
     private List<Object> listObject= Data.getInstance();
+    SwipeRefreshLayout swipeContainer;
 
 
     @Override
@@ -41,17 +49,30 @@ public class FragmentPage1 extends Fragment{
 
         View view = inflater.inflate(R.layout.fragment_page1, container, false);
 
+        //SWIPETOREFRESH
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+
         vrecyclerView= (RecyclerView) view.findViewById(R.id.v_recyclerView);
 
         recyclerAdapter= new RecyclerAdapter(view.getContext(),listObject);
         RecyclerView.LayoutManager vLayoutManager= new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL,false);
         vrecyclerView.setLayoutManager(vLayoutManager);
-        vrecyclerView.setItemAnimator(new DefaultItemAnimator());
+        vrecyclerView.setItemAnimator(new SlideInDownAnimator());
         //Animation Adapter
         ScaleInAnimationAdapter animatorAdapter= new ScaleInAnimationAdapter(recyclerAdapter);
         animatorAdapter.setFirstOnly(false);
         animatorAdapter.setDuration(300);
         vrecyclerView.setAdapter(animatorAdapter);
+
+        //LISTENER REFRESH
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                recyclerAdapter.clear();
+                initializeData();
+                swipeContainer.setRefreshing(false);
+            }
+        });
 
             if(!Data.getData().isInitialized("NEWS")){
                 initializeData();
@@ -147,11 +168,10 @@ public class FragmentPage1 extends Fragment{
         a = new Game("Greatest Hits", 17, covers[9]);
         albumList.add(a);
 
-        //notifyDataSetChanged();
+        //adapter.notifyDataSetChanged();
     }
 
     public void setList(List<Object> list) {
         this.listObject = list;
     }
-
 }

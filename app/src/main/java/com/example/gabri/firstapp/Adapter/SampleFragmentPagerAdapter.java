@@ -17,7 +17,10 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
     private int PAGE_COUNT = 1;
@@ -26,13 +29,17 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
 
     private List<Object> objectList;
 
-    private ArrayList<Fragment> listFragment;
+    private FragmentPage1 fragmentHome=null;
     private List<Platform> listPlatform;
+    private List<Integer> numPages;
+    private Map<Integer,FragmentPageGames> loadedFragments;
+    List<String> developerList;
 
     public SampleFragmentPagerAdapter(FragmentManager fm, Context context, List<Object> objectList) {
         super(fm);
         this.context = context;
-        listFragment= new ArrayList<>();
+        loadedFragments= new HashMap<Integer, FragmentPageGames>();
+        numPages= new ArrayList<Integer>();
         this.objectList=objectList;
         tabTitles[0]="News";
         Filter filter= new Filter();
@@ -61,18 +68,25 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
         FragmentPage1 f1;
         FragmentPageGames f2;
         if(position==0){
+            if (fragmentHome==null){
             f1= new FragmentPage1();
             f1.setList(objectList);
             current=f1;
-            listFragment.add(current);
             return current;
+            }
+            return fragmentHome;
         }
         else{
-            f2= new FragmentPageGames();
-            f2.setDevelopName(getPageTitle(position).toString());
-            current=f2;
-            listFragment.add(current);
-            return current;
+            if (loadedFragments.get(position)==null) {
+                numPages.add(new Integer(position));
+                f2 = new FragmentPageGames();
+                f2.setObserver(this);
+                f2.setDevelopName(getPageTitle(position).toString());
+                current = f2;
+                loadedFragments.put(position,f2);
+                return current;
+            }
+            return loadedFragments.get(position);
         }
     }
 
@@ -86,10 +100,11 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
     public void notifyDataSetChanged() {
         this.listPlatform = Data.getData().getListPlatform();
         loadTab(listPlatform);
-        for (Fragment f :
-                listFragment) {
-            if (f instanceof FragmentPageGames){
-                FragmentPageGames f1 = (FragmentPageGames) f;
+        for (Integer i :
+                numPages) {
+            if (loadedFragments.get(i)!=null){
+                FragmentPageGames f1 = (FragmentPageGames) loadedFragments.get(i);
+                System.out.println("FRAGMENT PAGER NOTIFICA:"+i);
                 f1.notifyDataChange();
             }
         }
@@ -99,7 +114,6 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
     private void loadTab(List<Platform> listPlatform) {
         if (listPlatform != null) {
             Filter filter = new Filter();
-            List<String> developerList;
             developerList = filter.getDistinctDeveloperOrderedByNew(listPlatform);
             if (developerList != null) {
                 if (!developerList.isEmpty()) {
@@ -108,6 +122,20 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
                         this.PAGE_COUNT=2+i;
                     }
                     System.out.println("AGGIUNTI I TAB: " + Calendar.getInstance().getTime());
+                }
+            }
+        }
+    }
+
+    public void notifyDataSetChanged(String developName) {
+        for (Integer i :
+                numPages) {
+            if (loadedFragments.get(i)!=null&&(i-1)<developerList.size()){
+                if (developName.equals(developerList.get(i-1))){
+                FragmentPageGames f1 = (FragmentPageGames) loadedFragments.get(i);
+                System.out.println("FRAGMENT PAGER NOTIFICA:"+i);
+                f1.notifyDataChange();
+                super.notifyDataSetChanged();
                 }
             }
         }

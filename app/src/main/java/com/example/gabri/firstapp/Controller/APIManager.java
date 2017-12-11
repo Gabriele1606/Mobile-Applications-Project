@@ -1,5 +1,8 @@
 package com.example.gabri.firstapp.Controller;
 
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
+
 import com.example.gabri.firstapp.API.PossibleAPI;
 import com.example.gabri.firstapp.Adapter.RecyclerAdapter;
 import com.example.gabri.firstapp.Adapter.SampleFragmentPagerAdapter;
@@ -15,6 +18,7 @@ import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.PlatformDetailXML;
 import com.example.gabri.firstapp.PlatformXML;
 import com.example.gabri.firstapp.RSSList;
+import com.raizlabs.android.dbflow.config.FlowManager;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -111,19 +115,6 @@ public class APIManager {
                         synchronized (platformOfSpecifiedDeveloper) {
                             filter.addDetailToGame(platformOfSpecifiedDeveloper, gameDetail);
                             notifyObserver();
-
-                            if(gameDetail!=null) {
-                                if(gameDetail.getImages()!=null)
-                                    if(gameDetail.getImages().getFanartList()!=null) {
-                                        List<String> urlImages = ((ImgSlider) listObject.get(0)).getUrlImages();
-                                        if(urlImages.size()<6) {
-                                            //System.out.println("http://thegamesdb.net/banners/" + gameDetail.getImages().getFanartList().get(0).getOriginalFanart());
-                                            //urlImages.add("http://thegamesdb.net/banners/" + gameDetail.getImages().getFanartList().get(0));
-                                        }
-                                    }
-
-                            }
-
                         }
 
                         recyclerAdapter.notifyDataSetChanged();
@@ -161,8 +152,9 @@ public class APIManager {
                 Filter filter=new Filter();
                 filter.setImageLink(rssList);
                 filter.cleanDescriptionFromHTML(rssList);
+                int size = list.size();
                 list.addAll(rssList);
-                recyclerAdapter.notifyDataSetChanged();
+                recyclerAdapter.notifyItemRangeInserted((size+1),rssList.size());
 
             }
 
@@ -171,6 +163,15 @@ public class APIManager {
                 System.out.println(t.getCause().toString());
             }
         });
+
+    }
+
+    public void getAllGameDetails(List<Platform> platformList, String developName) {
+        MyAsyncTask myAsyncTask = new MyAsyncTask();
+        myAsyncTask.setObserver(this.observer);
+        myAsyncTask.setDevelopName(developName);
+        Data.getData().addTask(myAsyncTask);
+        myAsyncTask.execute(platformList);
 
     }
 
@@ -224,7 +225,7 @@ public class APIManager {
                             }
                         }
                     });
-
+                    Data.getData().getCallToGame().add(callToGame);
 
                     Call<PlatformDetailXML> callToPlatformDetail = possibleAPI.getPlatformDetail(platformList.get(i).getId());
                     callToPlatformDetail.enqueue(new Callback<PlatformDetailXML>() {
@@ -288,4 +289,89 @@ public class APIManager {
         if (this.observer!=null)
             this.observer.notifyDataSetChanged();
     }
+
+    public class MyAsyncTask extends AsyncTask<List<Platform>, Void, Bitmap> {
+
+        private SampleFragmentPagerAdapter observer;
+        private String developName=null;
+
+        @Override
+        protected Bitmap doInBackground(final List<Platform>... platformOfSpecifiedDeveloper) {
+            int gameId;
+            Retrofit retrofitObject = new Retrofit.Builder().baseUrl(BASE_URL)
+                    .addConverterFactory(SimpleXmlConverterFactory.create())
+                    .build();
+            final PossibleAPI possibleAPI = retrofitObject.create(PossibleAPI.class);
+            Call<GameDetailXML> callToGameDetail;
+            for (int i = 0; i < platformOfSpecifiedDeveloper[0].size(); i++) {
+                for (int j = 0; j < platformOfSpecifiedDeveloper[0].get(i).getGameList().size() && j < 4; j++) {
+                    gameId = platformOfSpecifiedDeveloper[0].get(i).getGameList().get(j).getId();
+                    //System.out.println("GIOCHI PIATTAFORMA: "+platformOfSpecifiedDeveloper[0].get(i).getId()+platformOfSpecifiedDeveloper[0].get(i).getGameList());
+                    callToGameDetail = possibleAPI.getGameDetail(gameId);
+                    final int finalI = i;
+                    final int finalJ = j;
+                    callToGameDetail.enqueue(new Callback<GameDetailXML>() {
+                        @Override
+                        public void onResponse(Call<GameDetailXML> call, Response<GameDetailXML> response) {
+                            GameDetail gameDetail = response.body().gameDetail;
+                            //IMPOSTO ULTERIORI DATI PER IL DB E SALVO LE IMMAGINI CON FANART E BOX NEL DB
+                            if (gameDetail != null) {
+                                System.out.println("RICEVO DETTAGLI: " + gameDetail.getGameTitle());
+                                gameDetail.getImages().setIdGame(gameDetail.getId());
+                                gameDetail.getImages().save();
+                                FlowManager.getModelAdapter(GameDetail.class).save(gameDetail);
+                                if ((finalI + 1) >= platformOfSpecifiedDeveloper[0].size() &&
+                                        ((finalJ + 1) >= platformOfSpecifiedDeveloper[0].get(finalI).getGameList().size() || (finalJ + 1) >= 4)) {
+                                    System.out.println("NOTIFICO RICEZIONE DI TUTTI I DETTAGLI");
+                                    if(developName!=null){
+                                        if (!developName.isEmpty()){
+                                            notifyObserver(developName);
+                                        }
+                                    }else
+                                        notifyObserver();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<GameDetailXML> call, Throwable t) {
+                            // System.out.println(t.getCause().toString());
+                            //System.out.println(t.getMessage());
+                        }
+
+                    });
+                    Data.getData().getCallToGameDetail().add(callToGameDetail);
+                }
+            }
+            return null;
+        }
+
+        private void notifyObserver(String developName) {
+            if (this.observer!=null){
+                this.observer.notifyDataSetChanged(developName);
+                System.out.println("SONO IL TASK: NOTIFICO L'OBSERVER "+ developName);
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            System.out.println("POST EXECUTE");
+        }
+
+        public void setObserver(SampleFragmentPagerAdapter observer){
+            this.observer=observer;
+        }
+        private void notifyObserver(){
+            if (this.observer!=null){
+                this.observer.notifyDataSetChanged();
+            System.out.println("SONO IL TASK: NOTIFICO L'OBSERVER");
+            }
+        }
+
+        public void setDevelopName(String developName) {
+            this.developName = developName;
+        }
+    }
+
 }

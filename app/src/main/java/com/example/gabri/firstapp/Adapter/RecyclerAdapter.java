@@ -266,4 +266,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getItemCount() {
         return listObject.size();
     }
+
+    public void clear() {
+        listObject.clear();
+        notifyDataSetChanged();
+    }
+
+    public void addAll(List<Object> list) {
+        listObject.addAll(list);
+        notifyDataSetChanged();
+    }
 }
