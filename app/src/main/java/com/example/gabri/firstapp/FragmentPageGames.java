@@ -1,17 +1,13 @@
 package com.example.gabri.firstapp;
 
-import android.media.Image;
-import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 
 import com.example.gabri.firstapp.Adapter.RecyclerAdapter;
@@ -20,12 +16,9 @@ import com.example.gabri.firstapp.Controller.APIManager;
 import com.example.gabri.firstapp.Controller.Filter;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
-import com.example.gabri.firstapp.Model.Game_Table;
 import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.Platform;
-import com.example.gabri.firstapp.Model.Platform_Table;
 import com.example.gabri.firstapp.Model.RowGame;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +62,7 @@ public class FragmentPageGames extends Fragment {
             initializeData();
             Data.getData().setInitialized(this.developName);
             apiManager.setObserver(observer);
-            //apiManager.getAllGameDetails(platformOfSpecifiedDeveloper, this.developName);
+            apiManager.getAllGameDetails(platformOfSpecifiedDeveloper, this.developName);
         }
 
 
@@ -105,7 +98,7 @@ public class FragmentPageGames extends Fragment {
         List<Platform> platforms =  dbQuery.getPlatformFromPlarformDetail(platformDetails);
         this.platformOfSpecifiedDeveloper=platforms;
         List<Game> games = dbQuery.getGameFromAllPlatfoms(platforms);
-        List<Fanart> fanarts = dbQuery.getFanartFromGame(games);
+        List<Fanart> fanarts = dbQuery.getFanartFromGameList(games);
 
         List<String> urlImages= new ArrayList<String>();
         System.out.println("NUMERO FANARTS:----"+fanarts.size());

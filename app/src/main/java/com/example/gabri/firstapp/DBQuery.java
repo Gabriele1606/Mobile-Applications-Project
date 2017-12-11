@@ -43,7 +43,7 @@ public class DBQuery {
         return gameList;
     }
 
-    public List<Fanart> getFanartFromGame(List<Game> gameList){
+    public List<Fanart> getFanartFromGameList(List<Game> gameList){
         List<Fanart> fanartList;
         List<Integer>gameId=new ArrayList<Integer>();
         for(int i=0;i<gameList.size();i++){
@@ -94,5 +94,23 @@ public class DBQuery {
         List<Game> gameList;
         gameList = SQLite.select().from(Game.class).where(Game_Table.idPlatform.eq(platform.getId())).queryList();
         return gameList;
+    }
+
+    public Game getGameFromId(int gameId) {
+        Game game;
+        game=SQLite.select().from(Game.class).where(Game_Table.id.eq(gameId)).querySingle();
+        return game;
+    }
+
+    public GameDetail getGameDetailFromId(int gameId) {
+        GameDetail gameDetail;
+        gameDetail=SQLite.select().from(GameDetail.class).where(GameDetail_Table.id.eq(gameId)).querySingle();
+        return gameDetail;
+    }
+
+    public List<Fanart> getFanartFromGame(Game game) {
+        List<Fanart> fanart;
+        fanart=SQLite.select().from(Fanart.class).where(Fanart_Table.idGame.eq(game.getId())).queryList();
+        return fanart;
     }
 }

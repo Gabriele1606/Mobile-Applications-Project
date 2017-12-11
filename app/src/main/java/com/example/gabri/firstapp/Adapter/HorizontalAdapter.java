@@ -80,12 +80,17 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
             @Override
 
             public void onClick(View v) {
+
+                Intent intent =  new Intent(mContext, FragmentGameDetail.class);
+                intent.putExtra("GAME ID", game.getId());
+                mContext.startActivity(intent);
+                /*
                 FragmentGameDetail temp=new FragmentGameDetail();
                 Bundle bundle=new Bundle();
                 bundle.putString("testo","ciaooooooo");
                 Activity activity = (Activity) mContext;
                 activity.getFragmentManager().beginTransaction().replace(R.id.homepage,temp).addToBackStack(null).commit();
-                System.out.println("click");
+                System.out.println("click");*/
             }
         });
 

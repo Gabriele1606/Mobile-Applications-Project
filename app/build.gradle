@@ -64,5 +64,6 @@ dependencies {
 
     // RXJava 2 support
     compile "com.github.Raizlabs.DBFlow:dbflow-rx2:${dbflow_version}"
+    compile 'de.hdodenhof:circleimageview:1.3.0'
 
 }
