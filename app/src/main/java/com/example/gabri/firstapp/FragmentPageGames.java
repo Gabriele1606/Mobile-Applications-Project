@@ -83,34 +83,18 @@ public class FragmentPageGames extends Fragment {
         listObject.add(new ImgSlider());
         //apiManager.getGameDetail(platformOfSpecifiedDeveloper,recyclerAdapter,listObject);
         ArrayList<Integer> ids = new ArrayList<>();
-        System.out.println("NOME PRODUTTORE "+developName);
-        List<PlatformDetail> platformDetails = SQLite.select().from(PlatformDetail.class).where(PlatformDetail_Table.developer.eq(this.developName.toString())).queryList();
-        for (PlatformDetail pd :
-                platformDetails) {
-            ids.add(pd.getId());
-        }
-        List<Platform> platforms =  SQLite.select().from(Platform.class).where(Platform_Table.id.in(ids)).queryList();
-        System.out.println("NUMERO DI PLATFORM:-----"+platforms.size());
-        ids.clear();
-        for (Platform p :
-                platforms) {
-            ids.add(p.getId());
-        }
-        List<Game> games = SQLite.select().from(Game.class).where(Game_Table.idPlatform.in(ids)).queryList();
-        ids.clear();
-        for (Game g :
-                games) {
-            ids.add(g.getId());
-            System.out.println("GIOCHI:----"+g.getId());
-        }
+        DBQuery dbQuery=new DBQuery();
 
-        List<Fanart> fanarts = SQLite.select().from(Fanart.class).where(Fanart_Table.idGame.in(ids)).queryList();
+        List<PlatformDetail> platformDetails=dbQuery.getPlatformDetailFromDeveloper(developName);
+        List<Platform> platforms =  dbQuery.getPlatformFromPlarformDetail(platformDetails);
+        List<Game> games = dbQuery.getGameFromAllPlatfoms(platforms);
+        List<Fanart> fanarts = dbQuery.getFanartFromGame(games);
+
         List<String> urlImages= new ArrayList<String>();
         for (Fanart f :
                 fanarts) {
-            if (urlImages.size()>4)
+            if (urlImages.size()>4)//A COSA SERVE?
                 break;
-            System.out.println("THUMB--------"+f.getThumb());
             urlImages.add(new String("http://thegamesdb.net/banners/"+f.getThumb()));
         }
         
@@ -118,9 +102,24 @@ public class FragmentPageGames extends Fragment {
 
         imgSlider.setUrlImages(urlImages);
         listObject.add(imgSlider);
+
+
+        albumList = new ArrayList<>();
+        listAlbumlist= new ArrayList<List<Game>>();
+
+
+       for (int i=0; i<platforms.size();i++) {
+            List<Game> gameList =dbQuery.getGameFromPlatfom(platforms.get(i));
+            Data.getInstance().add(new RowGame(gameList));
+
+        }
+        RowGame slider= new RowGame();
+        slider.setSlider(true);
+
+
+
+
         recyclerAdapter.notifyDataSetChanged();
-
-
     }
 
 
@@ -139,4 +138,54 @@ public class FragmentPageGames extends Fragment {
         this.developName=developName;
 
     }
+
+
+
+    private void prepareAlbums() {
+        int[] covers = new int[]{
+                R.drawable.album1,
+                R.drawable.album2,
+                R.drawable.album3,
+                R.drawable.album4,
+                R.drawable.album5,
+                R.drawable.album6,
+                R.drawable.album7,
+                R.drawable.album8,
+                R.drawable.album9,
+                R.drawable.album10,
+                R.drawable.album11};
+
+        Game a = new Game("True Romance", 13, covers[0]);
+        albumList.add(a);
+
+        a = new Game("Xscpae", 8, covers[1]);
+        albumList.add(a);
+
+        a = new Game("Maroon 5", 11, covers[2]);
+        albumList.add(a);
+
+        a = new Game("Born to Die", 12, covers[3]);
+        albumList.add(a);
+
+        a = new Game("Honeymoon", 14, covers[4]);
+        albumList.add(a);
+
+        a = new Game("I Need a Doctor", 1, covers[5]);
+        albumList.add(a);
+
+        a = new Game("Loud", 11, covers[6]);
+        albumList.add(a);
+
+        a = new Game("Legend", 14, covers[7]);
+        albumList.add(a);
+
+        a = new Game("Hello", 11, covers[8]);
+        albumList.add(a);
+
+        a = new Game("Greatest Hits", 17, covers[9]);
+        albumList.add(a);
+
+        //adapter.notifyDataSetChanged();
+    }
+
 }

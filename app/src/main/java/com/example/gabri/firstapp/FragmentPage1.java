@@ -2,6 +2,7 @@ package com.example.gabri.firstapp;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,13 +26,14 @@ import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
  * Created by simon on 18/11/2017.
  */
 
-public class FragmentPage1 extends Fragment {
+public class FragmentPage1 extends Fragment{
 
     private RecyclerView vrecyclerView;
     private List<Game> albumList;
     private List<List<Game>> listAlbumlist;
     private RecyclerAdapter recyclerAdapter;
     private List<Object> listObject= Data.getInstance();
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -145,10 +147,11 @@ public class FragmentPage1 extends Fragment {
         a = new Game("Greatest Hits", 17, covers[9]);
         albumList.add(a);
 
-        //adapter.notifyDataSetChanged();
+        //notifyDataSetChanged();
     }
 
     public void setList(List<Object> list) {
         this.listObject = list;
     }
+
 }
