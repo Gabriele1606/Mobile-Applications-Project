@@ -69,7 +69,7 @@ public class FragmentPageGames extends Fragment {
             initializeData();
             Data.getData().setInitialized(this.developName);
             apiManager.setObserver(observer);
-            apiManager.getAllGameDetails(platformOfSpecifiedDeveloper, this.developName);
+            //apiManager.getAllGameDetails(platformOfSpecifiedDeveloper, this.developName);
         }
 
 
@@ -98,7 +98,6 @@ public class FragmentPageGames extends Fragment {
         ImgSlider imgSlider= new ImgSlider();
 
         platformOfSpecifiedDeveloper=filter.getPlatformFromDeveloper(this.developName);
-        listObject.add(new ImgSlider());
 
         DBQuery dbQuery=new DBQuery();
 
@@ -118,11 +117,11 @@ public class FragmentPageGames extends Fragment {
         }
         
         //List<String> urlImages=filter.getLinkImagesForSlider(platformListOfSpecificDeveloper);
-
-        imgSlider.setUrlImages(urlImages);
-        System.out.println("LO SLIDER HA:"+imgSlider.getUrlImages());
-        listObject.add(imgSlider);
-
+        if (urlImages.size()>0) {
+            imgSlider.setUrlImages(urlImages);
+            System.out.println("LO SLIDER HA:" + imgSlider.getUrlImages());
+            listObject.add(0,imgSlider);
+        }
 
         albumList = new ArrayList<>();
         listAlbumlist= new ArrayList<List<Game>>();
