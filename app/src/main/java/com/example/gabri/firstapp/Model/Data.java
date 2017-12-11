@@ -1,9 +1,15 @@
 package com.example.gabri.firstapp.Model;
 
+import com.example.gabri.firstapp.Controller.APIManager;
+import com.example.gabri.firstapp.GameDetailXML;
+import com.example.gabri.firstapp.GameXML;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import retrofit2.Call;
 
 /**
  * Created by simon on 03/12/2017.
@@ -14,6 +20,10 @@ public class Data {
     private Map<String,Boolean> initialized = new HashMap<>();
     private static Data data= new Data();
     private static List<Platform> listPlatform= new ArrayList<Platform>();
+    private List<Call<GameXML>> callToGame=new ArrayList<Call<GameXML>>();
+    private List<Call<GameDetailXML>> callToGameDetail=new ArrayList<Call<GameDetailXML>>();
+    private List<APIManager.MyAsyncTask> myAsyncTaskList= new ArrayList<APIManager.MyAsyncTask>();
+
     private Data(){
     }
     public static List<Object> getInstance(){
@@ -35,4 +45,18 @@ public class Data {
     public synchronized List<Platform> getListPlatform() {
         return listPlatform;
     }
+
+    public List<Call<GameDetailXML>> getCallToGameDetail() {
+        return callToGameDetail;
+    }
+    public List<APIManager.MyAsyncTask> getMyAsyncTaskList() {
+        return myAsyncTaskList;
+    }
+    public List<Call<GameXML>> getCallToGame() {
+        return callToGame;
+    }
+    public void addTask(APIManager.MyAsyncTask task){
+        myAsyncTaskList.add(task);
+    }
+
 }

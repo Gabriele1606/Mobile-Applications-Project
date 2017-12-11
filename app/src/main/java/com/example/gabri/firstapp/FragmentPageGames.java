@@ -1,16 +1,21 @@
 package com.example.gabri.firstapp;
 
+import android.media.Image;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
 
 import com.example.gabri.firstapp.Adapter.RecyclerAdapter;
+import com.example.gabri.firstapp.Adapter.SampleFragmentPagerAdapter;
 import com.example.gabri.firstapp.Controller.APIManager;
 import com.example.gabri.firstapp.Controller.Filter;
 import com.example.gabri.firstapp.Model.Data;
@@ -40,15 +45,41 @@ public class FragmentPageGames extends Fragment {
     private String developName;
     private List<Object> listObject= new ArrayList<Object>();
     private List<Platform> platformOfSpecifiedDeveloper=new ArrayList<Platform>();
-
-
+    private SampleFragmentPagerAdapter observer;
+    private View view;
+    APIManager apiManager = new APIManager();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_page_game, container, false);
+        view= inflater.inflate(R.layout.fragment_page_game, container, false);
 
-        vrecyclerView= (RecyclerView) view.findViewById(R.id.v_recyclerView);
+        startRecyclerView(listObject);
+
+
+        //carico alcuni dati
+        /*APIManager apiManager=new APIManager();
+        apiManager.setObserver(this.observer);
+        apiManager.getGameDetail(platformOfSpecifiedDeveloper,recyclerAdapter,listObject);*/
+
+
+
+        if(!Data.getData().isInitialized(this.developName)){
+            System.out.println("INIZIALIZZO FRAGMENT");
+            initializeData();
+            Data.getData().setInitialized(this.developName);
+            apiManager.setObserver(observer);
+            apiManager.getAllGameDetails(platformOfSpecifiedDeveloper, this.developName);
+        }
+
+
+
+
+        return view;
+    }
+
+    private void startRecyclerView(List<Object> listObject) {
+        vrecyclerView= (RecyclerView) view.findViewById(R.id.recyclerGame);
 
         recyclerAdapter= new RecyclerAdapter(view.getContext(),listObject);
         RecyclerView.LayoutManager vLayoutManager= new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL,false);
@@ -59,29 +90,15 @@ public class FragmentPageGames extends Fragment {
         animatorAdapter.setFirstOnly(false);
         animatorAdapter.setDuration(300);
         vrecyclerView.setAdapter(animatorAdapter);
-
-        if(!Data.getData().isInitialized(this.developName)){
-            System.out.println("INIZIALIZZO FRAGMENT");
-            initializeData();
-            Data.getData().setInitialized(this.developName);
-        }
-
-
-
-
-        return view;
     }
 
     private void initializeData(){
         listObject.clear();
         Filter filter=new Filter();
         ImgSlider imgSlider= new ImgSlider();
-        //carico alcuni dati
-        APIManager apiManager=new APIManager();
 
         platformOfSpecifiedDeveloper=filter.getPlatformFromDeveloper(this.developName);
         listObject.add(new ImgSlider());
-        //apiManager.getGameDetail(platformOfSpecifiedDeveloper,recyclerAdapter,listObject);
         ArrayList<Integer> ids = new ArrayList<>();
         System.out.println("NOME PRODUTTORE "+developName);
         List<PlatformDetail> platformDetails = SQLite.select().from(PlatformDetail.class).where(PlatformDetail_Table.developer.eq(this.developName.toString())).queryList();
@@ -90,6 +107,7 @@ public class FragmentPageGames extends Fragment {
             ids.add(pd.getId());
         }
         List<Platform> platforms =  SQLite.select().from(Platform.class).where(Platform_Table.id.in(ids)).queryList();
+        this.platformOfSpecifiedDeveloper=platforms;
         System.out.println("NUMERO DI PLATFORM:-----"+platforms.size());
         ids.clear();
         for (Platform p :
@@ -101,11 +119,12 @@ public class FragmentPageGames extends Fragment {
         for (Game g :
                 games) {
             ids.add(g.getId());
-            System.out.println("GIOCHI:----"+g.getId());
+            //System.out.println("GIOCHI:----"+g.getId());
         }
 
         List<Fanart> fanarts = SQLite.select().from(Fanart.class).where(Fanart_Table.idGame.in(ids)).queryList();
         List<String> urlImages= new ArrayList<String>();
+        System.out.println("NUMERO FANARTS:----"+fanarts.size());
         for (Fanart f :
                 fanarts) {
             if (urlImages.size()>4)
@@ -117,6 +136,7 @@ public class FragmentPageGames extends Fragment {
         //List<String> urlImages=filter.getLinkImagesForSlider(platformListOfSpecificDeveloper);
 
         imgSlider.setUrlImages(urlImages);
+        System.out.println("LO SLIDER HA:"+imgSlider.getUrlImages());
         listObject.add(imgSlider);
         recyclerAdapter.notifyDataSetChanged();
 
@@ -126,6 +146,8 @@ public class FragmentPageGames extends Fragment {
 
     public void notifyDataChange(){
         initializeData();
+        startRecyclerView(this.listObject);
+        System.out.println("NOTIFICO RECYCLER");
         recyclerAdapter.notifyDataSetChanged();
     }
 
@@ -139,4 +161,8 @@ public class FragmentPageGames extends Fragment {
         this.developName=developName;
 
     }
+    public void setObserver(SampleFragmentPagerAdapter observer){
+        this.observer=observer;
+    }
+
 }

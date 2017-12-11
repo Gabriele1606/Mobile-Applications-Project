@@ -22,7 +22,7 @@ android {
     }
 }
 
-def dbflow_version = "4.0.4"
+def dbflow_version = "4.1.2"
 def sqlcipher_version="3.5.7"
 
 
@@ -51,18 +51,18 @@ dependencies {
     compile 'com.daimajia.slider:library:1.1.5@aar'
 
 // if Java use this. If using Kotlin do NOT use this.
-    annotationProcessor "com.github.raizlabs.dbflow:dbflow-processor:${dbflow_version}"
-
+    annotationProcessor "com.github.Raizlabs.DBFlow:dbflow-processor:${dbflow_version}"
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:${dbflow_version}"
+    compile "com.github.Raizlabs.DBFlow:dbflow:${dbflow_version}"
     // sql-cipher database encryption (optional)
-    compile "com.github.raizlabs.dbflow:dbflow-sqlcipher:${dbflow_version}"
+    compile "com.github.Raizlabs.DBFlow:dbflow-sqlcipher:${dbflow_version}"
     compile "net.zetetic:android-database-sqlcipher:${sqlcipher_version}@aar"
 
-
     // RXJava 1 support
-    compile "com.github.raizlabs.dbflow:dbflow-rx:${dbflow_version}"
+    compile "com.github.Raizlabs.DBFlow:dbflow-rx:${dbflow_version}"
 
 
     // RXJava 2 support
-    compile "com.github.raizlabs.dbflow:dbflow-rx2:${dbflow_version}"
+    compile "com.github.Raizlabs.DBFlow:dbflow-rx2:${dbflow_version}"
 
 }

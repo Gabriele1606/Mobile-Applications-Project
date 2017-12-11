@@ -1,6 +1,7 @@
 package com.example.gabri.firstapp.Controller;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -16,6 +17,7 @@ import com.example.gabri.firstapp.API.PossibleAPI;
 import com.example.gabri.firstapp.Adapter.CoverFlowAdapter;
 import com.example.gabri.firstapp.Adapter.GameAdapter;
 import com.example.gabri.firstapp.Adapter.SampleFragmentPagerAdapter;
+import com.example.gabri.firstapp.GameDetailXML;
 import com.example.gabri.firstapp.GameEntity;
 import com.example.gabri.firstapp.GameXML;
 import com.example.gabri.firstapp.Model.AppDatabase;
@@ -28,8 +30,11 @@ import com.example.gabri.firstapp.Model.Title;
 import com.example.gabri.firstapp.PlatformXML;
 import com.example.gabri.firstapp.R;
 import com.raizlabs.android.dbflow.config.DatabaseConfig;
+import com.raizlabs.android.dbflow.config.DatabaseDefinition;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
 import junit.framework.Assert;
 
@@ -84,7 +89,10 @@ public class HomePage extends AppCompatActivity {
         apiManager.setObserver(sampleFragmentPagerAdapter);
 
         System.out.println("START RICHIESTE API: "+ Calendar.getInstance().getTime());
+
         apiManager.getPlatformFactory();
+
+
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -157,4 +165,22 @@ public class HomePage extends AppCompatActivity {
 
 */
 
+
+    @Override
+    protected void onStop() {
+        System.out.println("STOP CALLED");
+        for ( APIManager.MyAsyncTask mt:
+             Data.getData().getMyAsyncTaskList()) {
+            mt.cancel(true);
+        }
+        for (Call<GameXML> call:
+            Data.getData().getCallToGame() ){
+            call.cancel();
+        }
+        for (Call<GameDetailXML> call:
+                Data.getData().getCallToGameDetail() ){
+            call.cancel();
+        }
+        super.onStop();
+    }
 }
