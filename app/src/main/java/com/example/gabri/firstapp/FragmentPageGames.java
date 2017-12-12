@@ -1,7 +1,5 @@
 package com.example.gabri.firstapp;
 
-import android.media.Image;
-import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -21,10 +19,8 @@ import com.example.gabri.firstapp.Controller.APIManager;
 import com.example.gabri.firstapp.Controller.Filter;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
-import com.example.gabri.firstapp.Model.Game_Table;
 import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.Platform;
-import com.example.gabri.firstapp.Model.Platform_Table;
 import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.Model.Title;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -120,7 +116,7 @@ public class FragmentPageGames extends Fragment {
         List<Platform> platforms =  dbQuery.getPlatformFromPlarformDetail(platformDetails);
         this.platformOfSpecifiedDeveloper=platforms;
         List<Game> games = dbQuery.getGameFromAllPlatfoms(platforms);
-        fanarts = dbQuery.getFanartFromGame(games);
+        List<Fanart> fanarts = dbQuery.getFanartFromGameList(games);
         gameDetail = dbQuery.getGameDetail(games);
         List<String> urlImages= new ArrayList<String>();
         System.out.println("NUMERO FANARTS:----"+fanarts.size());

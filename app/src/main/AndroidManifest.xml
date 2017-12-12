@@ -24,6 +24,7 @@
         </activity>
         <activity android:name=".Controller.RegistrationForm" />
         <activity android:name=".Controller.HomePage"></activity>
+        <activity android:name=".FragmentGameDetail"></activity>
     </application>
 
 </manifest>
