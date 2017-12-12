@@ -38,6 +38,7 @@ public class FragmentGameDetail extends AppCompatActivity
     private TextView description;
     private ImageView bigImage;
     private TextView underTitle;
+    private TextView gameYear;
 
 
 
@@ -60,6 +61,7 @@ public class FragmentGameDetail extends AppCompatActivity
         this.description=(TextView)findViewById(R.id.description);
         this.bigImage=(ImageView)findViewById(R.id.main_imageview_placeholder);
         this.underTitle=(TextView)findViewById(R.id.under_title);
+        this.gameYear=(TextView)findViewById(R.id.game_year);
 
         prepareData();
 
@@ -81,8 +83,13 @@ public class FragmentGameDetail extends AppCompatActivity
 
             this.bigTitle.setText(game.getGameTitle());
             this.littleTitle.setText(game.getGameTitle());
-            this.description.setText(gameDetail.getOverView());
-            this.underTitle.setText(gameDetail.getPlatform());
+            if(!game.getReleaseDate().equals("null")) {
+                this.gameYear.setText(String.valueOf(game.getReleaseDate()));
+            }
+            if(gameDetail!=null) {
+                this.description.setText(gameDetail.getOverView());
+                this.underTitle.setText(gameDetail.getPlatform());
+            }
 
             Glide.with(this).load("http://thegamesdb.net/banners/"+boxart.getThumb()).into(this.coverImage);
             if(fanart.size()>0)

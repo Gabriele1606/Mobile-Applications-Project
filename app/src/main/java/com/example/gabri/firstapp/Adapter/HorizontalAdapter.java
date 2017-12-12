@@ -88,6 +88,7 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
             public void onClick(View v) {
 
                 Intent intent =  new Intent(mContext, FragmentGameDetail.class);
+                System.out.println("Questo è l'id:----->"+game.getId());
                 intent.putExtra("GAME ID", game.getId());
                 mContext.startActivity(intent);
                 /*

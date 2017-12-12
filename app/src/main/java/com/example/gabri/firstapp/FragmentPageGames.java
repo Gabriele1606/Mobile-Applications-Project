@@ -140,6 +140,8 @@ public class FragmentPageGames extends Fragment {
 
        for (int i=0; i<platforms.size();i++) {
             List<Game> gameList =dbQuery.getGameFromPlatfom(platforms.get(i));
+            Title title=new Title(platforms.get(i).getName());
+            listObject.add(title);
             listObject.add(new RowGame(gameList));
 
         }
