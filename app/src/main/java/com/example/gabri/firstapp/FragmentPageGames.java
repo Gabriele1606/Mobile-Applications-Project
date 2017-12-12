@@ -5,6 +5,7 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +26,7 @@ import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.Platform;
 import com.example.gabri.firstapp.Model.Platform_Table;
 import com.example.gabri.firstapp.Model.RowGame;
+import com.example.gabri.firstapp.Model.Title;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
@@ -47,6 +49,10 @@ public class FragmentPageGames extends Fragment {
     private List<Platform> platformOfSpecifiedDeveloper=new ArrayList<Platform>();
     private SampleFragmentPagerAdapter observer;
     private View view;
+    private Title title= new Title("Wait, I'm Loading");
+    private  List<Fanart> fanarts;
+    List<GameDetail> gameDetail;
+    SwipeRefreshLayout swipeContainer;
     APIManager apiManager = new APIManager();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,21 +61,30 @@ public class FragmentPageGames extends Fragment {
         view= inflater.inflate(R.layout.fragment_page_game, container, false);
 
         startRecyclerView(listObject);
-
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainerGame);
 
         //carico alcuni dati
         /*APIManager apiManager=new APIManager();
         apiManager.setObserver(this.observer);
         apiManager.getGameDetail(platformOfSpecifiedDeveloper,recyclerAdapter,listObject);*/
-
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                apiManager.setObserver(observer);
+                apiManager.getAllGameDetails(platformOfSpecifiedDeveloper, developName);
+                if (listObject.remove(title))
+                    recyclerAdapter.notifyItemRemoved(1);
+                listObject.add(1,title);
+                recyclerAdapter.notifyItemInserted(1);
+                swipeContainer.setRefreshing(false);
+            }
+        });
 
 
         if(!Data.getData().isInitialized(this.developName)){
             System.out.println("INIZIALIZZO FRAGMENT");
             initializeData();
             Data.getData().setInitialized(this.developName);
-            apiManager.setObserver(observer);
-            //apiManager.getAllGameDetails(platformOfSpecifiedDeveloper, this.developName);
         }
 
 
@@ -105,8 +120,8 @@ public class FragmentPageGames extends Fragment {
         List<Platform> platforms =  dbQuery.getPlatformFromPlarformDetail(platformDetails);
         this.platformOfSpecifiedDeveloper=platforms;
         List<Game> games = dbQuery.getGameFromAllPlatfoms(platforms);
-        List<Fanart> fanarts = dbQuery.getFanartFromGame(games);
-
+        fanarts = dbQuery.getFanartFromGame(games);
+        gameDetail = dbQuery.getGameDetail(games);
         List<String> urlImages= new ArrayList<String>();
         System.out.println("NUMERO FANARTS:----"+fanarts.size());
         for (Fanart f :
@@ -136,13 +151,30 @@ public class FragmentPageGames extends Fragment {
         slider.setSlider(true);
 
 
-
+        if(listObject.size()==0){
+            ImageView logobk = (ImageView) view.findViewById(R.id.logoBk);
+            logobk.setVisibility(View.VISIBLE);
+        }
 
         recyclerAdapter.notifyDataSetChanged();
 
 
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser){
+            if (gameDetail!=null) {
+                if (gameDetail.size() == 0) {
+                    swipeContainer.setRefreshing(true);
+                    apiManager.setObserver(observer);
+                    apiManager.getAllGameDetails(platformOfSpecifiedDeveloper, developName);
+                    swipeContainer.setRefreshing(false);
+                }
+            }
+        }
+    }
 
     public void notifyDataChange(){
         initializeData();

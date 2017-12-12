@@ -19,9 +19,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.gabri.firstapp.DBQuery;
 import com.example.gabri.firstapp.FragmentGameDetail;
 import com.example.gabri.firstapp.FragmentPage1;
@@ -43,12 +47,14 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, count;
         public ImageView thumbnail;
+        public ProgressBar progressBar;
         private CardView cardView;
         public MyViewHolder(View view) {
             super(view);
             int index;
             title =(TextView) view.findViewById(R.id.titleGame);
             thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
+            progressBar=(ProgressBar) view.findViewById(R.id.progressCard);
             this.cardView=(CardView) view.findViewById(R.id.cardView);
 
 
@@ -96,7 +102,19 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
             holder.title.setText(game.getGameTitle());
 
         // loading game cover using Glide library
-        Glide.with(mContext).load("http://thegamesdb.net/banners/"+dbQuery.getBoxArtFromGame(game).getThumb()).into(holder.thumbnail);
+        Glide.with(mContext).load("http://thegamesdb.net/banners/"+dbQuery.getBoxArtFromGame(game).getThumb()).listener(new RequestListener<String, GlideDrawable>() {
+            @Override
+            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                holder.progressBar.setVisibility(View.GONE);
+                return false;
+            }
+        }).into(holder.thumbnail);
 
 
     }

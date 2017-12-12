@@ -9,6 +9,12 @@
     android:elevation="3dp">
 
 
+    <ProgressBar
+        android:id="@+id/progressCard"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

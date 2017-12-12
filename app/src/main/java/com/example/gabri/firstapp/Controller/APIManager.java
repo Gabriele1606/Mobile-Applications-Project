@@ -41,6 +41,7 @@ public class APIManager {
     private Integer numReceivedPlatformGame = new Integer(0);
     private Integer numReceivedPlatformDetail= new Integer(0);
     private SampleFragmentPagerAdapter observer;
+    private int numPlatformInDatabase;
 
     public void getPlatformList() {
         final List<List<Game>> gameListForEachPlatform = new ArrayList<List<Game>>();
@@ -275,8 +276,8 @@ public class APIManager {
                 filter.orderPlatformFromNewestToHolder(platformList);
                 Data.getData().getListPlatform().addAll(platformList);
                 System.out.println("HO CARICATO TUTTTI I DATI DENTRO DATA------------>"+Data.getData().getListPlatform().size());
-
-                notifyObserver();
+                if(numPlatformInDatabase==0)
+                    notifyObserver();
             }
         }
     }
@@ -288,6 +289,10 @@ public class APIManager {
     public void notifyObserver(){
         if (this.observer!=null)
             this.observer.notifyDataSetChanged();
+    }
+
+    public void setNumPlatformInDatabase(int numPlatformInDatabase) {
+        this.numPlatformInDatabase = numPlatformInDatabase;
     }
 
     public class MyAsyncTask extends AsyncTask<List<Platform>, Void, Bitmap> {

@@ -95,4 +95,15 @@ public class DBQuery {
         gameList = SQLite.select().from(Game.class).where(Game_Table.idPlatform.eq(platform.getId())).queryList();
         return gameList;
     }
+
+    public List<GameDetail> getGameDetail(List<Game> games){
+        List<Integer> ids= new ArrayList<Integer>();
+        for (Game g :
+                games) {
+           ids.add(g.getId());
+        }
+        List<GameDetail> gameDetails;
+        gameDetails= SQLite.select().from(GameDetail.class).where(GameDetail_Table.id.in(ids)).queryList();
+        return gameDetails;
+    }
 }
