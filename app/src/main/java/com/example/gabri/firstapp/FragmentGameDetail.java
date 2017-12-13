@@ -1,5 +1,9 @@
 package com.example.gabri.firstapp;
 
+import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -39,6 +43,12 @@ public class FragmentGameDetail extends AppCompatActivity
     private ImageView bigImage;
     private TextView underTitle;
     private TextView gameYear;
+    private TextView titleInDetail;
+    private TextView platformInDetail;
+    private TextView coopInDetail;
+    private TextView playerInDetail;
+    private TextView publisherInDetail;
+    private TextView developerInDetail;
 
 
 
@@ -62,7 +72,12 @@ public class FragmentGameDetail extends AppCompatActivity
         this.bigImage=(ImageView)findViewById(R.id.main_imageview_placeholder);
         this.underTitle=(TextView)findViewById(R.id.under_title);
         this.gameYear=(TextView)findViewById(R.id.game_year);
-
+        this.titleInDetail=(TextView)findViewById(R.id.title_in_detail_from_db);
+        this.platformInDetail=(TextView)findViewById(R.id.platform_in_detail_from_db);
+        this.coopInDetail=(TextView)findViewById(R.id.coop_in_detail_from_db);
+        this.playerInDetail=(TextView)findViewById(R.id.player_in_detail_from_db);
+        this.publisherInDetail=(TextView)findViewById(R.id.publisher_in_detail_from_db);
+        this.developerInDetail=(TextView)findViewById(R.id.developer_in_detail_from_db);
         prepareData();
 
     }
@@ -95,8 +110,16 @@ public class FragmentGameDetail extends AppCompatActivity
             if(fanart.size()>0)
             Glide.with(this).load("http://thegamesdb.net/banners/"+fanart.get(0).getOriginalFanart().toString()).into(this.bigImage);
 
+            //Details section
 
+            this.titleInDetail.setText(game.getGameTitle());
+            this.platformInDetail.setText(game.getPlatform());
+            this.coopInDetail.setText(gameDetail.getCoop());
+            this.playerInDetail.setText(gameDetail.getPlayers());
+            this.publisherInDetail.setText(gameDetail.getPublisher());
+            this.developerInDetail.setText(gameDetail.getDeveloper());
 
+            YoutubePlayerFragment youtube=new YoutubePlayerFragment();
 
 
             System.out.println("cliccato su --------->"+this.gameId);
