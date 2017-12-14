@@ -1,57 +1,33 @@
 package com.example.gabri.firstapp.Controller;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
+import android.support.design.widget.FloatingActionButton;
+import android.support.transition.TransitionManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.View;
 
-import com.example.gabri.firstapp.API.PossibleAPI;
 import com.example.gabri.firstapp.Adapter.CoverFlowAdapter;
-import com.example.gabri.firstapp.Adapter.GameAdapter;
-import com.example.gabri.firstapp.Adapter.SampleFragmentPagerAdapter;
 import com.example.gabri.firstapp.GameDetailXML;
 import com.example.gabri.firstapp.GameEntity;
 import com.example.gabri.firstapp.GameXML;
-import com.example.gabri.firstapp.Model.AppDatabase;
 import com.example.gabri.firstapp.Model.Data;
-import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.GameCover;
-import com.example.gabri.firstapp.Model.Platform;
-import com.example.gabri.firstapp.Model.RSSFeed;
-import com.example.gabri.firstapp.Model.Title;
-import com.example.gabri.firstapp.PlatformXML;
+import com.example.gabri.firstapp.Model.TabFragment;
 import com.example.gabri.firstapp.R;
 import com.mxn.soul.flowingdrawer_core.ElasticDrawer;
 import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
-import com.raizlabs.android.dbflow.config.DatabaseConfig;
-import com.raizlabs.android.dbflow.config.DatabaseDefinition;
-import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
-import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
-
-import junit.framework.Assert;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 
 //import it.moondroid.coverflow.components.ui.containers.FeatureCoverFlow;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
 
 public class HomePage extends AppCompatActivity {
@@ -67,17 +43,19 @@ public class HomePage extends AppCompatActivity {
     private List<GameCover> gameCoverListTwo;
     List<Object> listObject;
     APIManager apiManager;
+    private ConstraintSet originalConstraint= new ConstraintSet();
+    private ConstraintSet toRightConstraint= new ConstraintSet();
 
-
+    boolean isTwoPanes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.home_page);
+        setContentView(R.layout.home);
 
-        apiManager=new APIManager();
+        Data.getData().setHomePageActivity(this);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        isTwoPanes = getResources().getBoolean(R.bool.has_two_panes);
 
         FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.drawerlayout);
         mDrawer.setTouchMode(ElasticDrawer.TOUCH_MODE_BEZEL);
@@ -101,19 +79,25 @@ public class HomePage extends AppCompatActivity {
         //FlowManager.getDatabase(AppDatabase.class).reset(this);
 
 
+
         listObject= Data.getInstance();
+        collapseDetailGame();
+        addFloatingButton();
+       if (savedInstanceState == null )
+        {
+            // Display the fragment
+            /*getSupportFragmentManager().beginTransaction()
+                .add(R.id.mainframeLayout, new TabFragment()).commit();*/
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.mainframeLayout, new TabFragment(), "TABLAYOUT").commit();
 
-        SampleFragmentPagerAdapter sampleFragmentPagerAdapter = new SampleFragmentPagerAdapter(getSupportFragmentManager(), this, listObject);
-        viewPager.setAdapter(sampleFragmentPagerAdapter);
-        apiManager.setObserver(sampleFragmentPagerAdapter);
-
-        System.out.println("START RICHIESTE API: "+ Calendar.getInstance().getTime());
-        apiManager.setNumPlatformInDatabase(SQLite.select().from(Platform.class).queryList().size());
-        apiManager.getPlatformFactory();
-        // Give the TabLayout the ViewPager
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(viewPager);
-
+        }else{
+           /* FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.mainframeLayout, new TabFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();*/
+        }
 
 
 
@@ -145,6 +129,19 @@ public class HomePage extends AppCompatActivity {
 
 
 
+    }
+
+    private void addFloatingButton() {
+        if (isTwoPanes) {
+            FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingButton);
+            floatingActionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    collapseDetailGame();
+                    //Data.getData().getSetSampleFragmentPagerAdapter().notifyDataSetChanged();
+                }
+            });
+        }
     }
 
 /*
@@ -199,5 +196,23 @@ public class HomePage extends AppCompatActivity {
             call.cancel();
         }
         super.onStop();
+    }
+
+    public void collapseDetailGame(){
+        moveGuideline(1.0f);
+    }
+    public void enlargeDetailGame(){
+        moveGuideline(0.6f);
+    }
+
+    public void moveGuideline(float percent){
+        if (isTwoPanes){
+            ConstraintLayout constraintLayout= findViewById(R.id.homepage);
+            ConstraintSet constraintset= new ConstraintSet();
+            constraintset.clone(constraintLayout);
+            constraintset.setGuidelinePercent(R.id.guideline,percent);
+            TransitionManager.beginDelayedTransition(constraintLayout);
+            constraintset.applyTo(constraintLayout);
+        }
     }
 }

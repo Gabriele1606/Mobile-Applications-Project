@@ -1,6 +1,7 @@
 package com.example.gabri.firstapp.Adapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
+public class SampleFragmentPagerAdapter extends SmartFragmentStatePagerAdapter {
     private int PAGE_COUNT = 1;
     private String tabTitles[] = new String[6];
     private Context context;
@@ -38,6 +39,7 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
     public SampleFragmentPagerAdapter(FragmentManager fm, Context context, List<Object> objectList) {
         super(fm);
         this.context = context;
+        Data.getData().setSampleFragmentPagerAdapter(this);
         loadedFragments= new HashMap<Integer, FragmentPageGames>();
         numPages= new ArrayList<Integer>();
         this.objectList=objectList;
@@ -78,10 +80,13 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter {
         }
         else{
             if (loadedFragments.get(position)==null) {
+                Bundle bundle= new Bundle();
                 numPages.add(new Integer(position));
                 f2 = new FragmentPageGames();
-                f2.setObserver(this);
-                f2.setDevelopName(getPageTitle(position).toString());
+                //f2.setObserver(this);
+                bundle.putString("name",getPageTitle(position).toString());
+                f2.setArguments(bundle);
+                //f2.setDevelopName();
                 current = f2;
                 loadedFragments.put(position,f2);
                 return current;

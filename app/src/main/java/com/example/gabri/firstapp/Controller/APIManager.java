@@ -15,10 +15,12 @@ import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.Platform;
 import com.example.gabri.firstapp.Model.RSSFeed;
+import com.example.gabri.firstapp.PlatformDetail;
 import com.example.gabri.firstapp.PlatformDetailXML;
 import com.example.gabri.firstapp.PlatformXML;
 import com.example.gabri.firstapp.RSSList;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -194,10 +196,24 @@ public class APIManager {
 
                 List<Platform> tempPlatformList = response.body().getPlatformList();
 
+                List<Platform> platforms = SQLite.select().from(Platform.class).queryList();
+                List<PlatformDetail> platformDetails = SQLite.select().from(PlatformDetail.class).queryList();
+                List<Integer> idsPlatforms= new ArrayList<Integer>();
+                List<Integer> idsPlatformDetails= new ArrayList<Integer>();
+                for (Platform p :
+                        platforms) {
+                    idsPlatforms.add(p.getId());
+                }
+                for (PlatformDetail pd :
+                        platformDetails) {
+                    idsPlatformDetails.add(pd.getId());
+                }
                 Call<GameXML> callToGame;
-                totPlatform= new Integer(tempPlatformList.size());
+                totPlatform = new Integer(tempPlatformList.size());
                 for (int i = 0; i < tempPlatformList.size(); i++) {
                     platformList.add(tempPlatformList.get(i));
+                    if (idsPlatforms.contains(tempPlatformList.get(i).getId())&&idsPlatformDetails.contains(tempPlatformList.get(i).getId()))
+                        continue;
                     callToGame = possibleAPI.getGame(tempPlatformList.get(i).getName());
 
                     callToGame.enqueue(new Callback<GameXML>() {
@@ -211,8 +227,8 @@ public class APIManager {
                             }
 
 
-                            synchronized (numReceivedPlatformGame){
-                                numReceivedPlatformGame = numReceivedPlatformGame +1;
+                            synchronized (numReceivedPlatformGame) {
+                                numReceivedPlatformGame = numReceivedPlatformGame + 1;
                                 checkFinished(platformList);
                             }
 
@@ -220,8 +236,8 @@ public class APIManager {
 
                         @Override
                         public void onFailure(Call<GameXML> call, Throwable t) {
-                            synchronized (numReceivedPlatformGame){
-                                numReceivedPlatformGame = numReceivedPlatformGame +1;
+                            synchronized (numReceivedPlatformGame) {
+                                numReceivedPlatformGame = numReceivedPlatformGame + 1;
                                 checkFinished(platformList);
                             }
                         }
@@ -232,20 +248,20 @@ public class APIManager {
                     callToPlatformDetail.enqueue(new Callback<PlatformDetailXML>() {
                         @Override
                         public void onResponse(Call<PlatformDetailXML> call, Response<PlatformDetailXML> response) {
-                            Filter filter= new Filter();
+                            Filter filter = new Filter();
                             synchronized (platformList) {
                                 filter.addDetailsToPlatform(platformList, response.body().getPlatformDetail());
                             }
-                            synchronized (numReceivedPlatformDetail){
-                                numReceivedPlatformDetail= numReceivedPlatformDetail+1;
+                            synchronized (numReceivedPlatformDetail) {
+                                numReceivedPlatformDetail = numReceivedPlatformDetail + 1;
                                 checkFinished(platformList);
                             }
                         }
 
                         @Override
                         public void onFailure(Call<PlatformDetailXML> call, Throwable t) {
-                            synchronized (numReceivedPlatformDetail){
-                                numReceivedPlatformDetail= numReceivedPlatformDetail+1;
+                            synchronized (numReceivedPlatformDetail) {
+                                numReceivedPlatformDetail = numReceivedPlatformDetail + 1;
                                 checkFinished(platformList);
                             }
                         }
@@ -277,6 +293,7 @@ public class APIManager {
                 Data.getData().getListPlatform().addAll(platformList);
                 System.out.println("HO CARICATO TUTTTI I DATI DENTRO DATA------------>"+Data.getData().getListPlatform().size());
                 if(numPlatformInDatabase==0)
+                    System.out.println("IL NUMERO DI PIATTAFORME E' INIZIALMENTE 0");
                     notifyObserver();
             }
         }
@@ -296,12 +313,16 @@ public class APIManager {
     }
 
     public class MyAsyncTask extends AsyncTask<List<Platform>, Void, Bitmap> {
-
         private SampleFragmentPagerAdapter observer;
         private String developName=null;
-
         @Override
         protected Bitmap doInBackground(final List<Platform>... platformOfSpecifiedDeveloper) {
+            List<GameDetail> gameDetails = SQLite.select().from(GameDetail.class).queryList();
+            List<Integer> ids= new ArrayList<Integer>();
+            for (GameDetail gd :
+                    gameDetails) {
+                ids.add(gd.getId());
+            }
             int gameId;
             Retrofit retrofitObject = new Retrofit.Builder().baseUrl(BASE_URL)
                     .addConverterFactory(SimpleXmlConverterFactory.create())
@@ -311,6 +332,8 @@ public class APIManager {
             for (int i = 0; i < platformOfSpecifiedDeveloper[0].size(); i++) {
                 for (int j = 0; j < platformOfSpecifiedDeveloper[0].get(i).getGameList().size() && j < 4; j++) {
                     gameId = platformOfSpecifiedDeveloper[0].get(i).getGameList().get(j).getId();
+                    if (ids.contains(gameId))
+                        continue;
                     //System.out.println("GIOCHI PIATTAFORMA: "+platformOfSpecifiedDeveloper[0].get(i).getId()+platformOfSpecifiedDeveloper[0].get(i).getGameList());
                     callToGameDetail = possibleAPI.getGameDetail(gameId);
                     final int finalI = i;

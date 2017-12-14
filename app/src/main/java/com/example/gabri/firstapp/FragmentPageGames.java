@@ -55,6 +55,9 @@ public class FragmentPageGames extends Fragment {
                              Bundle savedInstanceState) {
 
         view= inflater.inflate(R.layout.fragment_page_game, container, false);
+        Bundle arguments = this.getArguments();
+        developName = arguments.getString("name");
+        observer=Data.getData().getSetSampleFragmentPagerAdapter();
 
         startRecyclerView(listObject);
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainerGame);
@@ -77,11 +80,9 @@ public class FragmentPageGames extends Fragment {
         });
 
 
-        if(!Data.getData().isInitialized(this.developName)){
+
             System.out.println("INIZIALIZZO FRAGMENT");
             initializeData();
-            Data.getData().setInitialized(this.developName);
-        }
 
 
 
@@ -185,10 +186,10 @@ public class FragmentPageGames extends Fragment {
         this.listObject = list;
     }
 
-    public void setDevelopName(String developName){
+    /*public void setDevelopName(String developName){
         this.developName=developName;
 
-    }
+    }*/
     public void setObserver(SampleFragmentPagerAdapter observer){
         this.observer=observer;
     }

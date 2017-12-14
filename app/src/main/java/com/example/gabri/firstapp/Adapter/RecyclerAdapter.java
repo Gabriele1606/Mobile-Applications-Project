@@ -5,6 +5,8 @@ package com.example.gabri.firstapp.Adapter;
  */
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +23,8 @@ import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.example.gabri.firstapp.Controller.TimerSlider;
+import com.example.gabri.firstapp.FragmentProva;
+import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.Model.RowGame;
@@ -60,8 +64,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public TextView rssText;
         public TextView rssTitle;
         public ImageView imageView;
+        public View view;
         public RssFeedHolder(View itemView) {
             super(itemView);
+            view=itemView;
             rssText = (TextView) itemView.findViewById(R.id.text_news);
             rssTitle=(TextView) itemView.findViewById(R.id.title_news);
             imageView=(ImageView)itemView.findViewById(R.id.image_rss);
@@ -189,6 +195,23 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case RSSFEED:
                 RssFeedHolder rssFeedHolder = (RssFeedHolder) viewHolder;
                 setRssCard(rssFeedHolder,position);
+                rssFeedHolder.view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
+                        if(!TWOPANELS){
+                            //FINAL SOLUTION
+                            Fragment fragmentById = Data.getData().getHomePageActivity().getSupportFragmentManager().findFragmentById(R.id.mainframeLayout);
+                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, new FragmentProva(), "GameDetail");
+                            transaction.addToBackStack("TABLAYOUT");
+                            transaction.commit();
+                        }else{
+                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail, new FragmentProva(), "GameDetail");
+                            transaction.commit();
+                            Data.getData().getHomePageActivity().enlargeDetailGame();
+                        }
+                    }
+                });
                 break;
             case SLIDER:
                 SliderHolder sliderHolder= (SliderHolder) viewHolder;

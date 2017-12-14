@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
@@ -29,6 +30,8 @@ import com.bumptech.glide.request.target.Target;
 import com.example.gabri.firstapp.DBQuery;
 import com.example.gabri.firstapp.FragmentGameDetail;
 import com.example.gabri.firstapp.FragmentPage1;
+import com.example.gabri.firstapp.FragmentProva;
+import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.R;
 
@@ -41,22 +44,22 @@ import java.util.List;
  */
 public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.MyViewHolder> {
 
+
     private Context mContext;
     private List<Game> gameList;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
+        public View view;
         public TextView title, count;
         public ImageView thumbnail;
         public ProgressBar progressBar;
-        private CardView cardView;
         public MyViewHolder(View view) {
             super(view);
+            this.view= view;
             int index;
             title =(TextView) view.findViewById(R.id.titleGame);
             thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
             progressBar=(ProgressBar) view.findViewById(R.id.progressCard);
-            this.cardView=(CardView) view.findViewById(R.id.cardView);
-
 
         }
     }
@@ -81,15 +84,33 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
         DBQuery dbQuery=new DBQuery();
         final Game game = gameList.get(position);
         index=game.getGameTitle().indexOf(":");
-       // when click on game
-        holder.cardView.setOnClickListener(new View.OnClickListener(){
+        // when click on game
+        HorizontalAdapter old= this;
+
+        holder.view.setOnClickListener(new View.OnClickListener(){
             @Override
 
             public void onClick(View v) {
+                boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
+                if(!TWOPANELS){
+                //FINAL SOLUTION
+                Fragment fragmentById = Data.getData().getHomePageActivity().getSupportFragmentManager().findFragmentById(R.id.mainframeLayout);
+                FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, new FragmentProva(), "GameDetail");
+                transaction.addToBackStack("TABLAYOUT");
+                transaction.commit();
+                }else{
+                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail, new FragmentProva(), "GameDetail");
+                    transaction.commit();
+                    Data.getData().getHomePageActivity().enlargeDetailGame();
+                }
 
+
+                /*
                 Intent intent =  new Intent(mContext, FragmentGameDetail.class);
                 intent.putExtra("GAME ID", game.getId());
-                mContext.startActivity(intent);
+                mContext.startActivity(intent);*/
+
+
                 /*
                 FragmentGameDetail temp=new FragmentGameDetail();
                 Bundle bundle=new Bundle();

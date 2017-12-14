@@ -15,7 +15,8 @@
         android:largeHeap="true">
         <activity
             android:name=".Controller.Login"
-            android:theme="@style/mioTheme">
+            android:theme="@style/mioTheme"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

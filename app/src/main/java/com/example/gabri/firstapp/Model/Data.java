@@ -1,6 +1,10 @@
 package com.example.gabri.firstapp.Model;
 
+import android.support.v4.view.ViewPager;
+
+import com.example.gabri.firstapp.Adapter.SampleFragmentPagerAdapter;
 import com.example.gabri.firstapp.Controller.APIManager;
+import com.example.gabri.firstapp.Controller.HomePage;
 import com.example.gabri.firstapp.GameDetailXML;
 import com.example.gabri.firstapp.GameXML;
 
@@ -24,6 +28,16 @@ public class Data {
     private List<Call<GameDetailXML>> callToGameDetail=new ArrayList<Call<GameDetailXML>>();
     private List<APIManager.MyAsyncTask> myAsyncTaskList= new ArrayList<APIManager.MyAsyncTask>();
 
+
+    private SampleFragmentPagerAdapter setSampleFragmentPagerAdapter;
+    private ViewPager homePageViewPager;
+
+
+
+    private HomePage homePageActivity;
+
+
+
     private Data(){
     }
     public static List<Object> getInstance(){
@@ -32,6 +46,7 @@ public class Data {
     public static Data getData(){
     return data;
     }
+
     public boolean isInitialized(String id){
         if (initialized.get(id)!=null){
             return initialized.get(id);
@@ -59,4 +74,24 @@ public class Data {
         myAsyncTaskList.add(task);
     }
 
+    public void setSampleFragmentPagerAdapter(SampleFragmentPagerAdapter sampleFragmentPagerAdapter){
+        this.setSampleFragmentPagerAdapter= sampleFragmentPagerAdapter;
+    }
+    public SampleFragmentPagerAdapter getSetSampleFragmentPagerAdapter() {
+        return setSampleFragmentPagerAdapter;
+    }
+
+    public void setHomePageViewPager(ViewPager homePageViewPager) {
+        this.homePageViewPager = homePageViewPager;
+    }
+    public ViewPager getHomePageViewPager() {
+        return homePageViewPager;
+    }
+
+    public void setHomePageActivity(HomePage homePageActivity) {
+        this.homePageActivity = homePageActivity;
+    }
+    public HomePage getHomePageActivity() {
+        return homePageActivity;
+    }
 }

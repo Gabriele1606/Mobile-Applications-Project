@@ -2,7 +2,8 @@
 <com.mxn.soul.flowingdrawer_core.FlowingDrawer
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:android="http://schemas.android.com/apk/res/android"
-android:id="@+id/drawerlayout"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerlayout"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:clipChildren="false"
@@ -12,27 +13,21 @@ app:edMenuSize="260dp"
 app:edMenuBackground="#dddddd">
 
 <!--content-->
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:id="@+id/homepage">
-
-    <android.support.design.widget.TabLayout
-        android:id="@+id/sliding_tabs"
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/homepage"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tabMode="scrollable" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="0px"
-        android:layout_weight="1"
-        android:background="@android:color/white" />
+        <FrameLayout
+            android:id="@+id/mainframeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-</LinearLayout>
+
+        </FrameLayout>
+    </android.support.constraint.ConstraintLayout>
 
 <!--menu-->
 <com.mxn.soul.flowingdrawer_core.FlowingMenuLayout

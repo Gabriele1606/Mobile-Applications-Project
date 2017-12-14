@@ -49,6 +49,8 @@ public class FragmentPage1 extends Fragment{
 
         View view = inflater.inflate(R.layout.fragment_page1, container, false);
 
+
+
         //SWIPETOREFRESH
         swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
 
