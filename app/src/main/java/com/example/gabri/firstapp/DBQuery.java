@@ -29,7 +29,7 @@ public class DBQuery {
         for(int i=0;i<platformDetails.size();i++){
             platformId.add(platformDetails.get(i).getId());
         }
-        platforms = SQLite.select().from(Platform.class).where(Platform_Table.id.in(platformId)).queryList();
+        platforms = SQLite.select().from(Platform.class).where(Platform_Table.id.in(platformId)).orderBy(Platform_Table.averageYearOfItsGame,false).queryList();
         return platforms;
     }
 

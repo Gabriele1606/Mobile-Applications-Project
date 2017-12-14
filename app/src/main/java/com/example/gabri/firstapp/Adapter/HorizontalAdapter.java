@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -43,7 +44,6 @@ import java.util.List;
  * Created by Ravi Tamada on 18/05/16.
  */
 public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.MyViewHolder> {
-
 
     private Context mContext;
     private List<Game> gameList;
@@ -91,15 +91,19 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
             @Override
 
             public void onClick(View v) {
+                FragmentGameDetail fragmentGameDetail=new FragmentGameDetail();
+                Bundle bundle=new Bundle();
+                bundle.putInt("GAME ID",game.getId());
+                fragmentGameDetail.setArguments(bundle);
                 boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
                 if(!TWOPANELS){
                 //FINAL SOLUTION
                 Fragment fragmentById = Data.getData().getHomePageActivity().getSupportFragmentManager().findFragmentById(R.id.mainframeLayout);
-                FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, new FragmentProva(), "GameDetail");
+                FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentGameDetail, "GameDetail");
                 transaction.addToBackStack("TABLAYOUT");
                 transaction.commit();
                 }else{
-                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail, new FragmentProva(), "GameDetail");
+                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail, fragmentGameDetail, "GameDetail");
                     transaction.commit();
                     Data.getData().getHomePageActivity().enlargeDetailGame();
                 }

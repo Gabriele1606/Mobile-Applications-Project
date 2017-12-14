@@ -1,0 +1,69 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gabbo94"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/star_one"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="15dp"
+            app:srcCompat="@drawable/staroff" />
+
+        <ImageView
+            android:id="@+id/star_two"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="2dp"
+            app:srcCompat="@drawable/staroff" />
+
+        <ImageView
+            android:id="@+id/star_three"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="2dp"
+            app:srcCompat="@drawable/staroff" />
+
+        <ImageView
+            android:id="@+id/star_four"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="2dp"
+            app:srcCompat="@drawable/staroff" />
+
+        <ImageView
+            android:id="@+id/star_five"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="2dp"
+            app:srcCompat="@drawable/staroff" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="2dp"
+        android:text="Questa è una prova del testo"
+        android:textSize="19sp"
+        android:textStyle="italic" />
+
+</LinearLayout>
