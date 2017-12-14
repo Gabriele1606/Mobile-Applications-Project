@@ -24,56 +24,68 @@
             <ImageView
                 android:id="@+id/image_rss"
                 android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
+                android:layout_height="100dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/album1" />
 
-            <LinearLayout
+
+            <TableLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/title_news"
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="5dp"
+                    >
+
+
+                    <TextView
+                        android:id="@+id/title_news"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:maxLines="3"
+                        android:singleLine="false"
+                        android:text=""
+                        android:textSize="16sp"
+                        android:textStyle="bold|italic"
+                        android:layout_marginRight="5dp"
+                        />
+
+                </TableRow>
+
+
+                <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="8dp"
-                    android:text="TextView"
-                    android:textSize="13sp"
-                    android:textStyle="bold|italic"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/image_rss"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_marginBottom="5dp"
+                    android:weightSum="4">
 
-                <TextView
-                    android:id="@+id/text_news"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:text="TextView"
-                    android:textSize="16sp"
-                    android:textStyle="italic"
-                    android:maxLines="4"
-                    android:ellipsize="end"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/image_rss"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4" />
+
+                    <Button
+                        android:id="@+id/more_mews"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="4dp"
+                        android:layout_weight="1"
+                        android:text="Read More"
+                        android:textAllCaps="false"
+                        android:textStyle="italic" />
+                </TableRow>
+
+            </TableLayout>
 
 
-            </LinearLayout>
 
 
         </LinearLayout>

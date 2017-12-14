@@ -103,14 +103,14 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
     private void setContex(Context mContext){
         this.mContext=mContext;
     }
-    /*
+
     private void setNestedScroll() {
-        NestedScrollView parentScroll= (NestedScrollView) viewGroup.findViewById(R.id.parent_scroll);
-        ScrollView childScroll=(ScrollView)viewGroup.findViewById(R.id.child_scroll);
+        NestedScrollView parentScroll= (NestedScrollView) this.viewRoot.findViewById(R.id.parent_scroll);
+        ScrollView childScroll=(ScrollView)this.viewRoot.findViewById(R.id.child_scroll);
         parentScroll.setOnTouchListener(new View.OnTouchListener() {
 
             public boolean onTouch(View v, MotionEvent event) {
-                findViewById(R.id.child_scroll).getParent().requestDisallowInterceptTouchEvent(false);
+                v.findViewById(R.id.child_scroll).getParent().requestDisallowInterceptTouchEvent(false);
                 return false;
             }
         });
@@ -123,7 +123,8 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
                 return false;
             }
         });
-    }*/
+    }
+
 
     private void prepareData() {
         int paramPassed=getArguments().getInt("GAME ID");
