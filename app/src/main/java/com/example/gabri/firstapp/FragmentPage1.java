@@ -101,13 +101,6 @@ public class FragmentPage1 extends Fragment{
         albumList = new ArrayList<>();
         listAlbumlist= new ArrayList<List<Game>>();
 
-        RowGame rowGame;
-
-        prepareAlbums();
-        for (int i=10; i<10;i++) {
-            Data.getInstance().add(new RowGame(albumList));
-            //listAlbumlist.add(albumList);
-        }
         RowGame slider= new RowGame();
         slider.setSlider(true);
 
@@ -122,56 +115,6 @@ public class FragmentPage1 extends Fragment{
     }
 
 
-    public void notifyDataChange(){
-        recyclerAdapter.notifyDataSetChanged();
-    }
-
-    private void prepareAlbums() {
-        int[] covers = new int[]{
-                R.drawable.album1,
-                R.drawable.album2,
-                R.drawable.album3,
-                R.drawable.album4,
-                R.drawable.album5,
-                R.drawable.album6,
-                R.drawable.album7,
-                R.drawable.album8,
-                R.drawable.album9,
-                R.drawable.album10,
-                R.drawable.album11};
-
-        Game a = new Game("True Romance", 13, covers[0]);
-        albumList.add(a);
-
-        a = new Game("Xscpae", 8, covers[1]);
-        albumList.add(a);
-
-        a = new Game("Maroon 5", 11, covers[2]);
-        albumList.add(a);
-
-        a = new Game("Born to Die", 12, covers[3]);
-        albumList.add(a);
-
-        a = new Game("Honeymoon", 14, covers[4]);
-        albumList.add(a);
-
-        a = new Game("I Need a Doctor", 1, covers[5]);
-        albumList.add(a);
-
-        a = new Game("Loud", 11, covers[6]);
-        albumList.add(a);
-
-        a = new Game("Legend", 14, covers[7]);
-        albumList.add(a);
-
-        a = new Game("Hello", 11, covers[8]);
-        albumList.add(a);
-
-        a = new Game("Greatest Hits", 17, covers[9]);
-        albumList.add(a);
-
-        //adapter.notifyDataSetChanged();
-    }
 
     public void setList(List<Object> list) {
         this.listObject = list;

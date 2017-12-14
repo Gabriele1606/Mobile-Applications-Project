@@ -7,7 +7,11 @@ package com.example.gabri.firstapp.Adapter;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -16,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,6 +30,8 @@ import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.example.gabri.firstapp.Controller.TimerSlider;
 import com.example.gabri.firstapp.FragmentProva;
 import com.example.gabri.firstapp.Model.Data;
+import com.example.gabri.firstapp.FragmentGameDetail;
+import com.example.gabri.firstapp.FragmentNewsDetail;
 import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.Model.RowGame;
@@ -68,7 +75,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public RssFeedHolder(View itemView) {
             super(itemView);
             view=itemView;
-            rssText = (TextView) itemView.findViewById(R.id.text_news);
+            //rssText = (TextView) itemView.findViewById(R.id.text_news);
+            //rssText = (TextView) itemView.findViewById(R.id.text_news);
             rssTitle=(TextView) itemView.findViewById(R.id.title_news);
             imageView=(ImageView)itemView.findViewById(R.id.image_rss);
 
@@ -199,14 +207,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     @Override
                     public void onClick(View view) {
                         boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
+                        FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
                         if(!TWOPANELS){
                             //FINAL SOLUTION
                             Fragment fragmentById = Data.getData().getHomePageActivity().getSupportFragmentManager().findFragmentById(R.id.mainframeLayout);
-                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, new FragmentProva(), "GameDetail");
+                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentNewsDetail, "GameDetail");
                             transaction.addToBackStack("TABLAYOUT");
                             transaction.commit();
                         }else{
-                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail, new FragmentProva(), "GameDetail");
+                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentNewsDetail, "GameDetail");
                             transaction.commit();
                             Data.getData().getHomePageActivity().enlargeDetailGame();
                         }
@@ -263,7 +272,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void setRssCard(RssFeedHolder rssFeedHolder, int position){
-        rssFeedHolder.rssText.setText(((RSSFeed)listObject.get(position)).getDescription());
+        //rssFeedHolder.rssText.setText(((RSSFeed)listObject.get(position)).getDescription());
         rssFeedHolder.rssTitle.setText(((RSSFeed)listObject.get(position)).getTitle());
         Glide.with(mContext).load(((RSSFeed)listObject.get(position)).getImageLink()).into(rssFeedHolder.imageView);
     }
