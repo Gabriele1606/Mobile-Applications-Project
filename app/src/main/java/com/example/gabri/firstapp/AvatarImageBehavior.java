@@ -61,7 +61,7 @@ public class AvatarImageBehavior extends CoordinatorLayout.Behavior<ImageView> {
     }
 
     private void bindDimensions() {
-        mAvatarMaxSize = 120;
+        mAvatarMaxSize = 100;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class AvatarImageBehavior extends CoordinatorLayout.Behavior<ImageView> {
     public boolean onDependentViewChanged(CoordinatorLayout parent, ImageView child, View dependency) {
         maybeInitProperties(child, dependency);
 
-        final int maxScrollDistance = (int) (mStartToolbarPosition);
+        final int maxScrollDistance = (int) (mStartToolbarPosition+145);
         float expandedPercentageFactor = dependency.getY() / maxScrollDistance;
 
         if (expandedPercentageFactor < mChangeBehaviorPoint) {

@@ -10,7 +10,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -87,17 +89,19 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
 
             public void onClick(View v) {
 
-                Intent intent =  new Intent(mContext, FragmentGameDetail.class);
+                /*Intent intent =  new Intent(mContext, FragmentGameDetail.class);
                 System.out.println("Questo è l'id:----->"+game.getId());
                 intent.putExtra("GAME ID", game.getId());
-                mContext.startActivity(intent);
-                /*
+                mContext.startActivity(intent);*/
+
                 FragmentGameDetail temp=new FragmentGameDetail();
                 Bundle bundle=new Bundle();
-                bundle.putString("testo","ciaooooooo");
-                Activity activity = (Activity) mContext;
-                activity.getFragmentManager().beginTransaction().replace(R.id.homepage,temp).addToBackStack(null).commit();
-                System.out.println("click");*/
+                bundle.putInt("GAME ID",game.getId());
+                temp.setArguments(bundle);
+                FragmentManager fragmentManager=((AppCompatActivity)mContext).getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.homepage,temp).addToBackStack(null).commit();
+
             }
         });
 
