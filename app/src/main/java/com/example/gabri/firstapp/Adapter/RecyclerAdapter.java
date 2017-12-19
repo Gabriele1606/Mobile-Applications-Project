@@ -201,13 +201,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 configureRecHolder(vh1, position);
                 break;
             case RSSFEED:
-                final RssFeedHolder rssFeedHolder = (RssFeedHolder) viewHolder;
+                RssFeedHolder rssFeedHolder = (RssFeedHolder) viewHolder;
                 setRssCard(rssFeedHolder,position);
                 rssFeedHolder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
-                        FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
+
                         Bundle bundle=new Bundle();
                         bundle.putString("TITLE",((RSSFeed)listObject.get(position)).getTitle());
                         System.out.println("HO STAMPATO QUESTOOOO: "+((RSSFeed)listObject.get(position)).getTitle());
@@ -215,14 +215,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         bundle.putString("IMAGE", ((RSSFeed)listObject.get(position)).getImageLink());
                         bundle.putString("DATE", ((RSSFeed)listObject.get(position)).getPubdate());
                         bundle.putString("MULTIPLAYERLINK", ((RSSFeed)listObject.get(position)).getGuid());
-                        fragmentNewsDetail.setArguments(bundle);
+
                         if(!TWOPANELS){
+                            FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
+                            fragmentNewsDetail.setArguments(bundle);
                             //FINAL SOLUTION
                             Fragment fragmentById = Data.getData().getHomePageActivity().getSupportFragmentManager().findFragmentById(R.id.mainframeLayout);
                             FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentNewsDetail, "GameDetail");
                             transaction.addToBackStack("TABLAYOUT");
                             transaction.commit();
                         }else{
+                            FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
+                            fragmentNewsDetail.setArguments(bundle);
                             FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentNewsDetail, "GameDetail");
                             transaction.commit();
                             Data.getData().getHomePageActivity().enlargeDetailGame();
