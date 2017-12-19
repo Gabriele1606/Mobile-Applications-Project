@@ -24,7 +24,6 @@ public class FragmentNewsDetail extends Fragment {
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.viewRoot=inflater.inflate(R.layout.fragment_news_detail,container,false);
-        this.mContext=container.getContext();
         this.inflater=inflater;
 
 

@@ -17,6 +17,8 @@ import com.example.gabri.firstapp.Adapter.RecyclerAdapter;
 import com.example.gabri.firstapp.Adapter.SampleFragmentPagerAdapter;
 import com.example.gabri.firstapp.Controller.APIManager;
 import com.example.gabri.firstapp.Controller.Filter;
+import com.example.gabri.firstapp.Controller.TimerLoad;
+import com.example.gabri.firstapp.Controller.TimerSlider;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.ImgSlider;
@@ -27,6 +29,7 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 
@@ -50,6 +53,8 @@ public class FragmentPageGames extends Fragment {
     List<GameDetail> gameDetail;
     SwipeRefreshLayout swipeContainer;
     APIManager apiManager = new APIManager();
+    private boolean timerStarted=false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,6 +71,7 @@ public class FragmentPageGames extends Fragment {
         /*APIManager apiManager=new APIManager();
         apiManager.setObserver(this.observer);
         apiManager.getGameDetail(platformOfSpecifiedDeveloper,recyclerAdapter,listObject);*/
+        final FragmentPageGames fragment= this;
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -76,6 +82,11 @@ public class FragmentPageGames extends Fragment {
                 listObject.add(1,title);
                 recyclerAdapter.notifyItemInserted(1);
                 swipeContainer.setRefreshing(false);
+                if(!timerStarted) {
+                    Timer timer = new Timer();
+                    timer.scheduleAtFixedRate(new TimerLoad(Data.getData().getHomePageActivity(), fragment), 10000, 3000);
+                    timerStarted =true;
+                }
             }
         });
 
@@ -154,9 +165,8 @@ public class FragmentPageGames extends Fragment {
             ImageView logobk = (ImageView) view.findViewById(R.id.logoBk);
             logobk.setVisibility(View.VISIBLE);
         }
-
+        System.out.println("MODIFICO I DATI");
         recyclerAdapter.notifyDataSetChanged();
-
 
     }
 
@@ -180,6 +190,7 @@ public class FragmentPageGames extends Fragment {
         startRecyclerView(this.listObject);
         System.out.println("NOTIFICO RECYCLER");
         recyclerAdapter.notifyDataSetChanged();
+        timerStarted=false;
     }
 
 

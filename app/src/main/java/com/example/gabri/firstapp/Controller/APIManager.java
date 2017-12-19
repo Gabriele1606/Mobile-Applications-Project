@@ -317,6 +317,7 @@ public class APIManager {
         private String developName=null;
         @Override
         protected Bitmap doInBackground(final List<Platform>... platformOfSpecifiedDeveloper) {
+            boolean atLeastOne=false;
             List<GameDetail> gameDetails = SQLite.select().from(GameDetail.class).queryList();
             List<Integer> ids= new ArrayList<Integer>();
             for (GameDetail gd :
@@ -332,8 +333,9 @@ public class APIManager {
             for (int i = 0; i < platformOfSpecifiedDeveloper[0].size(); i++) {
                 for (int j = 0; j < platformOfSpecifiedDeveloper[0].get(i).getGameList().size() && j < 4; j++) {
                     gameId = platformOfSpecifiedDeveloper[0].get(i).getGameList().get(j).getId();
-                    if (ids.contains(gameId))
+                    if (ids.contains(gameId)){
                         continue;
+                    }
                     //System.out.println("GIOCHI PIATTAFORMA: "+platformOfSpecifiedDeveloper[0].get(i).getId()+platformOfSpecifiedDeveloper[0].get(i).getGameList());
                     callToGameDetail = possibleAPI.getGameDetail(gameId);
                     final int finalI = i;

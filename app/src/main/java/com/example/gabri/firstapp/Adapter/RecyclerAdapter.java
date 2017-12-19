@@ -207,14 +207,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     @Override
                     public void onClick(View view) {
                         boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
-                        FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
                         if(!TWOPANELS){
+                            FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
                             //FINAL SOLUTION
                             Fragment fragmentById = Data.getData().getHomePageActivity().getSupportFragmentManager().findFragmentById(R.id.mainframeLayout);
                             FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentNewsDetail, "GameDetail");
                             transaction.addToBackStack("TABLAYOUT");
                             transaction.commit();
                         }else{
+                            FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
                             FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentNewsDetail, "GameDetail");
                             transaction.commit();
                             Data.getData().getHomePageActivity().enlargeDetailGame();
