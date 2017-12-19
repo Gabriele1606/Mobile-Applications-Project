@@ -5,6 +5,6 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:textAppearance="?android:textAppearanceLargeInverse"
-    android:textColor="@android:color/white"
+    android:textColor="@color/red"
     android:textSize="30sp"
     tools:text="TITLE" />

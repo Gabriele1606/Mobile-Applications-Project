@@ -60,6 +60,7 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
     private View viewRoot;
     private Context mContext;
     private LayoutInflater inflater;
+    private YoutubePlayerFragment youtube;
 
 
 
@@ -178,7 +179,7 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
 
 
 
-                YoutubePlayerFragment youtube = new YoutubePlayerFragment();
+                this.youtube = new YoutubePlayerFragment();
                 Bundle bundle=new Bundle();
                 bundle.putString("LINK", gameDetail.getYoutubeLink());
                 youtube.setArguments(bundle);
@@ -223,6 +224,15 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_main, menu);
         super.onCreateOptionsMenu(menu,inflater);
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        System.out.println("GAME DETAIL DISTRUTTO -------------");
+        if(this.youtube!=null)
+            this.youtube.onDestroyView();
+        super.onDestroyView();
     }
 
     @Override

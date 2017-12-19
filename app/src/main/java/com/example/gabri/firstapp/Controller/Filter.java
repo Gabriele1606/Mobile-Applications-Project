@@ -133,7 +133,7 @@ public class Filter {
         int start;
         for(int i=0;i<rssList.size();i++){
             tempDescription=rssList.get(i).getDescription();
-            start = tempDescription.indexOf("\n")+2;
+            start = tempDescription.indexOf("\n")+1;
             rssList.get(i).setDescription(tempDescription.substring(start));
         }
     }

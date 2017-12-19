@@ -23,7 +23,8 @@ app:edMenuBackground="#dddddd">
         <FrameLayout
             android:id="@+id/mainframeLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
 
 
         </FrameLayout>
@@ -33,12 +34,14 @@ app:edMenuBackground="#dddddd">
 <com.mxn.soul.flowingdrawer_core.FlowingMenuLayout
     android:id="@+id/menulayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <FrameLayout
         android:id="@+id/id_container_menu"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        />
 
 </com.mxn.soul.flowingdrawer_core.FlowingMenuLayout>
 

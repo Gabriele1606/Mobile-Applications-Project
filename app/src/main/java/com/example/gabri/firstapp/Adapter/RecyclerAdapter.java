@@ -194,20 +194,28 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
         switch (viewHolder.getItemViewType()) {
             case ROWGAME:
                 RecHolder vh1 = (RecHolder) viewHolder;
                 configureRecHolder(vh1, position);
                 break;
             case RSSFEED:
-                RssFeedHolder rssFeedHolder = (RssFeedHolder) viewHolder;
+                final RssFeedHolder rssFeedHolder = (RssFeedHolder) viewHolder;
                 setRssCard(rssFeedHolder,position);
                 rssFeedHolder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
                         FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
+                        Bundle bundle=new Bundle();
+                        bundle.putString("TITLE",((RSSFeed)listObject.get(position)).getTitle());
+                        System.out.println("HO STAMPATO QUESTOOOO: "+((RSSFeed)listObject.get(position)).getTitle());
+                        bundle.putString("TEXT", ((RSSFeed)listObject.get(position)).getDescription());
+                        bundle.putString("IMAGE", ((RSSFeed)listObject.get(position)).getImageLink());
+                        bundle.putString("DATE", ((RSSFeed)listObject.get(position)).getPubdate());
+                        bundle.putString("MULTIPLAYERLINK", ((RSSFeed)listObject.get(position)).getGuid());
+                        fragmentNewsDetail.setArguments(bundle);
                         if(!TWOPANELS){
                             //FINAL SOLUTION
                             Fragment fragmentById = Data.getData().getHomePageActivity().getSupportFragmentManager().findFragmentById(R.id.mainframeLayout);

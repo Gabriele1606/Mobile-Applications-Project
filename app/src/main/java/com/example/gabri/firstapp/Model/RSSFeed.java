@@ -14,11 +14,21 @@ public class RSSFeed {
     @Element(name = "description", required = false)
     private String description;
 
-    @Element(name = "pubdate", required = false)
+    @Element(name = "pubDate", required = false)
     private String pubdate;
+
+    @Element(name = "guid", required = false)
+    private String guid;
 
     private String imageLink;
 
+    public String getGuid() {
+        return guid;
+    }
+
+    public void setGuid(String guid) {
+        this.guid = guid;
+    }
 
     public String getTitle() {
         return title;

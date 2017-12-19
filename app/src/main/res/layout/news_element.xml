@@ -3,11 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/test">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
+        app:cardBackgroundColor="@color/test"
         app:layout_constraintBottom_toTopOf="@+id/testo_news"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -19,37 +22,34 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/test"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/image_rss"
                 android:layout_width="150dp"
                 android:layout_height="100dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/album1" />
+                 />
 
 
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
 
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginLeft="5dp"
-                    >
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/title_news"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:ellipsize="end"
                         android:maxLines="3"
+                        android:textColor="@color/lightGray"
                         android:singleLine="false"
                         android:text=""
                         android:textSize="16sp"
@@ -57,23 +57,64 @@
                         android:layout_marginRight="5dp"
                         />
 
-                </TableRow>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="bottom">
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:weightSum="4">
+                    android:layout_height="30dp"
+                    android:weightSum="6"
+                    >
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        app:srcCompat="@drawable/readlateroff"
+                        android:layout_gravity="center"
+                        android:layout_weight="1" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="4" />
+                        android:layout_weight="1" />
+
+                <ImageView
+
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    app:srcCompat="@drawable/likeoff"
+                    android:layout_gravity="center"
+                    android:layout_weight="1" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.5" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_marginBottom="3dp"
+                        android:layout_weight="1"
+                        android:background="@color/red"
+                        android:text="Read More"
+                        android:textColor="@color/white"
+                        android:textStyle="bold|italic" />
 
                 </TableRow>
+                </TableLayout>
+            </LinearLayout>
 
-            </TableLayout>
+
+
+        </LinearLayout>
 
 
 

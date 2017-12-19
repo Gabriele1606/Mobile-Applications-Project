@@ -1,5 +1,6 @@
 package com.example.gabri.firstapp;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,6 +18,7 @@ import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.RowGame;
+import com.example.gabri.firstapp.Model.Title;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,7 @@ public class FragmentPage1 extends Fragment{
     private List<List<Game>> listAlbumlist;
     private RecyclerAdapter recyclerAdapter;
     private List<Object> listObject= Data.getInstance();
+    private View view;
     SwipeRefreshLayout swipeContainer;
 
 
@@ -47,7 +50,8 @@ public class FragmentPage1 extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_page1, container, false);
+        this.view = inflater.inflate(R.layout.fragment_page1, container, false);
+
 
 
 
@@ -109,9 +113,11 @@ public class FragmentPage1 extends Fragment{
         recyclerAdapter.notifyDataSetChanged();
 
         APIManager apiManager= new APIManager();
+
+        listObject.add(new Title("News from Multiplayer.it"));
+
         apiManager.getRssList(listObject,recyclerAdapter);
 
-        //apiManager.getPlatformList();
     }
 
 
