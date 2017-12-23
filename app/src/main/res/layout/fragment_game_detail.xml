@@ -103,6 +103,15 @@
 
                 >
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="8dp"
+                    android:paddingTop="8dp"
+                    android:text="Overview"
+                    android:textSize="21sp"
+                    android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/description"
                 android:layout_width="match_parent"

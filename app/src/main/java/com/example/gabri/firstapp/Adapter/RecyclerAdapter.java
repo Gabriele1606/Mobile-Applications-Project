@@ -37,6 +37,7 @@ import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.Model.Title;
 import com.example.gabri.firstapp.R;
+import com.example.gabri.firstapp.UserInfo;
 
 import java.util.List;
 import java.util.Timer;
@@ -46,6 +47,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private final int USERINFO=5;
     private final int IMGSLIDER = 4;
     private final int TITLE = 3;
     private final int SLIDER = 2;
@@ -79,6 +81,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             //rssText = (TextView) itemView.findViewById(R.id.text_news);
             rssTitle=(TextView) itemView.findViewById(R.id.title_news);
             imageView=(ImageView)itemView.findViewById(R.id.image_rss);
+
+        }
+    }
+
+    public class UserInfoHolder extends RecyclerView.ViewHolder{
+
+
+        public UserInfoHolder(View itemView) {
+            super(itemView);
 
         }
     }
@@ -140,6 +151,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return TITLE;
         } else if (listObject.get(position) instanceof ImgSlider){
             return IMGSLIDER;
+        }else if(listObject.get(position) instanceof UserInfo) {
+            return USERINFO;
         }/*else if (items.get(position) instanceof String) {
                 return IMAGE;
             }*/
@@ -178,6 +191,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 View imgsliderView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.image_slider, parent, false);
                 viewHolder = new ImgSliderHolder(imgsliderView);
+                break;
+
+            case USERINFO:
+                View userInfoView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.user_info, parent, false);
+                viewHolder = new ImgSliderHolder(userInfoView);
                 break;
             /*case IMAGE:
                 View v2 = inflater.inflate(R.layout.layout_viewholder2, viewGroup, false);
@@ -245,6 +264,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case IMGSLIDER:
                 ImgSliderHolder imgSliderHolder=(ImgSliderHolder) viewHolder;
                 startImgSlider(imgSliderHolder,position);
+                break;
+            case USERINFO:
+                //UserInfoHolder userInfoHolder=(UserInfoHolder) viewHolder;
                 break;
             /*case IMAGE:
                 ViewHolder2 vh2 = (ViewHolder2) viewHolder;
