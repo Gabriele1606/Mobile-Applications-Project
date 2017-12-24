@@ -90,8 +90,15 @@ public class FragmentPage1 extends Fragment{
 
     private void initializeData(){
 
-
-        Data.getInstance().add(new UserInfo());
+        ImgSlider imgSlider= new ImgSlider();
+        List<String> urlImages= new ArrayList<String>();
+        urlImages.add("http://thegamesdb.net/banners/fanart/original/17097-1.jpg");
+        urlImages.add("http://thegamesdb.net/banners/fanart/original/2-5.jpg");
+        urlImages.add("http://thegamesdb.net/banners/fanart/original/2-3.jpg");
+        urlImages.add("https://multiplayer.net-cdn.it/thumbs/images/2017/12/03/banner-residentevilrevelations_jpg_100x55_crop_upscale_q85.jpg");
+        urlImages.add("https://multiplayer.net-cdn.it/thumbs/images/2017/12/04/playstationawards2017_jpg_100x55_crop_upscale_q85.jpg");
+        imgSlider.setUrlImages(urlImages);
+        Data.getInstance().add(imgSlider);
         recyclerAdapter.notifyDataSetChanged();
 
 
