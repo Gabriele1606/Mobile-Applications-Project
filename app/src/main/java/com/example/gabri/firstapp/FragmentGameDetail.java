@@ -1,3 +1,4 @@
+
 package com.example.gabri.firstapp;
 
 import android.app.Activity;
@@ -76,7 +77,7 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
 
 
         super.onCreate(savedInstanceState);
@@ -112,7 +113,7 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
         //to make possible to have multiple scroll nested
         //setNestedScroll();
 
-    return this.viewRoot;
+        return this.viewRoot;
 
     }
 
@@ -196,7 +197,7 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
 
             Glide.with(this).load("http://thegamesdb.net/banners/"+boxart.getThumb()).into(this.coverImage);
             if(fanart.size()>0)
-            Glide.with(this).load("http://thegamesdb.net/banners/"+fanart.get(0).getOriginalFanart().toString()).into(this.bigImage);
+                Glide.with(this).load("http://thegamesdb.net/banners/"+fanart.get(0).getOriginalFanart().toString()).into(this.bigImage);
 
             //Details section
             if(game.getGameTitle()!=null) {
@@ -225,15 +226,15 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
 
 
 
-                this.youtube = new YoutubePlayerFragment();
-                Bundle bundle=new Bundle();
-                bundle.putString("LINK", gameDetail.getYoutubeLink());
-                youtube.setArguments(bundle);
+            this.youtube = new YoutubePlayerFragment();
+            Bundle bundle=new Bundle();
+            bundle.putString("LINK", gameDetail.getYoutubeLink());
+            youtube.setArguments(bundle);
                /* Activity activity = (Activity) mContext;
                 activity.getFragmentManager().beginTransaction().replace(R.id.homepage,youtube).addToBackStack(null).commit();*/
 
-                android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.youtube_view, youtube).commit();
+            android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.youtube_view, youtube).commit();
 
             LinearLayout listView= (LinearLayout) this.viewRoot.findViewById(R.id.comment_section);
             List<Comment> comments=new ArrayList<Comment>();
@@ -276,7 +277,7 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
 
         MenuItem favorite =menu.getItem(R.id.menu_favorite);
         if(!this.isFavorite){
-           favorite.setIcon(R.drawable.heartoff);
+            favorite.setIcon(R.drawable.heartoff);
         }else{
             favorite.setIcon(R.drawable.hearton);
         }

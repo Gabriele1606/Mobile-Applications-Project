@@ -1,3 +1,4 @@
+
 package com.example.gabri.firstapp;
 
 import android.app.Fragment;
@@ -60,7 +61,7 @@ public class FragmentWishList extends android.support.v4.app.Fragment {
                         }
                         List<Game> gameList=new ArrayList<Game>();
                         for(int i=0;i<idGame.size();i++) {
-                           gameList.add(dbQuery.getGameFromId(idGame.get(i)));
+                            gameList.add(dbQuery.getGameFromId(idGame.get(i)));
                         }
                         WishListAdapter adapter=new WishListAdapter(mContext,R.layout.wish_list_row,gameList);
                         listOfWishGame.setAdapter(adapter);

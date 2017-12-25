@@ -1,3 +1,4 @@
+
 package com.example.gabri.firstapp.Controller;
 
 import android.content.Intent;
@@ -22,23 +23,23 @@ public class Login extends AppCompatActivity {
 
     DatabaseReference databaseUsers;
 
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
-            Window w= getWindow();
-            // in Activity's onCreate() for instance
-            w.getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        Window w= getWindow();
+        // in Activity's onCreate() for instance
+        w.getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
 
 
-    databaseUsers= FirebaseDatabase.getInstance().getReference("users");
+        databaseUsers= FirebaseDatabase.getInstance().getReference("users");
 
     }
 
@@ -67,7 +68,7 @@ public class Login extends AppCompatActivity {
         User user= new User("123a","Gabbo94","gabri.bressan@gmail.com","provaPassword","http://myimage.it");
         Data.setUser(user);
 
-       databaseUsers.child(id).setValue(user);
+        databaseUsers.child(id).setValue(user);
         //databaseUsers.updateChildren(map);
         //questa sotto è un alternativa forse non funzionale
         //databaseUsers= FirebaseDatabase.getInstance().getReference("users/"+id+"/game");
