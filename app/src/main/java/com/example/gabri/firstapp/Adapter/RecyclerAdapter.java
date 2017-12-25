@@ -39,7 +39,7 @@ import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.Model.Title;
 import com.example.gabri.firstapp.R;
-import com.example.gabri.firstapp.UserInfo;
+//mport com.example.gabri.firstapp.UserInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -50,7 +50,6 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
     private final int USERINFO=5;
     private final int IMGSLIDER = 4;
     private final int TITLE = 3;
@@ -163,8 +162,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return TITLE;
         } else if (listObject.get(position) instanceof ImgSlider){
             return IMGSLIDER;
-        }else if(listObject.get(position) instanceof UserInfo) {
-            return USERINFO;
         }/*else if (items.get(position) instanceof String) {
                 return IMAGE;
             }*/
