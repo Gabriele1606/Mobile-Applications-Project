@@ -74,6 +74,7 @@
                     >
 
                     <ImageView
+                        android:id="@+id/read_later"
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         app:srcCompat="@drawable/readlateroff"

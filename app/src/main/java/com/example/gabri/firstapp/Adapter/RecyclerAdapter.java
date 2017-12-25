@@ -29,6 +29,8 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.example.gabri.firstapp.Controller.TimerSlider;
 import com.example.gabri.firstapp.FragmentProva;
+import com.example.gabri.firstapp.FragmentReadLater;
+import com.example.gabri.firstapp.FragmentWishList;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.FragmentGameDetail;
 import com.example.gabri.firstapp.FragmentNewsDetail;
@@ -38,6 +40,8 @@ import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.Model.Title;
 import com.example.gabri.firstapp.R;
 import com.example.gabri.firstapp.UserInfo;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 import java.util.Timer;
@@ -73,6 +77,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public TextView rssText;
         public TextView rssTitle;
         public ImageView imageView;
+        public ImageView readLaterButton;
         public View view;
         public RssFeedHolder(View itemView) {
             super(itemView);
@@ -81,17 +86,24 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             //rssText = (TextView) itemView.findViewById(R.id.text_news);
             rssTitle=(TextView) itemView.findViewById(R.id.title_news);
             imageView=(ImageView)itemView.findViewById(R.id.image_rss);
+            readLaterButton=(ImageView) itemView.findViewById(R.id.read_later);
 
         }
     }
 
     public class UserInfoHolder extends RecyclerView.ViewHolder{
-
+            TextView welcomeMessage;
+            ImageView wishList;
+            ImageView readLater;
 
         public UserInfoHolder(View itemView) {
             super(itemView);
+            this.welcomeMessage= (TextView) itemView.findViewById(R.id.welcome_message);
+            this.wishList=(ImageView) itemView.findViewById(R.id.wish_list_button);
+            this.readLater=(ImageView) itemView.findViewById(R.id.notification_button);
 
         }
+        public void setWelcomeMessage(String message){this.welcomeMessage.setText(message);}
     }
 
     public class SliderHolder extends RecyclerView.ViewHolder{
@@ -196,7 +208,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case USERINFO:
                 View userInfoView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.user_info, parent, false);
-                viewHolder = new ImgSliderHolder(userInfoView);
+                viewHolder = new UserInfoHolder(userInfoView);
                 break;
             /*case IMAGE:
                 View v2 = inflater.inflate(R.layout.layout_viewholder2, viewGroup, false);
@@ -220,8 +232,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 configureRecHolder(vh1, position);
                 break;
             case RSSFEED:
-                RssFeedHolder rssFeedHolder = (RssFeedHolder) viewHolder;
+                final RssFeedHolder rssFeedHolder = (RssFeedHolder) viewHolder;
                 setRssCard(rssFeedHolder,position);
+                rssFeedHolder.readLaterButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        DatabaseReference databaseWishGame= FirebaseDatabase.getInstance().getReference("news").child(Data.getIdUserForRemoteDb());
+                        String id = databaseWishGame.push().getKey();
+                        databaseWishGame.child(id).setValue(listObject.get(position));
+                        rssFeedHolder.readLaterButton.setImageResource(R.drawable.realateron);
+                    }
+                });
+
+
                 rssFeedHolder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -266,7 +289,48 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 startImgSlider(imgSliderHolder,position);
                 break;
             case USERINFO:
-                //UserInfoHolder userInfoHolder=(UserInfoHolder) viewHolder;
+                UserInfoHolder userInfoHolder=(UserInfoHolder) viewHolder;
+                userInfoHolder.setWelcomeMessage("Welcome "+Data.getUser().getUsername());
+
+                userInfoHolder.readLater.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
+
+                        if(!TWOPANELS){
+                            FragmentReadLater fragmentReadLater= new FragmentReadLater();
+                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentReadLater, "WishList");
+                            transaction.addToBackStack("TABLAYOUT");
+                            transaction.commit();
+                        }else{
+                            FragmentReadLater fragmentReadLater= new FragmentReadLater();
+                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentReadLater, "WishList");
+                            transaction.commit();
+                            Data.getData().getHomePageActivity().enlargeWishList();
+                        }
+
+                    }
+                });
+
+                userInfoHolder.wishList.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
+
+                        if(!TWOPANELS){
+                            FragmentWishList fragmentWishList= new FragmentWishList();
+                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentWishList, "WishList");
+                            transaction.addToBackStack("TABLAYOUT");
+                            transaction.commit();
+                        }else{
+                            FragmentWishList fragmentWishList= new FragmentWishList();
+                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentWishList, "WishList");
+                            transaction.commit();
+                            Data.getData().getHomePageActivity().enlargeWishList();
+                        }
+                    }
+                });
                 break;
             /*case IMAGE:
                 ViewHolder2 vh2 = (ViewHolder2) viewHolder;

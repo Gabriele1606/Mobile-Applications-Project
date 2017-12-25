@@ -22,6 +22,19 @@ public class RSSFeed {
 
     private String imageLink;
 
+    public RSSFeed() {
+
+    }
+
+
+    public RSSFeed(String title, String description, String pubdate, String guid, String imageLink) {
+        this.title = title;
+        this.description = description;
+        this.pubdate = pubdate;
+        this.guid = guid;
+        this.imageLink = imageLink;
+    }
+
     public String getGuid() {
         return guid;
     }

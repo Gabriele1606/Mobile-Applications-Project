@@ -56,7 +56,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="bottom|center"
-                        android:text="Nomeeeeeee"
+                        android:text=""
                         android:textColor="@android:color/white"
                         android:textSize="25sp" />
 
@@ -66,7 +66,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="4dp"
-                        android:text="questo è il testo"
+                        android:text=""
                         android:textColor="@android:color/white" />
 
 
@@ -102,15 +102,37 @@
                 android:orientation="vertical"
 
                 >
-
-                <TextView
+                <TableLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:lineSpacingExtra="8dp"
-                    android:paddingTop="8dp"
-                    android:text="Overview"
-                    android:textSize="21sp"
-                    android:textStyle="bold" />
+                    android:layout_height="match_parent"
+                    android:stretchColumns="*">
+                <TableRow
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="8dp"
+                        android:paddingTop="8dp"
+                        android:text="Overview"
+                        android:textSize="21sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/favorite_game"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="2dp"
+                        app:srcCompat="@drawable/hearton"
+                        android:layout_marginTop="4dp"/>
+
+
+
+                </TableRow>
+                </TableLayout>
+
+
 
             <TextView
                 android:id="@+id/description"

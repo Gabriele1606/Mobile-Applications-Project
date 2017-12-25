@@ -8,6 +8,7 @@ import android.support.transition.TransitionManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.example.gabri.firstapp.Adapter.CoverFlowAdapter;
@@ -205,6 +206,13 @@ public class HomePage extends AppCompatActivity {
         moveGuideline(0.6f);
     }
 
+    public void collapseWishList(){
+        moveGuideline(1.0f);
+    }
+    public void enlargeWishList(){
+        moveGuideline(0.6f);
+    }
+
     public void moveGuideline(float percent){
         if (isTwoPanes){
             ConstraintLayout constraintLayout= findViewById(R.id.homepage);
@@ -215,4 +223,8 @@ public class HomePage extends AppCompatActivity {
             constraintset.applyTo(constraintLayout);
         }
     }
+
+
+
+
 }

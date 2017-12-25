@@ -9,7 +9,8 @@
         app:showAsAction="never"
         android:title="Settings" />
 
-    <item android:id="@+id/menu_share"
+    <item android:id="@+id/menu_favorite"
         app:showAsAction="always"
-        android:title="Favorite" />
+        android:title="Favorite"
+        />
 </menu>

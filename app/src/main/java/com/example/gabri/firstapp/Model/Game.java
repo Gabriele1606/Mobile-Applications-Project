@@ -50,6 +50,8 @@ public class Game {
     private boolean gameHasFanart=false;
     private boolean gameHasBoxart=false;
 
+    private String idForFirebase;
+
 
     public Game(String s, int i, int cover) {
         gameTitle=s;
@@ -147,5 +149,13 @@ public class Game {
 
     public void setGameHasBoxart(boolean gameHasBoxart) {
         this.gameHasBoxart = gameHasBoxart;
+    }
+
+    public String getIdForFirebase() {
+        return idForFirebase;
+    }
+
+    public void setIdForFirebase(String idForFirebase) {
+        this.idForFirebase = idForFirebase;
     }
 }

@@ -35,6 +35,8 @@ public class Data {
 
 
     private HomePage homePageActivity;
+    private static User user;
+    private static String idUserForRemoteDb;
 
 
 
@@ -94,4 +96,13 @@ public class Data {
     public HomePage getHomePageActivity() {
         return homePageActivity;
     }
+
+    public static User getUser(){return user;}
+
+    public static void setUser(User newUser){user=newUser;}
+
+    public static String getIdUserForRemoteDb(){return idUserForRemoteDb;}
+
+    public static void setIdUserForRemoteDb(String id){idUserForRemoteDb=id;}
+
 }
