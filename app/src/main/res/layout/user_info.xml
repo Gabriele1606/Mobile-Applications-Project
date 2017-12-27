@@ -99,7 +99,7 @@
                             android:id="@+id/notification_button"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            app:srcCompat="@drawable/ringoff" />
+                            app:srcCompat="@drawable/read_later_list" />
 
                         <ImageView
                             android:id="@+id/wish_list_button"

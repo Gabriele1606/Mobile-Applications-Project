@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gabri.firstapp.Boxart;
@@ -65,7 +66,7 @@ public class WishListAdapter extends ArrayAdapter<Game> {
         garbage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("cliccato");
+                Toast.makeText(mContex,"Games removed from your wish list", Toast.LENGTH_SHORT).show();
                 DatabaseReference databaseWishGame= FirebaseDatabase.getInstance().getReference("game");
                 databaseWishGame.child(Data.getIdUserForRemoteDb()).child(Integer.toString(game.getId())).removeValue();
                 remove(game);

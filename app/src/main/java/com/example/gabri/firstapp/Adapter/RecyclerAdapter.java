@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
@@ -225,7 +226,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         switch (viewHolder.getItemViewType()) {
             case ROWGAME:
                 RecHolder vh1 = (RecHolder) viewHolder;
@@ -237,8 +238,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 rssFeedHolder.readLaterButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        Toast.makeText(rssFeedHolder.view.getContext(),"News added from your read more list", Toast.LENGTH_SHORT).show();
                         DatabaseReference databaseWishGame= FirebaseDatabase.getInstance().getReference("news").child(Data.getIdUserForRemoteDb());
                         String id = databaseWishGame.push().getKey();
+                        ((RSSFeed)listObject.get(position)).setIdForFirebase(id);
                         databaseWishGame.child(id).setValue(listObject.get(position));
                         rssFeedHolder.readLaterButton.setImageResource(R.drawable.realateron);
                     }
@@ -252,7 +255,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                         Bundle bundle=new Bundle();
                         bundle.putString("TITLE",((RSSFeed)listObject.get(position)).getTitle());
-                        System.out.println("HO STAMPATO QUESTOOOO: "+((RSSFeed)listObject.get(position)).getTitle());
                         bundle.putString("TEXT", ((RSSFeed)listObject.get(position)).getDescription());
                         bundle.putString("IMAGE", ((RSSFeed)listObject.get(position)).getImageLink());
                         bundle.putString("DATE", ((RSSFeed)listObject.get(position)).getPubdate());

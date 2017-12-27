@@ -22,6 +22,8 @@ public class RSSFeed {
 
     private String imageLink;
 
+    private String idForFirebase;
+
     public RSSFeed() {
 
     }
@@ -74,5 +76,13 @@ public class RSSFeed {
 
     public void setImageLink(String imageLink) {
         this.imageLink = imageLink;
+    }
+
+    public String getIdForFirebase() {
+        return idForFirebase;
+    }
+
+    public void setIdForFirebase(String idForFirebase) {
+        this.idForFirebase = idForFirebase;
     }
 }

@@ -58,11 +58,17 @@ public class FragmentReadLater extends android.support.v4.app.Fragment {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         newsList.clear();
                         for(DataSnapshot idSnapshot: dataSnapshot.getChildren()) {
-                            //newsList.add((RSSFeed) idSnapshot.getValue());
-                            HashMap<String, RSSFeed> newsHasMap= (HashMap<String, RSSFeed>) idSnapshot.getValue();
-                            //newsList.add(new RSSFeed(newsHasMap.get("title"),newsHasMap.get("description"),newsHasMap.get("pubdate"),newsHasMap.get("guis"),newsHasMap.get("imageLink")));
+                            RSSFeed tmp =new RSSFeed();
+                            tmp.setDescription((String) idSnapshot.child("description").getValue());
+                            tmp.setGuid((String) idSnapshot.child("guid").getValue());
+                            tmp.setImageLink((String) idSnapshot.child("imageLink").getValue());
+                            tmp.setPubdate((String) idSnapshot.child("pubdate").getValue());
+                            tmp.setTitle((String) idSnapshot.child("title").getValue());
+                            tmp.setIdForFirebase((String)idSnapshot.child("idForFirebase").getValue());
+                            System.out.println("QUESTOOO:---->"+tmp.getIdForFirebase());
 
-                            System.out.println("DOVE SONoooooo----"+newsList.get(1));
+                            newsList.add(tmp);
+
                         }
 
                         ReadLaterAdapter adapter=new ReadLaterAdapter(mContext,R.layout.read_later_list_row,newsList);

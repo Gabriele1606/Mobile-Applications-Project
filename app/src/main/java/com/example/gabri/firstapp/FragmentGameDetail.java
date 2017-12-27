@@ -226,15 +226,17 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
 
 
 
-            this.youtube = new YoutubePlayerFragment();
-            Bundle bundle=new Bundle();
-            bundle.putString("LINK", gameDetail.getYoutubeLink());
-            youtube.setArguments(bundle);
+           // this.youtube = new YoutubePlayerFragment();
+            //Bundle bundle=new Bundle();
+            //bundle.putString("LINK", gameDetail.getYoutubeLink());
+            //youtube.setArguments(bundle);
                /* Activity activity = (Activity) mContext;
                 activity.getFragmentManager().beginTransaction().replace(R.id.homepage,youtube).addToBackStack(null).commit();*/
 
-            android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.youtube_view, youtube).commit();
+            YoutubePlayerFragment myFragment = YoutubePlayerFragment.newInstance(gameDetail.getYoutubeLink());
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.youtube_view, myFragment).commit();
+            //android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            //fragmentManager.beginTransaction().replace(R.id.youtube_view, youtube).commit();
 
             LinearLayout listView= (LinearLayout) this.viewRoot.findViewById(R.id.comment_section);
             List<Comment> comments=new ArrayList<Comment>();
@@ -317,11 +319,11 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
 
     @Override
     public void onDestroyView() {
-        System.out.println("GAME DETAIL DISTRUTTO -------------");
         if(this.youtube!=null)
             this.youtube.onDestroyView();
         super.onDestroyView();
     }
+
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
