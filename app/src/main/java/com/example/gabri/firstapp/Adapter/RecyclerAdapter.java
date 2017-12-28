@@ -8,10 +8,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,9 +18,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
@@ -32,7 +29,6 @@ import com.example.gabri.firstapp.Controller.TimerSlider;
 import com.example.gabri.firstapp.FragmentReadLater;
 import com.example.gabri.firstapp.FragmentWishList;
 import com.example.gabri.firstapp.Model.Data;
-import com.example.gabri.firstapp.FragmentGameDetail;
 import com.example.gabri.firstapp.FragmentNewsDetail;
 import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.RSSFeed;
@@ -40,8 +36,11 @@ import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.Model.Title;
 import com.example.gabri.firstapp.R;
 import com.example.gabri.firstapp.UserInfo;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 import java.util.Timer;
@@ -95,6 +94,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public TextView rssTitle;
         public ImageView imageView;
         public ImageView readLaterButton;
+        public Boolean isFavorite;
         public View view;
         public RssFeedHolder(View itemView) {
             super(itemView);
@@ -249,7 +249,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder viewHolder, final int position) {
         switch (viewHolder.getItemViewType()) {
             case ROWGAME:
                 RecHolder vh1 = (RecHolder) viewHolder;
@@ -262,13 +262,46 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case RSSFEED:
                 final RssFeedHolder rssFeedHolder = (RssFeedHolder) viewHolder;
                 setRssCard(rssFeedHolder,position);
+
+                DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference();
+                databaseReference.addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.hasChild("news"+"/"+Data.getIdUserForRemoteDb()+"/"+String.valueOf(((RSSFeed)listObject.get(position)).getIdForFirebase()))){
+                                    rssFeedHolder.isFavorite=true;
+                                    rssFeedHolder.readLaterButton.setImageResource(R.drawable.readlateron);
+                                }
+                                else {
+                                    rssFeedHolder.isFavorite = false;
+                                    rssFeedHolder.readLaterButton.setImageResource(R.drawable.readlateroff);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        }
+                );
+
                 rssFeedHolder.readLaterButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        DatabaseReference databaseWishGame= FirebaseDatabase.getInstance().getReference("news").child(Data.getIdUserForRemoteDb());
-                        String id = databaseWishGame.push().getKey();
-                        databaseWishGame.child(id).setValue(listObject.get(position));
-                        rssFeedHolder.readLaterButton.setImageResource(R.drawable.realateron);
+                        if(!rssFeedHolder.isFavorite) {
+                            Toast.makeText(rssFeedHolder.view.getContext(), "News added from your read more list", Toast.LENGTH_SHORT).show();
+                            DatabaseReference databaseWishGame = FirebaseDatabase.getInstance().getReference("news").child(Data.getIdUserForRemoteDb());
+                            String id = databaseWishGame.push().getKey();
+                            ((RSSFeed) listObject.get(position)).setIdForFirebase(id);
+                            databaseWishGame.child(id).setValue(listObject.get(position));
+                            rssFeedHolder.readLaterButton.setImageResource(R.drawable.readlateron);
+                        }
+                        else{
+                            Toast.makeText(rssFeedHolder.view.getContext(), "News removed from your read more list", Toast.LENGTH_SHORT).show();
+                            DatabaseReference databaseWishGame= FirebaseDatabase.getInstance().getReference("news");
+                            databaseWishGame.child(Data.getIdUserForRemoteDb()).child(((RSSFeed)listObject.get(position)).getIdForFirebase()).removeValue();
+                            rssFeedHolder.readLaterButton.setImageResource(R.drawable.readlateroff);
+                        }
                     }
                 });
 
@@ -280,7 +313,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                         Bundle bundle=new Bundle();
                         bundle.putString("TITLE",((RSSFeed)listObject.get(position)).getTitle());
-                        System.out.println("HO STAMPATO QUESTOOOO: "+((RSSFeed)listObject.get(position)).getTitle());
                         bundle.putString("TEXT", ((RSSFeed)listObject.get(position)).getDescription());
                         bundle.putString("IMAGE", ((RSSFeed)listObject.get(position)).getImageLink());
                         bundle.putString("DATE", ((RSSFeed)listObject.get(position)).getPubdate());

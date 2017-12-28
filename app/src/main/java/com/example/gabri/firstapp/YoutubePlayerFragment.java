@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class YoutubePlayerFragment extends Fragment {
+public class YoutubePlayerFragment extends YouTubePlayerSupportFragment {
     private FragmentActivity myContext;
 
     private YouTubePlayer YPlayer;
@@ -30,7 +30,41 @@ public class YoutubePlayerFragment extends Fragment {
     private String url;
     private static  String idVideo;
 
-    @Override
+
+    public static YoutubePlayerFragment newInstance(String url){
+        YoutubePlayerFragment player=new YoutubePlayerFragment();
+        Bundle bundle =new Bundle();
+        bundle.putString("URL",url);
+
+        player.setArguments(bundle);
+        player.init();
+
+        return player;
+    }
+
+    private void init() {
+        initialize(YOUTUBE_KEY, new OnInitializedListener() {
+
+            @Override
+            public void onInitializationFailure(Provider arg0, YouTubeInitializationResult arg1) {
+            }
+
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
+                YPlayer = player;
+                YPlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
+                if (!wasRestored) {
+                    YPlayer.loadVideo(getIdFromLink(getArguments().getString("URL")), 0);
+
+
+                }
+            }
+        });
+    }
+
+
+
+   /* @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
@@ -82,7 +116,7 @@ public class YoutubePlayerFragment extends Fragment {
         return rootView;
 
     }
-
+*/
    private String getIdFromLink(String url) {
 
         String pattern = "(?<=watch\\?v=|/videos/|embed\\/)[^#\\&\\?]*";
@@ -90,11 +124,14 @@ public class YoutubePlayerFragment extends Fragment {
         Matcher matcher = compiledPattern.matcher(url);
 
         if(matcher.find()){
-            System.out.println("QUESTO è L'ID--------->"+matcher.group());
             return matcher.group();
         }
 
         return "null";
 
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 }

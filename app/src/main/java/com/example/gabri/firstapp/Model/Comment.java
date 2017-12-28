@@ -15,6 +15,9 @@ public class Comment {
         this.review = review;
         this.rate = rate;
     }
+    public Comment() {
+
+    }
 
     public String getUsername() {
         return username;

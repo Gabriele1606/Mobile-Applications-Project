@@ -18,19 +18,26 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gabri.firstapp.Adapter.CommentAdapter;
+import com.example.gabri.firstapp.Adapter.WishListAdapter;
 import com.example.gabri.firstapp.Model.Comment;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
+import com.example.gabri.firstapp.Model.RSSFeed;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,9 +75,11 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
     private Context mContext;
     private LayoutInflater inflater;
     private YoutubePlayerFragment youtube;
-    private Boolean isFavorite;
+    private  Boolean isFavorite;
     private ImageView heart;
     private Game game;
+    private int numberOfStarComment;
+    private CommentAdapter commentAdapter;
 
 
 
@@ -85,6 +94,7 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
         this.viewRoot=inflater.inflate(R.layout.fragment_game_detail,container,false);
         this.mContext=container.getContext();
         this.inflater=inflater;
+        this.numberOfStarComment=0;
         bindActivity();
 
         mAppBarLayout.addOnOffsetChangedListener(this);
@@ -106,28 +116,291 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
         this.heart=(ImageView)this.viewRoot.findViewById(R.id.favorite_game);
 
         prepareData();
-
+        setGameRate();
+        takeCommentFromFirebase();
         verifyIfFavorite();
         setFavoriteClick();
-
-        //to make possible to have multiple scroll nested
-        //setNestedScroll();
-
+        setNestedScroll();
+        setClickOnCommentStars();
+        setCommentSection();
         return this.viewRoot;
 
     }
 
+    private void setGameRate(){
+
+        final int[] numberOfEvaluation = {0};
+        final int[] totalRate = {0};
+
+        DatabaseReference databaseComment= FirebaseDatabase.getInstance().getReference();
+        databaseComment.child("comments").child(String.valueOf(gameId)).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot idSnapshot: dataSnapshot.getChildren()) {
+                            totalRate[0] +=(int)(long)idSnapshot.child("rate").getValue();
+                            numberOfEvaluation[0]++;
+                        }
+                    if(numberOfEvaluation[0]==0)
+                        turnOnRateStar(0);
+                        else
+                        turnOnRateStar((int)(totalRate[0]/numberOfEvaluation[0]));
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                }
+        );
+
+    }
+     private void turnOnRateStar(int numberOfStar){
+         ImageView starOne=(ImageView)this.viewRoot.findViewById(R.id.star_one);
+         ImageView starTwo=(ImageView)this.viewRoot.findViewById(R.id.star_two);
+         ImageView starThree=(ImageView)this.viewRoot.findViewById(R.id.star_three);
+         ImageView starFour=(ImageView)this.viewRoot.findViewById(R.id.star_four);
+         ImageView starFive=(ImageView)this.viewRoot.findViewById(R.id.star_five);
+
+         switch (numberOfStar){
+             case 0:
+                 starOne.setImageResource(R.drawable.staroff);
+                 starTwo.setImageResource(R.drawable.staroff);
+                 starThree.setImageResource(R.drawable.staroff);
+                 starFour.setImageResource(R.drawable.staroff);
+                 starFive.setImageResource(R.drawable.staroff);
+                 break;
+             case 1:
+                 starOne.setImageResource(R.drawable.staron);
+                 starTwo.setImageResource(R.drawable.staroff);
+                 starThree.setImageResource(R.drawable.staroff);
+                 starFour.setImageResource(R.drawable.staroff);
+                 starFive.setImageResource(R.drawable.staroff);
+                 break;
+             case 2:
+                 starOne.setImageResource(R.drawable.staron);
+                 starTwo.setImageResource(R.drawable.staron);
+                 starThree.setImageResource(R.drawable.staroff);
+                 starFour.setImageResource(R.drawable.staroff);
+                 starFive.setImageResource(R.drawable.staroff);
+                 break;
+             case 3:
+                 starOne.setImageResource(R.drawable.staron);
+                 starTwo.setImageResource(R.drawable.staron);
+                 starThree.setImageResource(R.drawable.staron);
+                 starFour.setImageResource(R.drawable.staroff);
+                 starFive.setImageResource(R.drawable.staroff);
+                 break;
+             case 4:
+                 starOne.setImageResource(R.drawable.staron);
+                 starTwo.setImageResource(R.drawable.staron);
+                 starThree.setImageResource(R.drawable.staron);
+                 starFour.setImageResource(R.drawable.staron);
+                 starFive.setImageResource(R.drawable.staroff);
+                 break;
+             case 5:
+                 starOne.setImageResource(R.drawable.staron);
+                 starTwo.setImageResource(R.drawable.staron);
+                 starThree.setImageResource(R.drawable.staron);
+                 starFour.setImageResource(R.drawable.staron);
+                 starFive.setImageResource(R.drawable.staron);
+                 break;
+         }
+
+     }
+
+    private void takeCommentFromFirebase() {
+        //final ListView listView= (ListView) this.viewRoot.findViewById(R.id.comment_section);
+        final LinearLayout listView= (LinearLayout) this.viewRoot.findViewById(R.id.comment_section);
+        listView.removeAllViews();
+
+        DatabaseReference databaseComment= FirebaseDatabase.getInstance().getReference();
+        final List<Comment> comments=new ArrayList<Comment>();
+        databaseComment.child("comments").child(String.valueOf(gameId)).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        comments.clear();
+                        for(DataSnapshot idSnapshot: dataSnapshot.getChildren()) {
+                            Comment tmp=new Comment();
+                            tmp.setUsername((String)idSnapshot.child("username").getValue());
+                            tmp.setRate((int)(long)idSnapshot.child("rate").getValue());
+                            tmp.setReview((String)idSnapshot.child("review").getValue());
+                            comments.add(tmp);
+                        }
+
+                       commentAdapter=new CommentAdapter(mContext,R.layout.wish_list_row,comments);
+
+                        for(int i=0;i<commentAdapter.getCount();i++){
+                            View item= commentAdapter.getView(i,null,null);
+                            listView.addView(item);
+                        }
+
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                }
+        );
+
+
+
+
+        CommentAdapter commentAdapter= new CommentAdapter(this.mContext, R.layout.comment_row,comments);
+
+        for(int i=0;i<commentAdapter.getCount();i++){
+            View item= commentAdapter.getView(i,null,null);
+            listView.addView(item);
+        }
+
+
+    }
+
+    private void setCommentSection() {
+
+        Button sendComment=(Button)this.viewRoot.findViewById(R.id.send_comment);
+        sendComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String review;
+                TextView commentView=(TextView)viewRoot.findViewById(R.id.insert_comment);
+                review=commentView.getText().toString();
+                Comment comment=new Comment("Gabbo94",review,numberOfStarComment);
+                if(!review.equals("")) {
+                    DatabaseReference databaseComment = FirebaseDatabase.getInstance().getReference("comments").child(String.valueOf(gameId));
+                    String id = databaseComment.push().getKey();
+                    databaseComment.child(id).setValue(comment);
+                    Toast.makeText(getActivity(), "Your comment has been inserted!", Toast.LENGTH_SHORT).show();
+                    resetCommentSection();
+                    takeCommentFromFirebase();
+                    setGameRate();
+                }
+                else{
+                    Toast.makeText(getActivity(),"ATTENTION! Comment box cannot be empty", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+
+    private void resetCommentSection(){
+
+        ImageView commentStarOne=(ImageView)this.viewRoot.findViewById(R.id.comment_star_one);
+        ImageView commentStarTwo=(ImageView)this.viewRoot.findViewById(R.id.comment_star_two);
+        ImageView commentStarThree=(ImageView)this.viewRoot.findViewById(R.id.comment_star_three);
+        ImageView commentStarFour=(ImageView)this.viewRoot.findViewById(R.id.comment_star_four);
+        ImageView commentStarFive=(ImageView)this.viewRoot.findViewById(R.id.comment_star_five);
+        commentStarOne.setImageResource(R.drawable.staroff);
+        commentStarTwo.setImageResource(R.drawable.staroff);
+        commentStarThree.setImageResource(R.drawable.staroff);
+        commentStarFour.setImageResource(R.drawable.staroff);
+        commentStarFive.setImageResource(R.drawable.staroff);
+
+        TextView commentView=(TextView)viewRoot.findViewById(R.id.insert_comment);
+        commentView.setText("");
+        commentView.setHint("Insert your comment...");
+
+    }
+
+    private void setClickOnCommentStars() {
+        final ImageView commentStarOne=(ImageView)this.viewRoot.findViewById(R.id.comment_star_one);
+        final ImageView commentStarTwo=(ImageView)this.viewRoot.findViewById(R.id.comment_star_two);
+        final ImageView commentStarThree=(ImageView)this.viewRoot.findViewById(R.id.comment_star_three);
+        final ImageView commentStarFour=(ImageView)this.viewRoot.findViewById(R.id.comment_star_four);
+        final ImageView commentStarFive=(ImageView)this.viewRoot.findViewById(R.id.comment_star_five);
+
+        commentStarOne.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                commentStarOne.setImageResource(R.drawable.staron);
+                commentStarTwo.setImageResource(R.drawable.staroff);
+                commentStarThree.setImageResource(R.drawable.staroff);
+                commentStarFour.setImageResource(R.drawable.staroff);
+                commentStarFive.setImageResource(R.drawable.staroff);
+                numberOfStarComment=1;
+            }
+        });
+
+        commentStarTwo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                commentStarOne.setImageResource(R.drawable.staron);
+                commentStarTwo.setImageResource(R.drawable.staron);
+                commentStarThree.setImageResource(R.drawable.staroff);
+                commentStarFour.setImageResource(R.drawable.staroff);
+                commentStarFive.setImageResource(R.drawable.staroff);
+                numberOfStarComment=2;
+            }
+        });
+
+        commentStarThree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                commentStarOne.setImageResource(R.drawable.staron);
+                commentStarTwo.setImageResource(R.drawable.staron);
+                commentStarThree.setImageResource(R.drawable.staron);
+                commentStarFour.setImageResource(R.drawable.staroff);
+                commentStarFive.setImageResource(R.drawable.staroff);
+                numberOfStarComment=3;
+            }
+        });
+
+        commentStarFour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                commentStarOne.setImageResource(R.drawable.staron);
+                commentStarTwo.setImageResource(R.drawable.staron);
+                commentStarThree.setImageResource(R.drawable.staron);
+                commentStarFour.setImageResource(R.drawable.staron);
+                commentStarFive.setImageResource(R.drawable.staroff);
+                numberOfStarComment=4;
+            }
+        });
+
+        commentStarFive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                commentStarOne.setImageResource(R.drawable.staron);
+                commentStarTwo.setImageResource(R.drawable.staron);
+                commentStarThree.setImageResource(R.drawable.staron);
+                commentStarFour.setImageResource(R.drawable.staron);
+                commentStarFive.setImageResource(R.drawable.staron);
+                numberOfStarComment=5;
+            }
+        });
+
+    }
 
 
     private void verifyIfFavorite() {
-        //Questo valore dovra poi essere settato in maniera dinamica
-        this.isFavorite=false;
+        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference();
+        databaseReference.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.hasChild("game"+"/"+Data.getIdUserForRemoteDb()+"/"+String.valueOf(gameId))){
+                            isFavorite=true;
+                            heart.setImageResource(R.drawable.hearton);
+                        }
+                        else {
+                            isFavorite = false;
+                            heart.setImageResource(R.drawable.heartoff);
+                        }
+                    }
 
-        if(!this.isFavorite){
-            this.heart.setImageResource(R.drawable.heartoff);
-        }else{
-            this.heart.setImageResource(R.drawable.hearton);
-        }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                }
+        );
+
+
+
     }
 
     private void setFavoriteClick() {
@@ -223,35 +496,9 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
             }
 
 
+            YoutubePlayerFragment myFragment = YoutubePlayerFragment.newInstance(gameDetail.getYoutubeLink());
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.youtube_view, myFragment).commit();
 
-
-
-            this.youtube = new YoutubePlayerFragment();
-            Bundle bundle=new Bundle();
-            bundle.putString("LINK", gameDetail.getYoutubeLink());
-            youtube.setArguments(bundle);
-               /* Activity activity = (Activity) mContext;
-                activity.getFragmentManager().beginTransaction().replace(R.id.homepage,youtube).addToBackStack(null).commit();*/
-
-            android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.youtube_view, youtube).commit();
-
-            LinearLayout listView= (LinearLayout) this.viewRoot.findViewById(R.id.comment_section);
-            List<Comment> comments=new ArrayList<Comment>();
-            comments.add(new Comment("Gabbo94","Il gioco risulta essere molto figo,potebbe esssere sicuramente migliorato ma comunque mi piace molto",1));
-            comments.add(new Comment("SimoDe","yamme ya",3));
-            comments.add(new Comment("RikyStream","few feqf ew fqwef  qefefewfq fqewf fqewffqf frefqwfqf143rxf25h h3cth6 2hc ",5));
-            comments.add(new Comment("RikyStream","few feqf ew fqwef  qefefewfq fqewf fqewffqf frefqwfqf143rxf25h h3cth6 2hc ",2));
-            comments.add(new Comment("Gabbo94","Il gioco risulta essere molto figo,potebbe esssere sicuramente migliorato ma comunque mi piace molto",1));
-            comments.add(new Comment("SimoDe","yamme ya",3));
-            comments.add(new Comment("RikyStream","few feqf ew fqwef  qefefewfq fqewf fqewffqf frefqwfqf143rxf25h h3cth6 2hc ",5));
-            comments.add(new Comment("RikyStream","few feqf ew fqwef  qefefewfq fqewf fqewffqf frefqwfqf143rxf25h h3cth6 2hc ",2));
-            CommentAdapter commentAdapter= new CommentAdapter(this.mContext, R.layout.comment_row,comments);
-
-            for(int i=0;i<commentAdapter.getCount();i++){
-                View item= commentAdapter.getView(i,null,null);
-                listView.addView(item);
-            }
 
         }else
             System.out.println("NULLAAAAAAAAAA");
@@ -311,17 +558,19 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
     }
 
     private void removeGameToWishList(int gameId) {
+        DatabaseReference databaseWishGame= FirebaseDatabase.getInstance().getReference("game");
+        databaseWishGame.child(Data.getIdUserForRemoteDb()).child(Integer.toString(gameId)).removeValue();
 
     }
 
 
     @Override
     public void onDestroyView() {
-        System.out.println("GAME DETAIL DISTRUTTO -------------");
         if(this.youtube!=null)
             this.youtube.onDestroyView();
         super.onDestroyView();
     }
+
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
