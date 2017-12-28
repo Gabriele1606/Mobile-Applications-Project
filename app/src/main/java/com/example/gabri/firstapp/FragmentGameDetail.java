@@ -26,11 +26,15 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gabri.firstapp.Adapter.CommentAdapter;
+import com.example.gabri.firstapp.Adapter.WishListAdapter;
 import com.example.gabri.firstapp.Model.Comment;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +72,7 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
     private Context mContext;
     private LayoutInflater inflater;
     private YoutubePlayerFragment youtube;
-    private Boolean isFavorite;
+    private  Boolean isFavorite;
     private ImageView heart;
     private Game game;
 
@@ -120,14 +124,30 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
 
 
     private void verifyIfFavorite() {
-        //Questo valore dovra poi essere settato in maniera dinamica
-        this.isFavorite=false;
+        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference();
+        databaseReference.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.hasChild("game"+"/"+Data.getIdUserForRemoteDb()+"/"+String.valueOf(gameId))){
+                            isFavorite=true;
+                            heart.setImageResource(R.drawable.hearton);
+                        }
+                        else {
+                            isFavorite = false;
+                            heart.setImageResource(R.drawable.heartoff);
+                        }
+                    }
 
-        if(!this.isFavorite){
-            this.heart.setImageResource(R.drawable.heartoff);
-        }else{
-            this.heart.setImageResource(R.drawable.hearton);
-        }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                }
+        );
+
+        //Questo valore dovra poi essere settato in maniera dinamica
+
     }
 
     private void setFavoriteClick() {
@@ -313,6 +333,8 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
     }
 
     private void removeGameToWishList(int gameId) {
+        DatabaseReference databaseWishGame= FirebaseDatabase.getInstance().getReference("game");
+        databaseWishGame.child(Data.getIdUserForRemoteDb()).child(Integer.toString(gameId)).removeValue();
 
     }
 

@@ -124,7 +124,6 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginLeft="2dp"
-                        app:srcCompat="@drawable/hearton"
                         android:layout_marginTop="4dp"/>
 
 

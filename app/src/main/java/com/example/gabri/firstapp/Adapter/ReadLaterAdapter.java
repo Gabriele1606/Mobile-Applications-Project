@@ -55,8 +55,9 @@ public class ReadLaterAdapter extends ArrayAdapter<RSSFeed> {
 
         coverImage=(ImageView) convertView.findViewById(R.id.wish_news_cover);
         garbage=(ImageView) convertView.findViewById(R.id.garbage);
+        garbage.setTag(position);
         newsTitle = (TextView)convertView.findViewById(R.id.news_title);
-        System.out.println("Sto stampando questo"+getItem(position).toString());
+        newsTitle.setTag(position);
         news = getItem(position);
         newsTitle.setText(news.getTitle());
         Glide.with(getContext()).load(news.getImageLink()).into(coverImage);
@@ -72,10 +73,12 @@ public class ReadLaterAdapter extends ArrayAdapter<RSSFeed> {
         garbage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int pos=(int)view.getTag();
+                RSSFeed tmp=getItem(pos);
                 Toast.makeText(mContex,"News removed from your read more list", Toast.LENGTH_SHORT).show();
                 DatabaseReference databaseWishGame= FirebaseDatabase.getInstance().getReference("news");
-                databaseWishGame.child(Data.getIdUserForRemoteDb()).child(news.getIdForFirebase()).removeValue();
-                remove(news);
+                databaseWishGame.child(Data.getIdUserForRemoteDb()).child(tmp.getIdForFirebase()).removeValue();
+                remove(tmp);
                 notifyDataSetChanged();
 
             }
@@ -88,14 +91,16 @@ public class ReadLaterAdapter extends ArrayAdapter<RSSFeed> {
         this.newsTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                int pos=(int)view.getTag();
+                RSSFeed temp=getItem(pos);
                 boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
 
                 Bundle bundle=new Bundle();
-                bundle.putString("TITLE",news.getTitle());
-                bundle.putString("TEXT", news.getDescription());
-                bundle.putString("IMAGE", news.getImageLink());
-                bundle.putString("DATE", news.getPubdate());
-                bundle.putString("MULTIPLAYERLINK", news.getGuid());
+                bundle.putString("TITLE",temp.getTitle());
+                bundle.putString("TEXT", temp.getDescription());
+                bundle.putString("IMAGE", temp.getImageLink());
+                bundle.putString("DATE", temp.getPubdate());
+                bundle.putString("MULTIPLAYERLINK", temp.getGuid());
 
                 if(!TWOPANELS){
                     FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
