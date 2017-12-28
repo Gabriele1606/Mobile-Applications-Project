@@ -382,8 +382,7 @@
                     android:name="com.google.android.youtube.player.YouTubePlaye‌​rFragment"
                     android:id="@+id/youtube_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:configChanges="keyboardHidden|orientation|screenSize">
+                    android:layout_height="wrap_content">
                 </FrameLayout>
 
                 <View
@@ -425,11 +424,68 @@
                     android:layout_marginTop="15dp"
                     android:background="@color/black" />
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="8dp"
+                    android:paddingTop="8dp"
+                    android:text="Insert your comment"
+                    android:textSize="21sp"
+                    android:textStyle="bold" />
+
+                <TableRow
+                    android:id="@+id/tableRow2"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp" >
+
+                    <ImageView
+                        android:id="@+id/comment_star_one"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="2dp"
+                        app:srcCompat="@drawable/staroff"
+                        android:layout_marginTop="4dp"/>
+
+                    <ImageView
+                        android:id="@+id/comment_star_two"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="2dp"
+                        app:srcCompat="@drawable/staroff"
+                        android:layout_marginTop="4dp"/>
+
+                    <ImageView
+                        android:id="@+id/comment_star_three"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="2dp"
+                        app:srcCompat="@drawable/staroff"
+                        android:layout_marginTop="4dp"/>
+
+                    <ImageView
+                        android:id="@+id/comment_star_four"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="2dp"
+                        app:srcCompat="@drawable/staroff"
+                        android:layout_marginTop="4dp"/>
+
+                    <ImageView
+                        android:id="@+id/comment_star_five"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="2dp"
+                        app:srcCompat="@drawable/staroff"
+                        android:layout_marginTop="4dp"/>
+
+                </TableRow>
+
                 <TableRow
                     android:id="@+id/tableRow1"
                     android:layout_width="match_parent"
                     android:weightSum="4"
-                    android:layout_height="40dp" >
+                    android:layout_height="60dp"
+                    android:layout_marginTop="10dp">
 
                 <EditText
                     android:id="@+id/insert_comment"

@@ -132,7 +132,6 @@ public class YoutubePlayerFragment extends YouTubePlayerSupportFragment {
     }
     @Override
     public void onDestroyView() {
-        YPlayer.pause();
         super.onDestroyView();
     }
 }

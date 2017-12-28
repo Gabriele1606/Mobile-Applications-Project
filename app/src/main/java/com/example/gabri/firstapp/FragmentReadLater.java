@@ -65,7 +65,6 @@ public class FragmentReadLater extends android.support.v4.app.Fragment {
                             tmp.setPubdate((String) idSnapshot.child("pubdate").getValue());
                             tmp.setTitle((String) idSnapshot.child("title").getValue());
                             tmp.setIdForFirebase((String)idSnapshot.child("idForFirebase").getValue());
-                            System.out.println("QUESTOOO:---->"+tmp.getIdForFirebase());
 
                             newsList.add(tmp);
 
