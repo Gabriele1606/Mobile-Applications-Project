@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -28,7 +29,6 @@ import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.example.gabri.firstapp.Controller.TimerSlider;
-import com.example.gabri.firstapp.FragmentProva;
 import com.example.gabri.firstapp.FragmentReadLater;
 import com.example.gabri.firstapp.FragmentWishList;
 import com.example.gabri.firstapp.Model.Data;
@@ -51,6 +51,7 @@ import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private final int GRIDGAME=6;
     private final int USERINFO=5;
     private final int IMGSLIDER = 4;
     private final int TITLE = 3;
@@ -73,6 +74,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             //System.out.println(this.adapter);
         }
     }
+
+    public class GridHolder extends RecyclerView.ViewHolder {
+        public int SPANCOUNT = 3;
+        public RecyclerView recelement;
+        public GridAdapter adapter;
+
+        public GridHolder(View view) {
+            super(view);
+            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(mContext,SPANCOUNT);
+            recelement=(RecyclerView) view.findViewById(R.id.rec_element_id);
+            recelement.setLayoutManager(mLayoutManager);
+            recelement.setItemAnimator(new DefaultItemAnimator());
+            //System.out.println(this.adapter);
+        }
+    }
+
     public class RssFeedHolder extends RecyclerView.ViewHolder{
         public TextView rssText;
         public TextView rssTitle;
@@ -156,6 +173,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (listObject.get(position) instanceof RowGame) {
             //if (((RowGame) listObject.get(position)).isSlider())
                 //return SLIDER;
+            if (((RowGame) listObject.get(position)).isGrid())
+                return GRIDGAME;
             return ROWGAME;
         }else if (listObject.get(position) instanceof RSSFeed){
             return RSSFEED;
@@ -180,6 +199,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 View itemView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.horizontal_recycler, parent, false);
                 viewHolder = new RecHolder(itemView);
+                break;
+            case GRIDGAME:
+                View gridView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.horizontal_recycler, parent, false);
+                viewHolder = new GridHolder(gridView);
                 break;
 
             case RSSFEED:
@@ -230,6 +254,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case ROWGAME:
                 RecHolder vh1 = (RecHolder) viewHolder;
                 configureRecHolder(vh1, position);
+                break;
+            case GRIDGAME:
+                GridHolder gridHolder = (GridHolder) viewHolder;
+                configureGridHolder(gridHolder, position);
                 break;
             case RSSFEED:
                 final RssFeedHolder rssFeedHolder = (RssFeedHolder) viewHolder;
@@ -342,6 +370,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 break;*/
         }
 
+    }
+
+    private void configureGridHolder(GridHolder gridHolder, int position) {
+        boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
+        RowGame rowGame=(RowGame)listObject.get(position);
+        gridHolder.adapter=new GridAdapter(mContext,rowGame.getList());
+        if (TWOPANELS)
+            gridHolder.SPANCOUNT=5;
+        gridHolder.recelement.setAdapter(gridHolder.adapter);
+        gridHolder.recelement.setNestedScrollingEnabled(false);
+        gridHolder.recelement.setItemAnimator(new SlideInUpAnimator());
     }
 
     private  void startImgSlider(ImgSliderHolder holder,int position ){

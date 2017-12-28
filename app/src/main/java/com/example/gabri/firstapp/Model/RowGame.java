@@ -8,6 +8,7 @@ import java.util.List;
 
 public class RowGame {
     private List<Game> listGame;
+    private boolean isGrid=false;
     private boolean isSlider=false;
     public RowGame(){
 
@@ -23,5 +24,11 @@ public class RowGame {
     }
     public boolean isSlider(){
         return isSlider;
+    }
+    public boolean isGrid() {
+        return isGrid;
+    }
+    public void setGrid(boolean grid) {
+        isGrid = grid;
     }
 }
