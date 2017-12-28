@@ -118,7 +118,7 @@ public class Login extends AppCompatActivity {
         temp.add("a");
         temp.add("b");
 
-        String id=databaseUsers.push().getKey();
+        String id=firebaseUser.getUid();
         Data.setIdUserForRemoteDb(id);
        /* Map<String, Object> map = new HashMap<>();
         map.put(id+"/nameId1", "John");
