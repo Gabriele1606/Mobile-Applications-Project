@@ -31,7 +31,6 @@ import com.bumptech.glide.request.target.Target;
 import com.example.gabri.firstapp.DBQuery;
 import com.example.gabri.firstapp.FragmentGameDetail;
 import com.example.gabri.firstapp.FragmentPage1;
-import com.example.gabri.firstapp.FragmentProva;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.R;
@@ -40,9 +39,7 @@ import java.util.List;
 
 
 
-/**
- * Created by Ravi Tamada on 18/05/16.
- */
+
 public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.MyViewHolder> {
 
     private Context mContext;
@@ -60,6 +57,7 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
             title =(TextView) view.findViewById(R.id.titleGame);
             thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
             progressBar=(ProgressBar) view.findViewById(R.id.progressCard);
+
 
         }
     }

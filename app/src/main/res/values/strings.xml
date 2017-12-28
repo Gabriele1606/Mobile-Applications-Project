@@ -15,4 +15,8 @@
     <string name="player_error">Error initializing YouTube player: %s</string>
     <string name="seek_to">Jump To</string>
     <string name="seek_to_hint">Seconds</string>
+
+    <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
+    <string name="facebook_application_id" translatable="false">fb438038333265735</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb438038333265735</string>
 </resources>

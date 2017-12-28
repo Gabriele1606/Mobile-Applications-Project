@@ -10,7 +10,7 @@ android:clipChildren="false"
 android:clipToPadding="false"
 app:edPosition="1"
 app:edMenuSize="260dp"
-app:edMenuBackground="#dddddd">
+app:edMenuBackground="@color/black">
 
 <!--content-->
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -41,7 +41,24 @@ app:edMenuBackground="#dddddd">
         android:id="@+id/id_container_menu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        >
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <include layout="@layout/user_info"/>
+            <Button
+                android:id="@+id/logout_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Logout"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+
+    </FrameLayout>
 
 </com.mxn.soul.flowingdrawer_core.FlowingMenuLayout>
 

@@ -1,6 +1,8 @@
 package com.example.gabri.firstapp.Controller;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.design.widget.FloatingActionButton;
@@ -10,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import com.example.gabri.firstapp.Adapter.CoverFlowAdapter;
 import com.example.gabri.firstapp.GameDetailXML;
@@ -19,6 +22,9 @@ import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.GameCover;
 import com.example.gabri.firstapp.Model.TabFragment;
 import com.example.gabri.firstapp.R;
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.mxn.soul.flowingdrawer_core.ElasticDrawer;
 import com.mxn.soul.flowingdrawer_core.FlowingDrawer;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -92,7 +98,21 @@ public class HomePage extends AppCompatActivity {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.mainframeLayout, new TabFragment(), "TABLAYOUT").commit();
-
+            Button logoutButton=(Button)findViewById(R.id.logout_button);
+            final HomePage homePage = this;
+            logoutButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AuthUI.getInstance()
+                            .signOut(homePage)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    //DA COMPLETARE
+                                    homePage.logout();
+                                }
+                            });
+                }
+            });
         }else{
            /* FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.mainframeLayout, new TabFragment());
@@ -130,6 +150,12 @@ public class HomePage extends AppCompatActivity {
 
 
 
+    }
+
+    public void logout(){
+        Intent login= new Intent(this,Login.class);
+        startActivity(login);
+        finish();
     }
 
     private void addFloatingButton() {

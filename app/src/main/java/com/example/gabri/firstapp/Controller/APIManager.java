@@ -32,6 +32,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 
+import static android.os.Build.VERSION_CODES.N;
+
 /**
  * Created by simon on 18/11/2017.
  */
@@ -313,6 +315,7 @@ public class APIManager {
     }
 
     public class MyAsyncTask extends AsyncTask<List<Platform>, Void, Bitmap> {
+        private int MAX = 10;
         private SampleFragmentPagerAdapter observer;
         private String developName=null;
         @Override
@@ -331,7 +334,7 @@ public class APIManager {
             final PossibleAPI possibleAPI = retrofitObject.create(PossibleAPI.class);
             Call<GameDetailXML> callToGameDetail;
             for (int i = 0; i < platformOfSpecifiedDeveloper[0].size(); i++) {
-                for (int j = 0; j < platformOfSpecifiedDeveloper[0].get(i).getGameList().size() && j < 4; j++) {
+                for (int j = 0; j < platformOfSpecifiedDeveloper[0].get(i).getGameList().size() && j < MAX; j++) {
                     gameId = platformOfSpecifiedDeveloper[0].get(i).getGameList().get(j).getId();
                     if (ids.contains(gameId)){
                         continue;
@@ -351,7 +354,7 @@ public class APIManager {
                                 gameDetail.getImages().save();
                                 FlowManager.getModelAdapter(GameDetail.class).save(gameDetail);
                                 if ((finalI + 1) >= platformOfSpecifiedDeveloper[0].size() &&
-                                        ((finalJ + 1) >= platformOfSpecifiedDeveloper[0].get(finalI).getGameList().size() || (finalJ + 1) >= 4)) {
+                                        ((finalJ + 1) >= platformOfSpecifiedDeveloper[0].get(finalI).getGameList().size() || (finalJ + 1) >= MAX)) {
                                     System.out.println("NOTIFICO RICEZIONE DI TUTTI I DETTAGLI");
                                     if(developName!=null){
                                         if (!developName.isEmpty()){

@@ -1,11 +1,14 @@
 package com.example.gabri.firstapp.Model;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -27,7 +30,7 @@ public class TabFragment extends Fragment {
 
         APIManager apiManager = new APIManager();
         View view = inflater.inflate(R.layout.tab_fragment, container, false);
-        ViewPager viewPager=(ViewPager) view.findViewById(R.id.viewpager);
+        final ViewPager viewPager=(ViewPager) view.findViewById(R.id.viewpager);
         SampleFragmentPagerAdapter sampleFragmentPagerAdapter = new SampleFragmentPagerAdapter(getChildFragmentManager(), view.getContext(), Data.getInstance());
         viewPager.setAdapter(sampleFragmentPagerAdapter);
         apiManager.setObserver(sampleFragmentPagerAdapter);
@@ -38,7 +41,6 @@ public class TabFragment extends Fragment {
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
-
 
 
         return view;

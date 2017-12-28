@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="red">#d23126</color>
+    <color name="yellow">#eeff00</color>
     <color name="gray">#cc5b5050</color>
     <color name="black">#000000</color>
     <color name="accent_material_light_1">#8e8d8d</color>
@@ -10,5 +11,6 @@
     <color name="lightGray">#bfbfbf</color>
     <color name="viewBg">#f1f5f8</color>
     <color name="album_title">#4c4c4c</color>
+    <color name="accent_material_light">#f50000</color>
     #f38b170f
 </resources>

@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -61,9 +63,11 @@ public class FragmentPage1 extends Fragment{
         vrecyclerView= (RecyclerView) view.findViewById(R.id.v_recyclerView);
 
         recyclerAdapter= new RecyclerAdapter(view.getContext(),listObject);
+
         RecyclerView.LayoutManager vLayoutManager= new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL,false);
         vrecyclerView.setLayoutManager(vLayoutManager);
         vrecyclerView.setItemAnimator(new SlideInDownAnimator());
+        vrecyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(),DividerItemDecoration.VERTICAL));
         //Animation Adapter
         ScaleInAnimationAdapter animatorAdapter= new ScaleInAnimationAdapter(recyclerAdapter);
         animatorAdapter.setFirstOnly(false);

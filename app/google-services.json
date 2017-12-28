@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "617517794799",
+    "firebase_url": "https://dima-34792.firebaseio.com",
+    "project_id": "dima-34792",
+    "storage_bucket": "dima-34792.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:617517794799:android:fb5f496e51c29eef",
+        "android_client_info": {
+          "package_name": "com.example.gabri.firstapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "617517794799-1hn5uo4rs6km2gaok9pg631lvphp1c5o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gabri.firstapp",
+            "certificate_hash": "8afe25d075bd7cf34fbb3f513d3d0401fa25b12c"
+          }
+        },
+        {
+          "client_id": "617517794799-t325ijl7btsp20l07dipavoo2a872dub.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYnXy-I5KWKBAYrU0-2fvZRlAl_btq-d8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "617517794799-t325ijl7btsp20l07dipavoo2a872dub.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
