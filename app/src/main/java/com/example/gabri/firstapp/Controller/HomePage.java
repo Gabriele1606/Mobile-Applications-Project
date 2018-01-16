@@ -7,14 +7,19 @@ import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.design.widget.FloatingActionButton;
 import android.support.transition.TransitionManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.gabri.firstapp.Adapter.CoverFlowAdapter;
+import com.example.gabri.firstapp.FragmentReadLater;
+import com.example.gabri.firstapp.FragmentWishList;
 import com.example.gabri.firstapp.GameDetailXML;
 import com.example.gabri.firstapp.GameEntity;
 import com.example.gabri.firstapp.GameXML;
@@ -98,28 +103,78 @@ public class HomePage extends AppCompatActivity {
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.mainframeLayout, new TabFragment(), "TABLAYOUT").commit();
-            Button logoutButton=(Button)findViewById(R.id.logout_button);
-            final HomePage homePage = this;
-            logoutButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    AuthUI.getInstance()
-                            .signOut(homePage)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    //DA COMPLETARE
-                                    homePage.logout();
-                                }
-                            });
-                }
-            });
+
         }else{
+
            /* FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.mainframeLayout, new TabFragment());
             transaction.addToBackStack(null);
             transaction.commit();*/
         }
+        TextView textView= (TextView)findViewById(R.id.text_News);
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
+                Fragment fragment = getSupportFragmentManager().findFragmentByTag("Newslist");
+                if(fragment == null) {
+                    if (!TWOPANELS) {
+                        FragmentReadLater fragmentReadLater = new FragmentReadLater();
+                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentReadLater, "Newslist");
+                        transaction.addToBackStack("TABLAYOUT");
+                        transaction.commit();
+                    } else {
+                        FragmentReadLater fragmentReadLater = new FragmentReadLater();
+                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail, fragmentReadLater, "Newslist");
+                        transaction.commit();
+                        Data.getData().getHomePageActivity().enlargeWishList();
+                    }
+                    FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.drawerlayout);
+                    mDrawer.closeMenu(true);
+                }
+            }
+        });
 
+        TextView textView2= (TextView) findViewById(R.id.text_Games);
+        textView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
+                Fragment fragment = getSupportFragmentManager().findFragmentByTag("Gamelist");
+                if(fragment == null){
+                    if(!TWOPANELS){
+                        FragmentWishList fragmentWishList= new FragmentWishList();
+                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentWishList, "Gamelist");
+                        transaction.addToBackStack("TABLAYOUT");
+                        transaction.commit();
+                    }else{
+                        FragmentWishList fragmentWishList= new FragmentWishList();
+                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentWishList, "Gamelist");
+                        transaction.commit();
+                        Data.getData().getHomePageActivity().enlargeWishList();
+                    }
+                    FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.drawerlayout);
+                    mDrawer.closeMenu(true);
+                }
+            }
+        });
+
+        final HomePage homePage = this;
+
+        Button logoutButton=(Button)findViewById(R.id.logout_button);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AuthUI.getInstance()
+                        .signOut(homePage)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            public void onComplete(@NonNull Task<Void> task) {
+                                //DA COMPLETARE
+                                homePage.logout();
+                            }
+                        });
+            }
+        });
 
 
 

@@ -5,6 +5,7 @@ import com.example.gabri.firstapp.Model.Game_Table;
 import com.example.gabri.firstapp.Model.Platform;
 import com.example.gabri.firstapp.Model.Platform_Table;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.sql.language.Where;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,10 @@ public class DBQuery {
         }
         gameList = SQLite.select().from(Game.class).where(Game_Table.idPlatform.in(platformId)).queryList();
         return gameList;
+    }
+    public Platform getPlatform(String platformName){
+        Platform platform = SQLite.select().from(Platform.class).where(Platform_Table.name.eq(platformName)).querySingle();
+        return platform;
     }
 
     public List<Fanart> getFanartFromGameList(List<Game> gameList){
@@ -93,6 +98,19 @@ public class DBQuery {
     public List<Game> getGameFromPlatfom(Platform platform) {
         List<Game> gameList;
         gameList = SQLite.select().from(Game.class).where(Game_Table.idPlatform.eq(platform.getId())).queryList();
+        return gameList;
+    }
+
+    public List<Game> getGamesWithDetail(Platform platform) {
+        List<Game> gameList;
+        gameList = SQLite.select().from(Game.class).where(Game_Table.idPlatform.eq(platform.getId())).queryList();
+        List<GameDetail> gameDetail = getGameDetail(gameList);
+        List<Integer> ids= new ArrayList<Integer>();
+        for (GameDetail gd :
+                gameDetail) {
+            ids.add(gd.getId());
+        }
+        gameList = SQLite.select().from(Game.class).where(Game_Table.id.in(ids)).queryList();
         return gameList;
     }
 

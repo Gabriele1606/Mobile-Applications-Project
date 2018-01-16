@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,12 +29,18 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.example.gabri.firstapp.Controller.APIManager;
 import com.example.gabri.firstapp.DBQuery;
 import com.example.gabri.firstapp.FragmentGameDetail;
 import com.example.gabri.firstapp.FragmentPage1;
+import com.example.gabri.firstapp.GameDetail;
+import com.example.gabri.firstapp.GameDetail_Table;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
+import com.example.gabri.firstapp.Model.Game_Table;
+import com.example.gabri.firstapp.Model.Platform;
 import com.example.gabri.firstapp.R;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.List;
 
@@ -42,8 +49,66 @@ import java.util.List;
 
 public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.MyViewHolder> {
 
+    private final RecyclerView recyclerView;
     private Context mContext;
     private List<Game> gameList;
+    private int visibleThreshold = 20;
+    private int lastVisibleItem, totalItemCount,visibleItemCount;
+    boolean isLoading;
+    public HorizontalAdapter(Context mContext, List<Game> list, RecyclerView recelement) {
+        this.mContext = mContext;
+        this.gameList = list;
+        this.recyclerView=recelement;
+        final HorizontalAdapter horizontalAdapter=this;
+        final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                visibleItemCount = layoutManager.getChildCount();
+                totalItemCount = layoutManager.getItemCount();
+                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                if (dx!=0||dy!=0){
+                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleItemCount)) {
+                    //API
+                    APIManager apiManager = new APIManager();
+                    if (gameList != null)
+                        if (gameList.size() > 0) {
+                            System.out.println("CHIEDO NUOVI GIOCHI");
+                            Game game = gameList.get(0);
+                            String platformName = game.getPlatform();
+                            DBQuery dbQuery = new DBQuery();
+                            Platform platform = dbQuery.getPlatform(platformName);
+                            apiManager.loadMoreGame(platform, horizontalAdapter);
+                            isLoading = true;
+                        }
+                }
+            }
+            }
+
+        });
+    }
+
+
+
+    public void addNewIds(List<Integer> idsNewGameDetail) {
+        if(gameList!=null){
+            List<Game> newGames=SQLite.select().from(Game.class).where(Game_Table.id.in(idsNewGameDetail)).queryList();
+            int size = gameList.size();
+            int newsize=size;
+            for (Game g :
+                    newGames) {
+                if (!gameList.contains(g)){
+                    gameList.add(g);
+                    newsize++;
+                }
+            }
+            notifyItemRangeInserted((size+1),newsize);
+            setLoaded();
+        }
+    }
+
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public View view;
@@ -63,10 +128,6 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
     }
 
 
-    public HorizontalAdapter(Context mContext, List<Game> gameList) {
-        this.mContext = mContext;
-        this.gameList = gameList;
-    }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -170,6 +231,11 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
 
     @Override
     public int getItemCount() {
-        return gameList.size();
+        if (gameList!=null)
+            return gameList.size();
+        return 0;
+    }
+    public void setLoaded() {
+        isLoading = false;
     }
 }

@@ -360,12 +360,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                         if(!TWOPANELS){
                             FragmentReadLater fragmentReadLater= new FragmentReadLater();
-                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentReadLater, "WishList");
+                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentReadLater, "Newslist");
                             transaction.addToBackStack("TABLAYOUT");
                             transaction.commit();
                         }else{
                             FragmentReadLater fragmentReadLater= new FragmentReadLater();
-                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentReadLater, "WishList");
+                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentReadLater, "Newslist");
                             transaction.commit();
                             Data.getData().getHomePageActivity().enlargeWishList();
                         }
@@ -380,12 +380,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                         if(!TWOPANELS){
                             FragmentWishList fragmentWishList= new FragmentWishList();
-                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentWishList, "WishList");
+                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentWishList, "Gamelist");
                             transaction.addToBackStack("TABLAYOUT");
                             transaction.commit();
                         }else{
                             FragmentWishList fragmentWishList= new FragmentWishList();
-                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentWishList, "WishList");
+                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentWishList, "Gamelist");
                             transaction.commit();
                             Data.getData().getHomePageActivity().enlargeWishList();
                         }
@@ -432,8 +432,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         RecyclerView recyclerElem;
 
         RowGame rowGame = (RowGame) listObject.get(position);
-        holder.adapter= new HorizontalAdapter(mContext,rowGame.getList());
+        holder.adapter= new HorizontalAdapter(mContext,rowGame.getList(),holder.recelement);
         holder.recelement.setAdapter(holder.adapter);
+
         holder.recelement.setNestedScrollingEnabled(false);
         //prova
         holder.recelement.setItemAnimator(new SlideInUpAnimator());

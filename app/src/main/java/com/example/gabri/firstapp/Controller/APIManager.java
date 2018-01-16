@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 
 import com.example.gabri.firstapp.API.PossibleAPI;
+import com.example.gabri.firstapp.Adapter.HorizontalAdapter;
 import com.example.gabri.firstapp.Adapter.RecyclerAdapter;
 import com.example.gabri.firstapp.Adapter.SampleFragmentPagerAdapter;
 import com.example.gabri.firstapp.Fanart;
@@ -175,9 +176,21 @@ public class APIManager {
         MyAsyncTask myAsyncTask = new MyAsyncTask();
         myAsyncTask.setObserver(this.observer);
         myAsyncTask.setDevelopName(developName);
+        if (platformList.size()==1) {
+            System.out.println("C'è un PLATFORM UNICO");
+            myAsyncTask.setMAX(40);
+        }
         Data.getData().addTask(myAsyncTask);
         myAsyncTask.execute(platformList);
 
+    }
+
+    public void loadMoreGame(Platform platform, HorizontalAdapter horizontalAdapter){
+        TaskLoadMore taskLoadMore= new TaskLoadMore();
+        taskLoadMore.setObserver(horizontalAdapter);
+        String platformName= platform.getName();
+        taskLoadMore.setPlatformName(platformName);
+        taskLoadMore.execute(platform);
     }
 
     public void getPlatformFactory() {
@@ -315,7 +328,7 @@ public class APIManager {
     }
 
     public class MyAsyncTask extends AsyncTask<List<Platform>, Void, Bitmap> {
-        private int MAX = 10;
+        private int MAX = 5;
         private SampleFragmentPagerAdapter observer;
         private String developName=null;
         @Override
@@ -404,6 +417,97 @@ public class APIManager {
 
         public void setDevelopName(String developName) {
             this.developName = developName;
+        }
+        public void setMAX(int nMax){
+            MAX=nMax;
+        }
+    }
+
+    public class TaskLoadMore extends AsyncTask<Platform, Void, Bitmap> {
+        private int MAX = 30;
+        private HorizontalAdapter observer;
+        private String platformName=null;
+
+        @Override
+        protected Bitmap doInBackground(final Platform... platform) {
+            boolean atLeastOne=false;
+            List<GameDetail> gameDetails = SQLite.select().from(GameDetail.class).queryList();
+            List<Integer> ids= new ArrayList<Integer>();
+            for (GameDetail gd :
+                    gameDetails) {
+                ids.add(gd.getId());
+            }
+            int gameId;
+            Retrofit retrofitObject = new Retrofit.Builder().baseUrl(BASE_URL)
+                    .addConverterFactory(SimpleXmlConverterFactory.create())
+                    .build();
+            final PossibleAPI possibleAPI = retrofitObject.create(PossibleAPI.class);
+            Call<GameDetailXML> callToGameDetail;
+                for (int j = 0; j < platform[0].getGameList().size() && j < MAX; j++) {
+                    gameId = platform[0].getGameList().get(j).getId();
+                    if (ids.contains(gameId)){
+                        continue;
+                    }
+                    System.out.println();
+                    //System.out.println("GIOCHI PIATTAFORMA: "+platformOfSpecifiedDeveloper[0].get(i).getId()+platformOfSpecifiedDeveloper[0].get(i).getGameList());
+                    callToGameDetail = possibleAPI.getGameDetail(gameId);
+                    final int finalJ = j;
+                    final List<Integer> idsNewGameDetail= new ArrayList<Integer>();
+                    callToGameDetail.enqueue(new Callback<GameDetailXML>() {
+                        @Override
+                        public void onResponse(Call<GameDetailXML> call, Response<GameDetailXML> response) {
+                            GameDetail gameDetail = response.body().gameDetail;
+                            //IMPOSTO ULTERIORI DATI PER IL DB E SALVO LE IMMAGINI CON FANART E BOX NEL DB
+                            if (gameDetail != null) {
+                                System.out.println("RICEVO DETTAGLI: " + gameDetail.getGameTitle());
+                                gameDetail.getImages().setIdGame(gameDetail.getId());
+                                gameDetail.getImages().save();
+                                FlowManager.getModelAdapter(GameDetail.class).save(gameDetail);
+                                idsNewGameDetail.add(gameDetail.getId());
+                                    System.out.println("NOTIFICO RICEZIONE DI TUTTI I DETTAGLI");
+                                    if(platformName!=null){
+                                        if (!platformName.isEmpty()){
+                                            //DEVO NOTIFICARE L'ADAPTER
+                                            System.out.println("LOAD MORE NOTIFICA Horizontal Adapter ");
+                                            notifyObserver(idsNewGameDetail);
+                                        }
+                                    }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<GameDetailXML> call, Throwable t) {
+                            // System.out.println(t.getCause().toString());
+                            //System.out.println(t.getMessage());
+                        }
+
+                    });
+                    Data.getData().getCallToGameDetail().add(callToGameDetail);
+                }
+
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            System.out.println("POST EXECUTE");
+        }
+
+        public void setObserver(HorizontalAdapter observer){
+            this.observer=observer;
+        }
+
+        private void notifyObserver(List<Integer> idsNewGameDetail){
+            if (this.observer!=null){
+                this.observer.addNewIds(idsNewGameDetail);
+                System.out.println("SONO IL LOADMORETASK: NOTIFICO L'Horizontal Adapter - "+platformName);
+            }
+        }
+
+        public void setPlatformName(String platformName){
+            this.platformName=platformName;
         }
     }
 
