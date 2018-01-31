@@ -1,10 +1,6 @@
 
 package com.example.gabri.firstapp;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.content.ClipData;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -21,18 +17,15 @@ import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gabri.firstapp.Adapter.CommentAdapter;
-import com.example.gabri.firstapp.Adapter.WishListAdapter;
 import com.example.gabri.firstapp.Model.Comment;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
-import com.example.gabri.firstapp.Model.RSSFeed;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -212,6 +205,8 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
     private void takeCommentFromFirebase() {
         //final ListView listView= (ListView) this.viewRoot.findViewById(R.id.comment_section);
         final LinearLayout listView= (LinearLayout) this.viewRoot.findViewById(R.id.comment_section);
+        final ScrollView commentSectionScroll=(ScrollView)this.viewRoot.findViewById(R.id.comment_section_scroll);
+        final ImageView imageNoComment=(ImageView) this.viewRoot.findViewById(R.id.image_no_comments);
         listView.removeAllViews();
 
         DatabaseReference databaseComment= FirebaseDatabase.getInstance().getReference();
@@ -231,13 +226,19 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
 
                        commentAdapter=new CommentAdapter(mContext,R.layout.wish_list_row,comments);
 
-                        for(int i=0;i<commentAdapter.getCount();i++){
-                            View item= commentAdapter.getView(i,null,null);
-                            listView.addView(item);
+                        if(commentAdapter.getCount()==0){
+                            imageNoComment.setVisibility(View.VISIBLE);
+                            commentSectionScroll.setVisibility(View.GONE);
+                            imageNoComment.setImageResource(R.drawable.nocommentsavailable);
+                        }else {
+
+                            for (int i = 0; i < commentAdapter.getCount(); i++) {
+                                View item = commentAdapter.getView(i, null, null);
+                                listView.addView(item);
+                            }
+                            imageNoComment.setVisibility(View.GONE);
+                            commentSectionScroll.setVisibility(View.VISIBLE);
                         }
-
-
-
                     }
 
                     @Override
@@ -269,7 +270,8 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
                 String review;
                 TextView commentView=(TextView)viewRoot.findViewById(R.id.insert_comment);
                 review=commentView.getText().toString();
-                Comment comment=new Comment("Gabbo94",review,numberOfStarComment);
+
+                Comment comment=new Comment(Data.getUser().getUsername(),review,numberOfStarComment);
                 if(!review.equals("")) {
                     DatabaseReference databaseComment = FirebaseDatabase.getInstance().getReference("comments").child(String.valueOf(gameId));
                     String id = databaseComment.push().getKey();
@@ -428,11 +430,11 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
 
     private void setNestedScroll() {
         NestedScrollView parentScroll= (NestedScrollView) this.viewRoot.findViewById(R.id.parent_scroll);
-        ScrollView childScroll=(ScrollView)this.viewRoot.findViewById(R.id.child_scroll);
+        ScrollView childScroll=(ScrollView)this.viewRoot.findViewById(R.id.comment_section_scroll);
         parentScroll.setOnTouchListener(new View.OnTouchListener() {
 
             public boolean onTouch(View v, MotionEvent event) {
-                v.findViewById(R.id.child_scroll).getParent().requestDisallowInterceptTouchEvent(false);
+                v.findViewById(R.id.comment_section_scroll).getParent().requestDisallowInterceptTouchEvent(false);
                 return false;
             }
         });
