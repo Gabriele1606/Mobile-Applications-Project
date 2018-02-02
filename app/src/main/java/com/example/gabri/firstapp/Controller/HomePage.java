@@ -126,7 +126,11 @@ public class HomePage extends AppCompatActivity {
                 boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag("Newslist");
                 if (fragment == null) {
+                    TextView textGames = findViewById(R.id.text_Games);
                     TextView textNews = findViewById(R.id.text_News);
+                    TextView textMap = findViewById(R.id.text_Map);
+                    textGames.setBackgroundColor(Color.BLACK);
+                    textMap.setBackgroundColor(Color.BLACK);
                     textNews.setBackgroundColor(Color.RED);
                     FragmentReadLater fragmentReadLater = new FragmentReadLater();
                     FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentReadLater, "Newslist");
@@ -149,7 +153,11 @@ public class HomePage extends AppCompatActivity {
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag("Gamelist");
                 if (fragment == null) {
                     TextView textGames = findViewById(R.id.text_Games);
+                    TextView textNews = findViewById(R.id.text_News);
+                    TextView textMap = findViewById(R.id.text_Map);
                     textGames.setBackgroundColor(Color.RED);
+                    textMap.setBackgroundColor(Color.BLACK);
+                    textNews.setBackgroundColor(Color.BLACK);
                     FragmentWishList fragmentWishList = new FragmentWishList();
                     FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentWishList, "Gamelist");
                     transaction.addToBackStack("TABLAYOUT");
@@ -171,8 +179,12 @@ public class HomePage extends AppCompatActivity {
                 boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag("Maplist");
                 if (fragment == null) {
+                    TextView textGames = findViewById(R.id.text_Games);
+                    TextView textNews = findViewById(R.id.text_News);
                     TextView textMap = findViewById(R.id.text_Map);
+                    textGames.setBackgroundColor(Color.BLACK);
                     textMap.setBackgroundColor(Color.RED);
+                    textNews.setBackgroundColor(Color.BLACK);
                     FragmentMap fragmentMap = new FragmentMap();
                     FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentMap, "Maplist");
                     transaction.addToBackStack("TABLAYOUT");
