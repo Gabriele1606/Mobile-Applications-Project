@@ -91,6 +91,9 @@ dependencies {
     //used for button effects
     compile 'com.jakewharton:butterknife:7.0.1'
     annotationProcessor 'com.jakewharton:butterknife:7.0.1'
+
+    //flip card view
+    compile 'com.github.sachinvarma:EasyFlipView:2.0.4'
 }
 
 apply plugin: 'com.google.gms.google-services'

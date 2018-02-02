@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
@@ -34,6 +33,7 @@ import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.Model.Title;
+import com.example.gabri.firstapp.MyTask;
 import com.example.gabri.firstapp.R;
 import com.example.gabri.firstapp.UserInfo;
 import com.google.firebase.database.DataSnapshot;
@@ -41,7 +41,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.wajahatkarim3.easyflipview.EasyFlipView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 
@@ -114,16 +116,53 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             TextView welcomeMessage;
             ImageView wishList;
             ImageView readLater;
+            ImageView backgroundImage;
+            TextView notificationNumberNews;
+            TextView notificationNumberGame;
+            EasyFlipView flipView;
 
         public UserInfoHolder(View itemView) {
             super(itemView);
             this.welcomeMessage= (TextView) itemView.findViewById(R.id.welcome_message);
             this.wishList=(ImageView) itemView.findViewById(R.id.wish_list_button);
             this.readLater=(ImageView) itemView.findViewById(R.id.notification_button);
+            this.backgroundImage=(ImageView)itemView.findViewById(R.id.background_image);
+            this.notificationNumberNews=(TextView) itemView.findViewById(R.id.number_of_favorite_news);
+            this.notificationNumberGame=(TextView) itemView.findViewById(R.id.number_of_wishlist);
+            this.flipView=(EasyFlipView)itemView.findViewById(R.id.flip_view);
 
         }
         public void setWelcomeMessage(String message){this.welcomeMessage.setText(message);}
     }
+
+        public void getNumberFavoriteNews(final UserInfoHolder userInfoHolder){
+            final List<Object> tmp=new ArrayList<Object>();
+            DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference();
+            databaseReference.child("news").child(Data.getIdUserForRemoteDb()).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.getChildrenCount()>0){
+                                userInfoHolder.notificationNumberNews.setVisibility(View.VISIBLE);
+                                userInfoHolder.notificationNumberNews.setText(Long.toString(dataSnapshot.getChildrenCount()));
+                            }
+                            else{
+                                userInfoHolder.notificationNumberNews.setVisibility(View.GONE);
+                            }
+
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    }
+            );
+
+        }
+
+        public void getNumberWishlist(){
+
+        }
 
     public class SliderHolder extends RecyclerView.ViewHolder{
         SliderLayout sliderShow;
@@ -329,8 +368,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 break;
             case USERINFO:
                 UserInfoHolder userInfoHolder=(UserInfoHolder) viewHolder;
+                //userInfoHolder.backgroundImage.setImageResource(R.drawable.joypad);
                 userInfoHolder.setWelcomeMessage("Welcome "+Data.getUser().getUsername());
-
+                MyTask task=new MyTask(userInfoHolder.flipView);
+                task.execute();
                 userInfoHolder.readLater.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
