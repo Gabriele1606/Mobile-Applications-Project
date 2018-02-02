@@ -61,6 +61,27 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
         this.recyclerView=recelement;
         final HorizontalAdapter horizontalAdapter=this;
         final LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+        visibleItemCount = layoutManager.getChildCount();
+        totalItemCount = layoutManager.getItemCount();
+        lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+
+        if (!isLoading && totalItemCount <= (lastVisibleItem + visibleItemCount)) {
+            //API
+            APIManager apiManager = new APIManager();
+            if (gameList != null)
+                if (gameList.size() > 0) {
+                    System.out.println("CHIEDO NUOVI GIOCHI");
+                    Game game = gameList.get(0);
+                    String platformName = game.getPlatform();
+                    System.out.println(platformName);
+                    DBQuery dbQuery = new DBQuery();
+                    Platform platform = dbQuery.getPlatform(platformName);
+                    apiManager.loadMoreGame(platform, horizontalAdapter);
+                    isLoading = true;
+                }
+        }
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -68,8 +89,12 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
                 visibleItemCount = layoutManager.getChildCount();
                 totalItemCount = layoutManager.getItemCount();
                 lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+
+                System.out.println("visibleItemcount: "+visibleItemCount+" totalItemcount: "+totalItemCount +" lastVisibleItem: "+lastVisibleItem);
+
                 if (dx!=0||dy!=0){
                 if (!isLoading && totalItemCount <= (lastVisibleItem + visibleItemCount)) {
+                    System.out.println("TRIGGERED LOAD MORE: ");
                     //API
                     APIManager apiManager = new APIManager();
                     if (gameList != null)
@@ -77,6 +102,7 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
                             System.out.println("CHIEDO NUOVI GIOCHI");
                             Game game = gameList.get(0);
                             String platformName = game.getPlatform();
+                            System.out.println(platformName);
                             DBQuery dbQuery = new DBQuery();
                             Platform platform = dbQuery.getPlatform(platformName);
                             apiManager.loadMoreGame(platform, horizontalAdapter);
@@ -155,17 +181,13 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
                 bundle.putInt("GAME ID",game.getId());
                 fragmentGameDetail.setArguments(bundle);
                 boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
-                if(!TWOPANELS){
+
                 //FINAL SOLUTION
                 Fragment fragmentById = Data.getData().getHomePageActivity().getSupportFragmentManager().findFragmentById(R.id.mainframeLayout);
                 FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentGameDetail, "GameDetail");
                 transaction.addToBackStack("TABLAYOUT");
                 transaction.commit();
-                }else{
-                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail, fragmentGameDetail, "GameDetail");
-                    transaction.commit();
-                    Data.getData().getHomePageActivity().enlargeDetailGame();
-                }
+
 
 
                 /*

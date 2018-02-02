@@ -98,17 +98,12 @@ public class WishListAdapter extends ArrayAdapter<Game> {
                 bundle.putInt("GAME ID",tmp.getId());
                 fragmentGameDetail.setArguments(bundle);
                 boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
-                if(!TWOPANELS){
+
                     //FINAL SOLUTION
                     Fragment fragmentById = Data.getData().getHomePageActivity().getSupportFragmentManager().findFragmentById(R.id.mainframeLayout);
                     FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentGameDetail, "GameDetail");
                     transaction.addToBackStack("TABLAYOUT");
                     transaction.commit();
-                }else{
-                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail, fragmentGameDetail, "GameDetail");
-                    transaction.commit();
-                    Data.getData().getHomePageActivity().enlargeDetailGame();
-                }
             }
         });
     }

@@ -297,7 +297,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         bundle.putString("IDFIREBASE",String.valueOf(((RSSFeed)listObject.get(position)).getIdForFirebase()));
                         bundle.putSerializable("REALRSSOBJECT",((RSSFeed)listObject.get(position)));
 
-                        if(!TWOPANELS){
                             FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
                             fragmentNewsDetail.setArguments(bundle);
                             //FINAL SOLUTION
@@ -305,13 +304,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentNewsDetail, "GameDetail");
                             transaction.addToBackStack("TABLAYOUT");
                             transaction.commit();
-                        }else{
-                            FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
-                            fragmentNewsDetail.setArguments(bundle);
-                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentNewsDetail, "GameDetail");
-                            transaction.commit();
-                            Data.getData().getHomePageActivity().enlargeDetailGame();
-                        }
+
                     }
                 });
                 break;
@@ -337,17 +330,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                         boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
 
-                        if(!TWOPANELS){
                             FragmentReadLater fragmentReadLater= new FragmentReadLater();
                             FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentReadLater, "Newslist");
                             transaction.addToBackStack("TABLAYOUT");
                             transaction.commit();
-                        }else{
-                            FragmentReadLater fragmentReadLater= new FragmentReadLater();
-                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentReadLater, "Newslist");
-                            transaction.commit();
-                            Data.getData().getHomePageActivity().enlargeWishList();
-                        }
+
 
                     }
                 });
@@ -357,17 +344,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     public void onClick(View view) {
                         boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
 
-                        if(!TWOPANELS){
                             FragmentWishList fragmentWishList= new FragmentWishList();
                             FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentWishList, "Gamelist");
                             transaction.addToBackStack("TABLAYOUT");
                             transaction.commit();
-                        }else{
-                            FragmentWishList fragmentWishList= new FragmentWishList();
-                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentWishList, "Gamelist");
-                            transaction.commit();
-                            Data.getData().getHomePageActivity().enlargeWishList();
-                        }
+
                     }
                 });
                 break;

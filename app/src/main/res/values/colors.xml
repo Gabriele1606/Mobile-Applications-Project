@@ -4,6 +4,7 @@
     <color name="yellow">#eeff00</color>
     <color name="gray">#cc5b5050</color>
     <color name="black">#000000</color>
+    <color name="black_transparent">#d1000000</color>
     <color name="accent_material_light_1">#8e8d8d</color>
     <color name="white">#ffffff</color>
 

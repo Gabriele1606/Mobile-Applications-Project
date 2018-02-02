@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -76,24 +77,26 @@ public class HomePage extends AppCompatActivity {
 
         Data.getData().setHomePageActivity(this);
 
+        HighlightSection();
+
         isTwoPanes = getResources().getBoolean(R.bool.has_two_panes);
-
-        FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.drawerlayout);
-        mDrawer.setTouchMode(ElasticDrawer.TOUCH_MODE_BEZEL);
-        mDrawer.setOnDrawerStateChangeListener(new ElasticDrawer.OnDrawerStateChangeListener() {
-            @Override
-            public void onDrawerStateChange(int oldState, int newState) {
-                if (newState == ElasticDrawer.STATE_CLOSED) {
-                    Log.i("MainActivity", "Drawer STATE_CLOSED");
+        if (!isTwoPanes) {
+            FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
+            mDrawer.setTouchMode(ElasticDrawer.TOUCH_MODE_BEZEL);
+            mDrawer.setOnDrawerStateChangeListener(new ElasticDrawer.OnDrawerStateChangeListener() {
+                @Override
+                public void onDrawerStateChange(int oldState, int newState) {
+                    if (newState == ElasticDrawer.STATE_CLOSED) {
+                        Log.i("MainActivity", "Drawer STATE_CLOSED");
+                    }
                 }
-            }
 
-            @Override
-            public void onDrawerSlide(float openRatio, int offsetPixels) {
-                Log.i("MainActivity", "openRatio=" + openRatio + " ,offsetPixels=" + offsetPixels);
-            }
-        });
-
+                @Override
+                public void onDrawerSlide(float openRatio, int offsetPixels) {
+                    Log.i("MainActivity", "openRatio=" + openRatio + " ,offsetPixels=" + offsetPixels);
+                }
+            });
+        }
 
         FlowManager.init(this);
         //To RESET DATABASE ---- PAY ATTENTION
@@ -101,8 +104,6 @@ public class HomePage extends AppCompatActivity {
 
 
         listObject = Data.getInstance();
-        collapseDetailGame();
-        addFloatingButton();
         if (savedInstanceState == null) {
             // Display the fragment
             /*getSupportFragmentManager().beginTransaction()
@@ -125,22 +126,17 @@ public class HomePage extends AppCompatActivity {
                 boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag("Newslist");
                 if (fragment == null) {
+                    TextView textNews = findViewById(R.id.text_News);
+                    textNews.setBackgroundColor(Color.RED);
+                    FragmentReadLater fragmentReadLater = new FragmentReadLater();
+                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentReadLater, "Newslist");
+                    transaction.addToBackStack("TABLAYOUT");
+                    transaction.commit();
                     if (!TWOPANELS) {
-                        FragmentReadLater fragmentReadLater = new FragmentReadLater();
-                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentReadLater, "Newslist");
-                        transaction.addToBackStack("TABLAYOUT");
-                        transaction.commit();
-                    } else {
-                        FragmentReadLater fragmentReadLater = new FragmentReadLater();
-                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail, fragmentReadLater, "Newslist");
-                        transaction.commit();
-                        Data.getData().getHomePageActivity().enlargeWishList();
+                        FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
+                        mDrawer.closeMenu(true);
                     }
-                    FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.drawerlayout);
-                    mDrawer.closeMenu(true);
-                }else{
-                    if (TWOPANELS)
-                        Data.getData().getHomePageActivity().enlargeWishList();
+                } else {
                 }
             }
         });
@@ -152,22 +148,17 @@ public class HomePage extends AppCompatActivity {
                 boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag("Gamelist");
                 if (fragment == null) {
+                    TextView textGames = findViewById(R.id.text_Games);
+                    textGames.setBackgroundColor(Color.RED);
+                    FragmentWishList fragmentWishList = new FragmentWishList();
+                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentWishList, "Gamelist");
+                    transaction.addToBackStack("TABLAYOUT");
+                    transaction.commit();
                     if (!TWOPANELS) {
-                        FragmentWishList fragmentWishList = new FragmentWishList();
-                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentWishList, "Gamelist");
-                        transaction.addToBackStack("TABLAYOUT");
-                        transaction.commit();
-                    } else {
-                        FragmentWishList fragmentWishList = new FragmentWishList();
-                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail, fragmentWishList, "Gamelist");
-                        transaction.commit();
-                        Data.getData().getHomePageActivity().enlargeWishList();
+                        FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
+                        mDrawer.closeMenu(true);
                     }
-                    FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.drawerlayout);
-                    mDrawer.closeMenu(true);
-                }else{
-                    if (TWOPANELS)
-                        Data.getData().getHomePageActivity().enlargeWishList();
+                } else {
                 }
             }
         });
@@ -180,25 +171,19 @@ public class HomePage extends AppCompatActivity {
                 boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag("Maplist");
                 if (fragment == null) {
+                    TextView textMap = findViewById(R.id.text_Map);
+                    textMap.setBackgroundColor(Color.RED);
+                    FragmentMap fragmentMap = new FragmentMap();
+                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentMap, "Maplist");
+                    transaction.addToBackStack("TABLAYOUT");
+                    transaction.commit();
                     if (!TWOPANELS) {
-                        FragmentMap fragmentMap = new FragmentMap();
-                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentMap, "Maplist");
-                        transaction.addToBackStack("TABLAYOUT");
-                        transaction.commit();
-                    } else {
-                        FragmentMap fragmentMap = new FragmentMap();
-                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail, fragmentMap, "Maplist");
-                        transaction.commit();
-                        Data.getData().getHomePageActivity().moveGuideline(0.40f);
+                        FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
+                        mDrawer.closeMenu(true);
                     }
-                    FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.drawerlayout);
-                    mDrawer.closeMenu(true);
-                }else{
+                } else {
                     System.out.println("MAP GIA' PRESENTE NEI FRAGMENT");
-                    if (TWOPANELS) {
-                        Data.getData().getHomePageActivity().moveGuideline(0.40f);
-                    }else{
-                    }
+
                 }
             }
         });
@@ -327,26 +312,35 @@ public class HomePage extends AppCompatActivity {
 
     }
 
+    public void HighlightSection() {
+        Fragment fragmentNews = getSupportFragmentManager().findFragmentByTag("Newslist");
+        Fragment fragmentGame = getSupportFragmentManager().findFragmentByTag("Gamelist");
+        Fragment fragmentMap = getSupportFragmentManager().findFragmentByTag("Maplist");
+        TextView textNews = findViewById(R.id.text_News);
+        TextView textGames = findViewById(R.id.text_Games);
+        TextView textMap = findViewById(R.id.text_Map);
+
+        if (fragmentNews!=null)
+            textNews.setBackgroundColor(Color.RED);
+        else
+            textNews.setBackgroundColor(Color.BLACK);
+        if (fragmentGame!=null)
+            textGames.setBackgroundColor(Color.RED);
+        else
+            textGames.setBackgroundColor(Color.BLACK);
+        if (fragmentMap!=null)
+            textMap.setBackgroundColor(Color.RED);
+        else
+            textMap.setBackgroundColor(Color.BLACK);
+
+    }
+
     public void logout(){
         Intent login= new Intent(this,Login.class);
         startActivity(login);
         finish();
     }
 
-    private void addFloatingButton() {
-        if (isTwoPanes) {
-            FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingButton);
-            floatingActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    getSupportFragmentManager().beginTransaction().
-                            remove(getSupportFragmentManager().findFragmentById(R.id.framegameDetail)).commit();
-                    collapseDetailGame();
-                    //Data.getData().getSetSampleFragmentPagerAdapter().notifyDataSetChanged();
-                }
-            });
-        }
-    }
 
 /*
     public static int getDrawable(Context context, String name)
@@ -401,35 +395,5 @@ public class HomePage extends AppCompatActivity {
         }
         super.onStop();
     }
-
-    public void collapseDetailGame(){
-        moveGuideline(1.0f);
-    }
-    public void enlargeDetailGame(){
-        moveGuideline(0.6f);
-    }
-
-    public void collapseWishList(){
-        moveGuideline(1.0f);
-    }
-
-
-    public void enlargeWishList(){
-        moveGuideline(0.6f);
-    }
-
-    public void moveGuideline(float percent){
-        if (isTwoPanes){
-            ConstraintLayout constraintLayout= findViewById(R.id.homepage);
-            ConstraintSet constraintset= new ConstraintSet();
-            constraintset.clone(constraintLayout);
-            constraintset.setGuidelinePercent(R.id.guideline,percent);
-            TransitionManager.beginDelayedTransition(constraintLayout);
-            constraintset.applyTo(constraintLayout);
-        }
-    }
-
-
-
 
 }
