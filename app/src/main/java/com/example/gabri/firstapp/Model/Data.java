@@ -1,5 +1,7 @@
 package com.example.gabri.firstapp.Model;
 
+import android.location.Location;
+import android.location.LocationManager;
 import android.support.v4.view.ViewPager;
 
 import com.example.gabri.firstapp.Adapter.SampleFragmentPagerAdapter;
@@ -32,12 +34,12 @@ public class Data {
     private SampleFragmentPagerAdapter setSampleFragmentPagerAdapter;
     private ViewPager homePageViewPager;
 
-
+    private LocationManager locationManager;
 
     private HomePage homePageActivity;
     private static User user;
     private static String idUserForRemoteDb;
-
+    private Location location;
 
 
     private Data(){
@@ -105,4 +107,18 @@ public class Data {
 
     public static void setIdUserForRemoteDb(String id){idUserForRemoteDb=id;}
 
+    public LocationManager getLocationManager(){
+        return locationManager;
+    }
+    public void setLocationManager(LocationManager locationManager){
+        this.locationManager=locationManager;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public Location getLocation() {
+        return this.location;
+    }
 }

@@ -1,12 +1,21 @@
 package com.example.gabri.firstapp.Controller;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.design.widget.FloatingActionButton;
 import android.support.transition.TransitionManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +27,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.gabri.firstapp.Adapter.CoverFlowAdapter;
+import com.example.gabri.firstapp.FragmentMap;
 import com.example.gabri.firstapp.FragmentReadLater;
 import com.example.gabri.firstapp.FragmentWishList;
 import com.example.gabri.firstapp.GameDetailXML;
@@ -55,8 +65,8 @@ public class HomePage extends AppCompatActivity {
     private List<GameCover> gameCoverListTwo;
     List<Object> listObject;
     APIManager apiManager;
-    private ConstraintSet originalConstraint= new ConstraintSet();
-    private ConstraintSet toRightConstraint= new ConstraintSet();
+    private ConstraintSet originalConstraint = new ConstraintSet();
+    private ConstraintSet toRightConstraint = new ConstraintSet();
 
     boolean isTwoPanes;
 
@@ -67,36 +77,34 @@ public class HomePage extends AppCompatActivity {
 
         Data.getData().setHomePageActivity(this);
 
+        HighlightSection();
+
         isTwoPanes = getResources().getBoolean(R.bool.has_two_panes);
-
-        FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.drawerlayout);
-        mDrawer.setTouchMode(ElasticDrawer.TOUCH_MODE_BEZEL);
-        mDrawer.setOnDrawerStateChangeListener(new ElasticDrawer.OnDrawerStateChangeListener() {
-            @Override
-            public void onDrawerStateChange(int oldState, int newState) {
-                if (newState == ElasticDrawer.STATE_CLOSED) {
-                    Log.i("MainActivity", "Drawer STATE_CLOSED");
+        if (!isTwoPanes) {
+            FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
+            mDrawer.setTouchMode(ElasticDrawer.TOUCH_MODE_BEZEL);
+            mDrawer.setOnDrawerStateChangeListener(new ElasticDrawer.OnDrawerStateChangeListener() {
+                @Override
+                public void onDrawerStateChange(int oldState, int newState) {
+                    if (newState == ElasticDrawer.STATE_CLOSED) {
+                        Log.i("MainActivity", "Drawer STATE_CLOSED");
+                    }
                 }
-            }
 
-            @Override
-            public void onDrawerSlide(float openRatio, int offsetPixels) {
-                Log.i("MainActivity", "openRatio=" + openRatio + " ,offsetPixels=" + offsetPixels);
-            }
-        });
-
+                @Override
+                public void onDrawerSlide(float openRatio, int offsetPixels) {
+                    Log.i("MainActivity", "openRatio=" + openRatio + " ,offsetPixels=" + offsetPixels);
+                }
+            });
+        }
 
         FlowManager.init(this);
         //To RESET DATABASE ---- PAY ATTENTION
         //FlowManager.getDatabase(AppDatabase.class).reset(this);
 
 
-
-        listObject= Data.getInstance();
-        collapseDetailGame();
-        addFloatingButton();
-       if (savedInstanceState == null )
-        {
+        listObject = Data.getInstance();
+        if (savedInstanceState == null) {
             // Display the fragment
             /*getSupportFragmentManager().beginTransaction()
                 .add(R.id.mainframeLayout, new TabFragment()).commit();*/
@@ -104,64 +112,85 @@ public class HomePage extends AppCompatActivity {
                     .beginTransaction()
                     .replace(R.id.mainframeLayout, new TabFragment(), "TABLAYOUT").commit();
 
-        }else{
+        } else {
 
            /* FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.mainframeLayout, new TabFragment());
             transaction.addToBackStack(null);
             transaction.commit();*/
         }
-        TextView textView= (TextView)findViewById(R.id.text_News);
+        TextView textView = (TextView) findViewById(R.id.text_News);
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag("Newslist");
-                if(fragment == null) {
+                if (fragment == null) {
+                    TextView textNews = findViewById(R.id.text_News);
+                    textNews.setBackgroundColor(Color.RED);
+                    FragmentReadLater fragmentReadLater = new FragmentReadLater();
+                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentReadLater, "Newslist");
+                    transaction.addToBackStack("TABLAYOUT");
+                    transaction.commit();
                     if (!TWOPANELS) {
-                        FragmentReadLater fragmentReadLater = new FragmentReadLater();
-                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentReadLater, "Newslist");
-                        transaction.addToBackStack("TABLAYOUT");
-                        transaction.commit();
-                    } else {
-                        FragmentReadLater fragmentReadLater = new FragmentReadLater();
-                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail, fragmentReadLater, "Newslist");
-                        transaction.commit();
-                        Data.getData().getHomePageActivity().enlargeWishList();
+                        FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
+                        mDrawer.closeMenu(true);
                     }
-                    FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.drawerlayout);
-                    mDrawer.closeMenu(true);
+                } else {
                 }
             }
         });
 
-        TextView textView2= (TextView) findViewById(R.id.text_Games);
-        textView2.setOnClickListener(new View.OnClickListener() {
+        TextView textViewGames = (TextView) findViewById(R.id.text_Games);
+        textViewGames.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag("Gamelist");
-                if(fragment == null){
-                    if(!TWOPANELS){
-                        FragmentWishList fragmentWishList= new FragmentWishList();
-                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentWishList, "Gamelist");
-                        transaction.addToBackStack("TABLAYOUT");
-                        transaction.commit();
-                    }else{
-                        FragmentWishList fragmentWishList= new FragmentWishList();
-                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentWishList, "Gamelist");
-                        transaction.commit();
-                        Data.getData().getHomePageActivity().enlargeWishList();
+                if (fragment == null) {
+                    TextView textGames = findViewById(R.id.text_Games);
+                    textGames.setBackgroundColor(Color.RED);
+                    FragmentWishList fragmentWishList = new FragmentWishList();
+                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentWishList, "Gamelist");
+                    transaction.addToBackStack("TABLAYOUT");
+                    transaction.commit();
+                    if (!TWOPANELS) {
+                        FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
+                        mDrawer.closeMenu(true);
                     }
-                    FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.drawerlayout);
-                    mDrawer.closeMenu(true);
+                } else {
+                }
+            }
+        });
+
+
+        TextView textViewMap = (TextView) findViewById(R.id.text_Map);
+        textViewMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
+                Fragment fragment = getSupportFragmentManager().findFragmentByTag("Maplist");
+                if (fragment == null) {
+                    TextView textMap = findViewById(R.id.text_Map);
+                    textMap.setBackgroundColor(Color.RED);
+                    FragmentMap fragmentMap = new FragmentMap();
+                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentMap, "Maplist");
+                    transaction.addToBackStack("TABLAYOUT");
+                    transaction.commit();
+                    if (!TWOPANELS) {
+                        FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
+                        mDrawer.closeMenu(true);
+                    }
+                } else {
+                    System.out.println("MAP GIA' PRESENTE NEI FRAGMENT");
+
                 }
             }
         });
 
         final HomePage homePage = this;
 
-        Button logoutButton=(Button)findViewById(R.id.logout_button);
+        Button logoutButton = (Button) findViewById(R.id.logout_button);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -177,6 +206,82 @@ public class HomePage extends AppCompatActivity {
         });
 
 
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+        criteria.setCostAllowed(true);
+        criteria.setPowerRequirement(Criteria.POWER_LOW);
+        String bestProvider = locationManager.getBestProvider(criteria, true);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        Data.getData().setLocation(locationManager.getLastKnownLocation(bestProvider));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+               System.out.println("NETWORK INFO Changed"+ "Current location: "+location.getLatitude()+ " "+location.getLongitude());
+                Data.getData().setLocation(location);
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        });
+
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                    System.out.println("GPS INFO Changed"+ "Current location: "+location.getLatitude()+ " "+location.getLongitude());
+                Data.getData().setLocation(location);
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        });
+        Data.getData().setLocationManager(locationManager);
 
 
 /*
@@ -207,24 +312,35 @@ public class HomePage extends AppCompatActivity {
 
     }
 
+    public void HighlightSection() {
+        Fragment fragmentNews = getSupportFragmentManager().findFragmentByTag("Newslist");
+        Fragment fragmentGame = getSupportFragmentManager().findFragmentByTag("Gamelist");
+        Fragment fragmentMap = getSupportFragmentManager().findFragmentByTag("Maplist");
+        TextView textNews = findViewById(R.id.text_News);
+        TextView textGames = findViewById(R.id.text_Games);
+        TextView textMap = findViewById(R.id.text_Map);
+
+        if (fragmentNews!=null)
+            textNews.setBackgroundColor(Color.RED);
+        else
+            textNews.setBackgroundColor(Color.BLACK);
+        if (fragmentGame!=null)
+            textGames.setBackgroundColor(Color.RED);
+        else
+            textGames.setBackgroundColor(Color.BLACK);
+        if (fragmentMap!=null)
+            textMap.setBackgroundColor(Color.RED);
+        else
+            textMap.setBackgroundColor(Color.BLACK);
+
+    }
+
     public void logout(){
         Intent login= new Intent(this,Login.class);
         startActivity(login);
         finish();
     }
 
-    private void addFloatingButton() {
-        if (isTwoPanes) {
-            FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.floatingButton);
-            floatingActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    collapseDetailGame();
-                    //Data.getData().getSetSampleFragmentPagerAdapter().notifyDataSetChanged();
-                }
-            });
-        }
-    }
 
 /*
     public static int getDrawable(Context context, String name)
@@ -279,33 +395,5 @@ public class HomePage extends AppCompatActivity {
         }
         super.onStop();
     }
-
-    public void collapseDetailGame(){
-        moveGuideline(1.0f);
-    }
-    public void enlargeDetailGame(){
-        moveGuideline(0.6f);
-    }
-
-    public void collapseWishList(){
-        moveGuideline(1.0f);
-    }
-    public void enlargeWishList(){
-        moveGuideline(0.6f);
-    }
-
-    public void moveGuideline(float percent){
-        if (isTwoPanes){
-            ConstraintLayout constraintLayout= findViewById(R.id.homepage);
-            ConstraintSet constraintset= new ConstraintSet();
-            constraintset.clone(constraintLayout);
-            constraintset.setGuidelinePercent(R.id.guideline,percent);
-            TransitionManager.beginDelayedTransition(constraintLayout);
-            constraintset.applyTo(constraintLayout);
-        }
-    }
-
-
-
 
 }

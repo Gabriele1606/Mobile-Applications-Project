@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.Toolbar;
 
 import com.example.gabri.firstapp.Adapter.WishListAdapter;
+import com.example.gabri.firstapp.Controller.HomePage;
 import com.example.gabri.firstapp.Controller.TimerLoad;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
@@ -36,7 +37,6 @@ public class FragmentWishList extends android.support.v4.app.Fragment {
     private DBQuery dbQuery;
     private ListView listOfWishGame;
     private Context mContext;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,21 +76,7 @@ public class FragmentWishList extends android.support.v4.app.Fragment {
         );
 
 
-
-
-
-
-
-
-
-
-
-
         return view;
-    }
-
-    public void prova(){
-
     }
 
 }

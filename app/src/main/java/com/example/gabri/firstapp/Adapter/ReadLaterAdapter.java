@@ -88,7 +88,7 @@ public class ReadLaterAdapter extends RecyclerView.Adapter<ReadLaterAdapter.View
                 bundle.putString("IDFIREBASE",rss.getIdForFirebase());
                 bundle.putSerializable("REALRSSOBJECT",rss);
 
-                if(!TWOPANELS){
+
                     FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
                     fragmentNewsDetail.setArguments(bundle);
                     //FINAL SOLUTION
@@ -96,13 +96,7 @@ public class ReadLaterAdapter extends RecyclerView.Adapter<ReadLaterAdapter.View
                     FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentNewsDetail, "GameDetail");
                     transaction.addToBackStack("TABLAYOUT");
                     transaction.commit();
-                }else{
-                    FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
-                    fragmentNewsDetail.setArguments(bundle);
-                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentNewsDetail, "GameDetail");
-                    transaction.commit();
-                    Data.getData().getHomePageActivity().enlargeDetailGame();
-                }
+
             }
         });
 

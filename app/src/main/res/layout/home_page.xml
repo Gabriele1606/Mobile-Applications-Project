@@ -3,7 +3,7 @@
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawerlayout"
+    android:id="@+id/flowingdrawer"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:clipChildren="false"
@@ -75,6 +75,16 @@ app:edMenuBackground="@color/black">
                     android:layout_height="wrap_content"
                     android:lineSpacingExtra="8sp"
                     android:text="Games"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    android:textColor="@color/white"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/text_Map"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="8sp"
+                    android:text="Map"
                     android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                     android:textColor="@color/white"
                     android:textSize="24sp" />

@@ -449,7 +449,6 @@ public class APIManager {
                     if (ids.contains(gameId)){
                         continue;
                     }
-                    System.out.println();
                     //System.out.println("GIOCHI PIATTAFORMA: "+platformOfSpecifiedDeveloper[0].get(i).getId()+platformOfSpecifiedDeveloper[0].get(i).getGameList());
                     callToGameDetail = possibleAPI.getGameDetail(gameId);
                     final int finalJ = j;
