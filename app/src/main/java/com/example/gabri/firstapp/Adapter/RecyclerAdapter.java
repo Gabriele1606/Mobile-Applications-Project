@@ -116,7 +116,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             TextView welcomeMessage;
             ImageView wishList;
             ImageView readLater;
-            ImageView backgroundImage;
+            ImageView backgroundImageFront;
+            ImageView backgroundImageBack;
             TextView notificationNumberNews;
             TextView notificationNumberGame;
             EasyFlipView flipView;
@@ -126,7 +127,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.welcomeMessage= (TextView) itemView.findViewById(R.id.welcome_message);
             this.wishList=(ImageView) itemView.findViewById(R.id.wish_list_button);
             this.readLater=(ImageView) itemView.findViewById(R.id.notification_button);
-            this.backgroundImage=(ImageView)itemView.findViewById(R.id.background_image);
+            this.backgroundImageFront=(ImageView)itemView.findViewById(R.id.background_image_front);
+            this.backgroundImageBack=(ImageView)itemView.findViewById(R.id.background_image_back);
             this.notificationNumberNews=(TextView) itemView.findViewById(R.id.number_of_favorite_news);
             this.notificationNumberGame=(TextView) itemView.findViewById(R.id.number_of_wishlist);
             this.flipView=(EasyFlipView)itemView.findViewById(R.id.flip_view);
@@ -362,12 +364,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case USERINFO:
                 UserInfoHolder userInfoHolder=(UserInfoHolder) viewHolder;
                 //userInfoHolder.backgroundImage.setImageResource(R.drawable.joypad);
-                Glide.with(mContext).load(R.drawable.joypad).into(userInfoHolder.backgroundImage);
+                Glide.with(mContext).load(R.drawable.joypad).into(userInfoHolder.backgroundImageFront);
+                Glide.with(mContext).load(R.drawable.joypad).into(userInfoHolder.backgroundImageBack);
                 userInfoHolder.setWelcomeMessage("Welcome "+Data.getUser().getUsername());
                 getNumberFavoriteNews(userInfoHolder);
 
-                //MyTask task=new MyTask(userInfoHolder.flipView);
-                //task.execute();
+                MyTask task=new MyTask(userInfoHolder.flipView);
+                task.execute();
                 userInfoHolder.readLater.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
