@@ -362,8 +362,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case USERINFO:
                 UserInfoHolder userInfoHolder=(UserInfoHolder) viewHolder;
                 //userInfoHolder.backgroundImage.setImageResource(R.drawable.joypad);
+                Glide.with(mContext).load(R.drawable.joypad).into(userInfoHolder.backgroundImage);
                 userInfoHolder.setWelcomeMessage("Welcome "+Data.getUser().getUsername());
                 getNumberFavoriteNews(userInfoHolder);
+
                 //MyTask task=new MyTask(userInfoHolder.flipView);
                 //task.execute();
                 userInfoHolder.readLater.setOnClickListener(new View.OnClickListener() {
