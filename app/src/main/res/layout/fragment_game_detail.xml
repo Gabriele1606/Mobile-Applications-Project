@@ -401,9 +401,16 @@
                     android:textSize="21sp"
                     android:textStyle="bold" />
 
+                <ImageView
+                    android:id="@+id/image_no_comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="230dp"
+                    android:orientation="vertical"
+                    android:visibility="gone"/>
+
 
                 <ScrollView
-                    android:id="@+id/child_scroll"
+                    android:id="@+id/comment_section_scroll"
                     android:layout_width="match_parent"
                     android:layout_height="230dp"
                     >
@@ -413,6 +420,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical" />
+
                 </ScrollView>
 
 

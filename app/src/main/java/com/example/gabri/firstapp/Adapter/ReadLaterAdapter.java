@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,65 +30,95 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
+import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
+
 /**
  * Created by Gabri
  */
 
-public class ReadLaterAdapter extends ArrayAdapter<RSSFeed> {
+public class ReadLaterAdapter extends RecyclerView.Adapter<ReadLaterAdapter.ViewHolder> {
 
-    private ImageView coverImage;
-    private ImageView garbage;
-    private TextView newsTitle;
-    private RSSFeed news;
-    private Context mContex;
+    private List<RSSFeed> readLaterRss;
 
-    public ReadLaterAdapter(@NonNull Context context, int resource, @NonNull List<RSSFeed> objects) {
-        super(context, resource, objects);
-        this.mContex=context;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private ImageView coverImage;
+        private ImageView garbage;
+        private TextView newsTitle;
+        private TextView pubDate;
+        private RSSFeed news;
+        private View view;
 
+        public ViewHolder(View view) {
+            super(view);
+            coverImage = (ImageView) view.findViewById(R.id.wish_news_cover);
+            newsTitle = (TextView) view.findViewById(R.id.news_title);
+            pubDate = (TextView) view.findViewById(R.id.pub_date);
+            this.view=view;
+
+        }
+
+    }
+
+
+    public ReadLaterAdapter(List<RSSFeed> readLaterRss) {
+        this.readLaterRss = readLaterRss;
+    }
+
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.read_later_list_row, parent, false);
+
+        return new ViewHolder(itemView);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) getContext()
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        convertView = inflater.inflate(R.layout.read_later_list_row, null);
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        final RSSFeed rss = readLaterRss.get(position);
+        holder.newsTitle.setText(rss.getTitle());
+        holder.pubDate.setText(rss.getPubdate());
+        Glide.with(getContext()).load(rss.getImageLink()).into(holder.coverImage);
 
-        coverImage=(ImageView) convertView.findViewById(R.id.wish_news_cover);
-        garbage=(ImageView) convertView.findViewById(R.id.garbage);
-        garbage.setTag(position);
-        newsTitle = (TextView)convertView.findViewById(R.id.news_title);
-        newsTitle.setTag(position);
-        news = getItem(position);
-        newsTitle.setText(news.getTitle());
-        Glide.with(getContext()).load(news.getImageLink()).into(coverImage);
-
-        setOnclicOnText();
-        setClickOnGarbage();
-
-        return convertView;
-    }
-
-    private void setClickOnGarbage() {
-
-        garbage.setOnClickListener(new View.OnClickListener() {
+        holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int pos=(int)view.getTag();
-                RSSFeed tmp=getItem(pos);
-                Toast.makeText(mContex,"News removed from your read more list", Toast.LENGTH_SHORT).show();
-                DatabaseReference databaseWishGame= FirebaseDatabase.getInstance().getReference("news");
-                databaseWishGame.child(Data.getIdUserForRemoteDb()).child(tmp.getIdForFirebase()).removeValue();
-                remove(tmp);
-                notifyDataSetChanged();
+                boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
+                Bundle bundle=new Bundle();
+                bundle.putString("IDFIREBASE",rss.getIdForFirebase());
+                bundle.putSerializable("REALRSSOBJECT",rss);
 
+                if(!TWOPANELS){
+                    FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
+                    fragmentNewsDetail.setArguments(bundle);
+                    //FINAL SOLUTION
+                    Fragment fragmentById = Data.getData().getHomePageActivity().getSupportFragmentManager().findFragmentById(R.id.mainframeLayout);
+                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentNewsDetail, "GameDetail");
+                    transaction.addToBackStack("TABLAYOUT");
+                    transaction.commit();
+                }else{
+                    FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
+                    fragmentNewsDetail.setArguments(bundle);
+                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentNewsDetail, "GameDetail");
+                    transaction.commit();
+                    Data.getData().getHomePageActivity().enlargeDetailGame();
+                }
             }
         });
 
-
     }
 
-    private void setOnclicOnText(){
+
+
+    @Override
+    public int getItemCount() {
+        return readLaterRss.size();
+    }
+
+}
+
+
+   /* private void setOnclicOnText(){
         this.newsTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,7 +150,7 @@ public class ReadLaterAdapter extends ArrayAdapter<RSSFeed> {
                 }
             }
         });
-    }
+    }*/
 
-}
+
 

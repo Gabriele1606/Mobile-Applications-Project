@@ -1,5 +1,7 @@
 package com.example.gabri.firstapp.Controller;
 
+import android.text.Html;
+
 import com.example.gabri.firstapp.GameDetail;
 import com.example.gabri.firstapp.Model.AppDatabase;
 import com.example.gabri.firstapp.Model.Data;
@@ -17,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Gabri on 16/11/17.
@@ -116,25 +120,15 @@ public class Filter {
         return year;
     }
 
-    public void setImageLink(List<RSSFeed> rssList){
-        String tempDescription;
-        int start;
-        int end;
-        for(int i=0;i<rssList.size();i++){
-            tempDescription=rssList.get(i).getDescription();
-            start = tempDescription.indexOf("src=\"") + 5;
-            end = tempDescription.indexOf("\"", start);
-            rssList.get(i).setImageLink(tempDescription.substring(start, end));
-        }
-    }
+
 
     public void cleanDescriptionFromHTML(List<RSSFeed> rssList){
         String tempDescription;
         int start;
         for(int i=0;i<rssList.size();i++){
             tempDescription=rssList.get(i).getDescription();
-            start = tempDescription.indexOf("\n")+1;
-            rssList.get(i).setDescription(tempDescription.substring(start));
+            tempDescription= Html.fromHtml(tempDescription).toString();
+            rssList.get(i).setDescription(tempDescription);
         }
     }
 
@@ -275,6 +269,23 @@ public class Filter {
 
         }
         return imagesLink;
+    }
+
+    public void removeImagesTagFromDescription(List<RSSFeed> rssList) {
+        for(int i=0;i<rssList.size();i++){
+           String tempDescription=rssList.get(i).getDescription();
+            tempDescription = tempDescription.replaceAll("\\<figure.*?\\</figure>", "");
+            rssList.get(i).setDescription(tempDescription);
+        }
+    }
+
+    public void filterPubDate(List<RSSFeed> rssList) {
+        for(int i=0;i<rssList.size();i++){
+            String tempPubDate=rssList.get(i).getPubdate();
+            int tempIndex=tempPubDate.indexOf("-");
+            tempIndex=tempIndex-10;
+            rssList.get(i).setPubdate(tempPubDate.substring(0,tempIndex));
+        }
     }
 }
 
