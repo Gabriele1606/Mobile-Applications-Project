@@ -363,8 +363,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 UserInfoHolder userInfoHolder=(UserInfoHolder) viewHolder;
                 //userInfoHolder.backgroundImage.setImageResource(R.drawable.joypad);
                 userInfoHolder.setWelcomeMessage("Welcome "+Data.getUser().getUsername());
-                MyTask task=new MyTask(userInfoHolder.flipView);
-                task.execute();
+                getNumberFavoriteNews(userInfoHolder);
+                //MyTask task=new MyTask(userInfoHolder.flipView);
+                //task.execute();
                 userInfoHolder.readLater.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

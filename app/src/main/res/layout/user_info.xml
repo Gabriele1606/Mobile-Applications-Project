@@ -3,35 +3,120 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
+    android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="250dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-    <com.wajahatkarim3.easyflipview.EasyFlipView
-        android:id="@+id/flip_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/definitiveBackground"
-        app:flipOnTouch="true"
-        app:flipEnabled="true"
-        app:flipDuration="400"
-        app:flipType="vertical"
-        >
+        <ImageView
+            android:id="@+id/background_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:src="@drawable/joypad"
+            android:scaleType="fitXY"/>
 
-        <!-- Back Layout Goes Here -->
-        <include layout="@layout/user_info_back"/>
-        <!-- Front Layout Goes Here -->
-        <include layout="@layout/user_info_front"/>
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal"
+            tools:context=".MainActivity"
+            android:weightSum="3">
 
+            <LinearLayout
+                android:id="@+id/mainFragment"
+                android:layout_width="0dp"
+                android:layout_weight="1.3"
+                android:layout_height="match_parent"
+                android:gravity="center">
 
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="140dp"
+                    android:layout_height="140dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/image_4" />
+            </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/detailFragment"
+                android:layout_width="0dp"
+                android:layout_weight="1.7"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:background="@drawable/rectangleforuser"
+                android:orientation="vertical">
 
-    </com.wajahatkarim3.easyflipview.EasyFlipView>
+                <TextView
+                    android:id="@+id/welcome_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Welcome Gabriele"
+                    android:textAlignment="center"
+                    android:textColor="@color/cardview_light_background"
+                    android:textSize="24sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="40dp">
+
+                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/notification_button"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="20dp"
+                    app:srcCompat="@drawable/read_later_list" />
+                <TextView
+                    android:id="@+id/number_of_favorite_news"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/notification_button"
+                    android:layout_alignRight="@id/notification_button"
+                    android:text=""
+                    android:textColor="#FFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/notification"/>
+                    </RelativeLayout>
+                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/wish_list_button"
+                    android:layout_width="50dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="20dp"
+                    app:srcCompat="@drawable/wishlist"
+                    />
+                <TextView
+                    android:id="@+id/number_of_wishlist"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/wish_list_button"
+                    android:layout_alignRight="@id/wish_list_button"
+                    android:text=""
+                    android:textColor="#FFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/notification"/>
+
+                </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
 
     </android.support.v7.widget.CardView>
 
