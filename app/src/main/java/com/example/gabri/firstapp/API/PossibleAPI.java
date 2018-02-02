@@ -24,7 +24,7 @@ public interface PossibleAPI {
     @GET("GetPlatformsList.php")
     Call<PlatformXML> getPlatform();
 
-    @GET("/feed/rss/news/")
+    @GET("/feeds/reviews/")
     Call<RSSList> getRssList();
 
     @GET("GetPlatform.php")

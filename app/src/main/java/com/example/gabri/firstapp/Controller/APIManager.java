@@ -145,7 +145,7 @@ public class APIManager {
         final List<Object> list= objectList;
         final RecyclerAdapter recycler = recyclerAdapter;
 
-        Retrofit retrofitObject = new Retrofit.Builder().baseUrl("https://multiplayer.it")
+        Retrofit retrofitObject = new Retrofit.Builder().baseUrl("https://www.gamespot.com")
                 .addConverterFactory(SimpleXmlConverterFactory.create())
                 .build();
 
@@ -156,7 +156,8 @@ public class APIManager {
             public void onResponse(Call<RSSList> call, Response<RSSList> response) {
                 List<RSSFeed> rssList=response.body().getRssList();
                 Filter filter=new Filter();
-                filter.setImageLink(rssList);
+                filter.filterPubDate(rssList);
+                filter.removeImagesTagFromDescription(rssList);
                 filter.cleanDescriptionFromHTML(rssList);
                 int size = list.size();
                 list.addAll(rssList);

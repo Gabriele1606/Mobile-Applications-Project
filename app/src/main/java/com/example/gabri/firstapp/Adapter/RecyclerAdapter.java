@@ -92,6 +92,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public class RssFeedHolder extends RecyclerView.ViewHolder{
         public TextView rssText;
         public TextView rssTitle;
+        public TextView rssPubDate;
         public ImageView imageView;
         public ImageView readLaterButton;
         public Boolean isFavorite;
@@ -102,8 +103,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             //rssText = (TextView) itemView.findViewById(R.id.text_news);
             //rssText = (TextView) itemView.findViewById(R.id.text_news);
             rssTitle=(TextView) itemView.findViewById(R.id.title_news);
+            rssPubDate=(TextView) itemView.findViewById(R.id.pubdate);
             imageView=(ImageView)itemView.findViewById(R.id.image_rss);
-            readLaterButton=(ImageView) itemView.findViewById(R.id.read_later);
+            //readLaterButton=(ImageView) itemView.findViewById(R.id.read_later);
 
         }
     }
@@ -268,13 +270,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                if(dataSnapshot.hasChild("news"+"/"+Data.getIdUserForRemoteDb()+"/"+String.valueOf(((RSSFeed)listObject.get(position)).getIdForFirebase()))){
-                                    rssFeedHolder.isFavorite=true;
-                                    rssFeedHolder.readLaterButton.setImageResource(R.drawable.readlateron);
-                                }
-                                else {
-                                    rssFeedHolder.isFavorite = false;
-                                    rssFeedHolder.readLaterButton.setImageResource(R.drawable.readlateroff);
+                                if (listObject.size() >= position) {
+                                    if (dataSnapshot.hasChild("news" + "/" + Data.getIdUserForRemoteDb() + "/" + String.valueOf(((RSSFeed) listObject.get(position)).getIdForFirebase()))) {
+                                        rssFeedHolder.isFavorite = true;
+                                        //rssFeedHolder.readLaterButton.setImageResource(R.drawable.readlateron);
+                                    } else {
+                                        rssFeedHolder.isFavorite = false;
+                                        //rssFeedHolder.readLaterButton.setImageResource(R.drawable.readlateroff);
+                                    }
                                 }
                             }
 
@@ -285,38 +288,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                 );
 
-                rssFeedHolder.readLaterButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(!rssFeedHolder.isFavorite) {
-                            Toast.makeText(rssFeedHolder.view.getContext(), "News added from your read more list", Toast.LENGTH_SHORT).show();
-                            DatabaseReference databaseWishGame = FirebaseDatabase.getInstance().getReference("news").child(Data.getIdUserForRemoteDb());
-                            String id = databaseWishGame.push().getKey();
-                            ((RSSFeed) listObject.get(position)).setIdForFirebase(id);
-                            databaseWishGame.child(id).setValue(listObject.get(position));
-                            rssFeedHolder.readLaterButton.setImageResource(R.drawable.readlateron);
-                        }
-                        else{
-                            Toast.makeText(rssFeedHolder.view.getContext(), "News removed from your read more list", Toast.LENGTH_SHORT).show();
-                            DatabaseReference databaseWishGame= FirebaseDatabase.getInstance().getReference("news");
-                            databaseWishGame.child(Data.getIdUserForRemoteDb()).child(((RSSFeed)listObject.get(position)).getIdForFirebase()).removeValue();
-                            rssFeedHolder.readLaterButton.setImageResource(R.drawable.readlateroff);
-                        }
-                    }
-                });
-
-
                 rssFeedHolder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
 
                         Bundle bundle=new Bundle();
-                        bundle.putString("TITLE",((RSSFeed)listObject.get(position)).getTitle());
-                        bundle.putString("TEXT", ((RSSFeed)listObject.get(position)).getDescription());
-                        bundle.putString("IMAGE", ((RSSFeed)listObject.get(position)).getImageLink());
-                        bundle.putString("DATE", ((RSSFeed)listObject.get(position)).getPubdate());
-                        bundle.putString("MULTIPLAYERLINK", ((RSSFeed)listObject.get(position)).getGuid());
+                        bundle.putString("IDFIREBASE",String.valueOf(((RSSFeed)listObject.get(position)).getIdForFirebase()));
+                        bundle.putSerializable("REALRSSOBJECT",((RSSFeed)listObject.get(position)));
 
                         if(!TWOPANELS){
                             FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
@@ -444,6 +423,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private void setRssCard(RssFeedHolder rssFeedHolder, int position){
         //rssFeedHolder.rssText.setText(((RSSFeed)listObject.get(position)).getDescription());
         rssFeedHolder.rssTitle.setText(((RSSFeed)listObject.get(position)).getTitle());
+        rssFeedHolder.rssPubDate.setText(((RSSFeed)listObject.get(position)).getPubdate());
         Glide.with(mContext).load(((RSSFeed)listObject.get(position)).getImageLink()).into(rssFeedHolder.imageView);
     }
 

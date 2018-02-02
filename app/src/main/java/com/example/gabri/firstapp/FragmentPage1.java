@@ -111,7 +111,7 @@ public class FragmentPage1 extends Fragment{
 
         APIManager apiManager= new APIManager();
 
-        listObject.add(new Title("News from Multiplayer.it"));
+        listObject.add(new Title("Powered by GAMESPOT"));
 
         apiManager.getRssList(listObject,recyclerAdapter);
 

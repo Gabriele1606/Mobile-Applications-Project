@@ -87,6 +87,10 @@ dependencies {
     //Support Design Google
     compile 'com.android.support:design:27.0.2'
     compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    //used for button effects
+    compile 'com.jakewharton:butterknife:7.0.1'
+    annotationProcessor 'com.jakewharton:butterknife:7.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -83,6 +84,7 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
 
 
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
         this.viewRoot=inflater.inflate(R.layout.fragment_game_detail,container,false);
         this.mContext=container.getContext();
@@ -516,40 +518,9 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
         mAppBarLayout   = (AppBarLayout) this.viewRoot.findViewById(R.id.main_appbar);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        System.out.println("IL MENU è STATO CREATO----->");
-        inflater.inflate(R.menu.menu_main, menu);
-        super.onCreateOptionsMenu(menu,inflater);
-        //Questo valore dovra poi essere settato in maniera dinamica
-        this.isFavorite=false;
 
-        MenuItem favorite =menu.getItem(R.id.menu_favorite);
-        if(!this.isFavorite){
-            favorite.setIcon(R.drawable.heartoff);
-        }else{
-            favorite.setIcon(R.drawable.hearton);
-        }
 
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        System.out.println("HAI CLICCATO");
-        if(item.getItemId()==R.id.menu_favorite){
-            if(this.isFavorite==false){
-                item.setIcon(R.drawable.hearton);
-                addGameToWishList(this.gameId);
-                this.isFavorite=true;
-            }else{
-                item.setIcon(R.drawable.heartoff);
-                removeGameToWishList(this.gameId);
-                this.isFavorite=false;
-            }
-        }
-        return true;
-    }
 
 
 
