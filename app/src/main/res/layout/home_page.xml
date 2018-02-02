@@ -79,6 +79,16 @@ app:edMenuBackground="@color/black">
                     android:textColor="@color/white"
                     android:textSize="24sp" />
 
+                <TextView
+                    android:id="@+id/text_Map"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="8sp"
+                    android:text="Map"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    android:textColor="@color/white"
+                    android:textSize="24sp" />
+
                 <Button
                     android:id="@+id/logout_button"
                     android:layout_width="wrap_content"

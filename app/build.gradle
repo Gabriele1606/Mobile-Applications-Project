@@ -87,6 +87,11 @@ dependencies {
     //Support Design Google
     compile 'com.android.support:design:27.0.2'
     compile 'com.github.bumptech.glide:glide:3.7.0'
+
+
+    //Support Maps APIs Google
+    compile 'com.google.android.gms:play-services-maps:11.6.2'
+    compile 'com.google.android.gms:play-services-location:11.6.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

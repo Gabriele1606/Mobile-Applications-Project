@@ -1,12 +1,20 @@
 package com.example.gabri.firstapp.Controller;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.design.widget.FloatingActionButton;
 import android.support.transition.TransitionManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +26,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.gabri.firstapp.Adapter.CoverFlowAdapter;
+import com.example.gabri.firstapp.FragmentMap;
 import com.example.gabri.firstapp.FragmentReadLater;
 import com.example.gabri.firstapp.FragmentWishList;
 import com.example.gabri.firstapp.GameDetailXML;
@@ -55,8 +64,8 @@ public class HomePage extends AppCompatActivity {
     private List<GameCover> gameCoverListTwo;
     List<Object> listObject;
     APIManager apiManager;
-    private ConstraintSet originalConstraint= new ConstraintSet();
-    private ConstraintSet toRightConstraint= new ConstraintSet();
+    private ConstraintSet originalConstraint = new ConstraintSet();
+    private ConstraintSet toRightConstraint = new ConstraintSet();
 
     boolean isTwoPanes;
 
@@ -91,12 +100,10 @@ public class HomePage extends AppCompatActivity {
         //FlowManager.getDatabase(AppDatabase.class).reset(this);
 
 
-
-        listObject= Data.getInstance();
+        listObject = Data.getInstance();
         collapseDetailGame();
         addFloatingButton();
-       if (savedInstanceState == null )
-        {
+        if (savedInstanceState == null) {
             // Display the fragment
             /*getSupportFragmentManager().beginTransaction()
                 .add(R.id.mainframeLayout, new TabFragment()).commit();*/
@@ -104,20 +111,20 @@ public class HomePage extends AppCompatActivity {
                     .beginTransaction()
                     .replace(R.id.mainframeLayout, new TabFragment(), "TABLAYOUT").commit();
 
-        }else{
+        } else {
 
            /* FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.mainframeLayout, new TabFragment());
             transaction.addToBackStack(null);
             transaction.commit();*/
         }
-        TextView textView= (TextView)findViewById(R.id.text_News);
+        TextView textView = (TextView) findViewById(R.id.text_News);
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag("Newslist");
-                if(fragment == null) {
+                if (fragment == null) {
                     if (!TWOPANELS) {
                         FragmentReadLater fragmentReadLater = new FragmentReadLater();
                         FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentReadLater, "Newslist");
@@ -131,37 +138,74 @@ public class HomePage extends AppCompatActivity {
                     }
                     FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.drawerlayout);
                     mDrawer.closeMenu(true);
+                }else{
+                    if (TWOPANELS)
+                        Data.getData().getHomePageActivity().enlargeWishList();
                 }
             }
         });
 
-        TextView textView2= (TextView) findViewById(R.id.text_Games);
-        textView2.setOnClickListener(new View.OnClickListener() {
+        TextView textViewGames = (TextView) findViewById(R.id.text_Games);
+        textViewGames.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag("Gamelist");
-                if(fragment == null){
-                    if(!TWOPANELS){
-                        FragmentWishList fragmentWishList= new FragmentWishList();
+                if (fragment == null) {
+                    if (!TWOPANELS) {
+                        FragmentWishList fragmentWishList = new FragmentWishList();
                         FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentWishList, "Gamelist");
                         transaction.addToBackStack("TABLAYOUT");
                         transaction.commit();
-                    }else{
-                        FragmentWishList fragmentWishList= new FragmentWishList();
-                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentWishList, "Gamelist");
+                    } else {
+                        FragmentWishList fragmentWishList = new FragmentWishList();
+                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail, fragmentWishList, "Gamelist");
                         transaction.commit();
                         Data.getData().getHomePageActivity().enlargeWishList();
                     }
                     FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.drawerlayout);
                     mDrawer.closeMenu(true);
+                }else{
+                    if (TWOPANELS)
+                        Data.getData().getHomePageActivity().enlargeWishList();
+                }
+            }
+        });
+
+
+        TextView textViewMap = (TextView) findViewById(R.id.text_Map);
+        textViewMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
+                Fragment fragment = getSupportFragmentManager().findFragmentByTag("Maplist");
+                if (fragment == null) {
+                    if (!TWOPANELS) {
+                        FragmentMap fragmentMap = new FragmentMap();
+                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentMap, "Maplist");
+                        transaction.addToBackStack("TABLAYOUT");
+                        transaction.commit();
+                    } else {
+                        FragmentMap fragmentMap = new FragmentMap();
+                        FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail, fragmentMap, "Maplist");
+                        transaction.commit();
+                        Data.getData().getHomePageActivity().moveGuideline(0.40f);
+                    }
+                    FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.drawerlayout);
+                    mDrawer.closeMenu(true);
+                }else{
+                    System.out.println("MAP GIA' PRESENTE NEI FRAGMENT");
+                    if (TWOPANELS) {
+                        Data.getData().getHomePageActivity().moveGuideline(0.40f);
+                    }else{
+                    }
                 }
             }
         });
 
         final HomePage homePage = this;
 
-        Button logoutButton=(Button)findViewById(R.id.logout_button);
+        Button logoutButton = (Button) findViewById(R.id.logout_button);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -177,6 +221,82 @@ public class HomePage extends AppCompatActivity {
         });
 
 
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+        criteria.setCostAllowed(true);
+        criteria.setPowerRequirement(Criteria.POWER_LOW);
+        String bestProvider = locationManager.getBestProvider(criteria, true);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        Data.getData().setLocation(locationManager.getLastKnownLocation(bestProvider));
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+               System.out.println("NETWORK INFO Changed"+ "Current location: "+location.getLatitude()+ " "+location.getLongitude());
+                Data.getData().setLocation(location);
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        });
+
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                    System.out.println("GPS INFO Changed"+ "Current location: "+location.getLatitude()+ " "+location.getLongitude());
+                Data.getData().setLocation(location);
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        });
+        Data.getData().setLocationManager(locationManager);
 
 
 /*
@@ -219,6 +339,8 @@ public class HomePage extends AppCompatActivity {
             floatingActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    getSupportFragmentManager().beginTransaction().
+                            remove(getSupportFragmentManager().findFragmentById(R.id.framegameDetail)).commit();
                     collapseDetailGame();
                     //Data.getData().getSetSampleFragmentPagerAdapter().notifyDataSetChanged();
                 }
@@ -290,6 +412,8 @@ public class HomePage extends AppCompatActivity {
     public void collapseWishList(){
         moveGuideline(1.0f);
     }
+
+
     public void enlargeWishList(){
         moveGuideline(0.6f);
     }
