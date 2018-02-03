@@ -26,6 +26,7 @@ import android.widget.Toolbar;
 
 import com.example.gabri.firstapp.Adapter.ReadLaterAdapter;
 import com.example.gabri.firstapp.Adapter.WishListAdapter;
+import com.example.gabri.firstapp.Controller.HomePage;
 import com.example.gabri.firstapp.Controller.TimerLoad;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
@@ -173,7 +174,13 @@ public class FragmentReadLater extends android.support.v4.app.Fragment  {
         return Math.round(dp * (getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
-
-
+    @Override
+    public void onResume() {
+        if (getActivity()instanceof HomePage) {
+            HomePage activity = (HomePage) getActivity();
+            activity.HighlightSection("News");
+        }
+        super.onResume();
+    }
 }
 

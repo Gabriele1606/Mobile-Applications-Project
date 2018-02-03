@@ -99,6 +99,8 @@ dependencies {
 
     //flip card view
     compile 'com.github.sachinvarma:EasyFlipView:2.0.4'
+    //Blurry
+    compile 'jp.wasabeef:blurry:2.1.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

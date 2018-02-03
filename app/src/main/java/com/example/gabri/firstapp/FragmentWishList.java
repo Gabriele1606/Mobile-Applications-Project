@@ -79,4 +79,12 @@ public class FragmentWishList extends android.support.v4.app.Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        if (getActivity()instanceof HomePage) {
+            HomePage activity = (HomePage) getActivity();
+            activity.HighlightSection("Game");
+        }
+        super.onResume();
+    }
 }

@@ -3,6 +3,9 @@ package com.example.gabri.firstapp;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -22,11 +25,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.gabri.firstapp.Controller.HomePage;
 import com.example.gabri.firstapp.Model.Data;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -41,11 +47,15 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import jp.wasabeef.blurry.Blurry;
 
 import static android.content.Context.LOCATION_SERVICE;
 
@@ -68,6 +78,8 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
     double longitude;
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
+    GetNearbyPlacesData getNearbyPlacesData;
+    FragmentMap fragmentMap;
 
     // This event fires 1st, before creation of fragment or any views
     // The onAttach method is called when the Fragment instance is associated with an Activity.
@@ -75,6 +87,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        fragmentMap = this;
         if (context instanceof Activity) {
             this.listener = (FragmentActivity) context;
         }
@@ -101,6 +114,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.el_fragment_Map);
         mapFragment.getMapAsync(this);
+
         return view;
     }
 
@@ -132,6 +146,24 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
     @Override
     public void onMapReady(GoogleMap googleMap) {
          mMap = googleMap;
+         googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+             @Override
+             public void onMapLoaded() {
+                 fragmentMap.Blur();
+                 fragmentMap.moveGuideline(0.61f);
+             }
+         });
+        try {
+            boolean success = mMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            getActivity(), R.raw.maps_style));
+
+            if (!success) {
+                Log.e("FRAGMENT MAP", "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e("FRAGMENT MAP", "Can't find style. Error: ", e);
+        }
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(getActivity(),
                    android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -153,13 +185,16 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
         }else{
             url = getUrl(45.464233f, 9.190061f, "negozio%20di%20videogiochi");
         }
-        Object[] DataTransfer = new Object[2];
+        Object[] DataTransfer = new Object[3];
         DataTransfer[0] = mMap;
         DataTransfer[1] = url;
+        DataTransfer[2]=this;
         Log.d("onClick", url);
-        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+        getNearbyPlacesData = new GetNearbyPlacesData();
         getNearbyPlacesData.setListener(this);
         getNearbyPlacesData.execute(DataTransfer);
+
+
         Toast.makeText(getActivity(),"Nearby Game Shops", Toast.LENGTH_LONG).show();
 
     }
@@ -176,6 +211,8 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
 
     @Override
     public void onStop() {
+        if (getNearbyPlacesData!=null)
+            getNearbyPlacesData.cancel(true);
         System.out.println("STOPPED FRAGMENT MAP");
         super.onStop();
     }
@@ -250,9 +287,10 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
 
     }
 
-    public void load(final List<HashMap<String, String>> nearbyPlacesList) {
+    public void load(final List<HashMap<String, String>> nearbyPlacesList, final ArrayList<Marker> markers) {
         MapListAdapter mapListAdapter= new MapListAdapter(getActivity(),R.id.listMap,nearbyPlacesList);
         ListView listView = (ListView)getActivity().findViewById(R.id.listMap);
+
 
         if (mMap!=null& listView!=null)
            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -264,20 +302,64 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
                    LatLng latLng = new LatLng(lat, lng);
                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
                    mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+                   for (Marker m :
+                           markers) {
+                       if (m.getPosition().equals(latLng)) {
+
+                           mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                               @Override
+                               public boolean onMarkerClick(Marker marker) {
+                                   return false;
+                               }
+                           });
+                           m.showInfoWindow();
+                           mMap.getUiSettings().setMapToolbarEnabled(true);
+                       }
+                   }
+
                }
            });
         if (listView!=null)
         listView.setAdapter(mapListAdapter);
+        //Blur();
     }
 
-    @Override
-    public void onDestroy() {
-        Fragment fragment = getActivity().getSupportFragmentManager().findFragmentByTag("Maplist");
-        if (fragment!=null) {
-            System.out.println("POP FRAGMENT");
 
+
+    @Override
+    public void onResume() {
+        if (getActivity()instanceof HomePage) {
+            HomePage activity = (HomePage) getActivity();
+            activity.HighlightSection("Map");
         }
-        System.out.println("DESTROY CALLED");
-        super.onDestroy();
+        super.onResume();
+    }
+
+    public void Blur(){
+        final ImageView viewById = (ImageView) getActivity().findViewById(R.id.backList);
+        mMap.snapshot(new GoogleMap.SnapshotReadyCallback() {
+            @Override
+            public void onSnapshotReady(Bitmap bitmap) {
+                Blurry.with(getActivity())
+                        .radius(15)
+                        .sampling(8)
+                        .color(Color.argb(150   ,23,127,165))
+                        .async()
+                        .animate(500).from(bitmap).into(viewById);
+            }
+        });
+    }
+
+
+    public void moveGuideline(float percent){
+        boolean isTwoPanes=getResources().getBoolean(R.bool.has_two_panes);
+        if (!isTwoPanes){
+            ConstraintLayout constraintLayout= getActivity().findViewById(R.id.constraintMap);
+            ConstraintSet constraintset= new ConstraintSet();
+            constraintset.clone(constraintLayout);
+            constraintset.setGuidelinePercent(R.id.guideline_map,percent);
+            TransitionManager.beginDelayedTransition(constraintLayout);
+            constraintset.applyTo(constraintLayout);
+        }
     }
 }

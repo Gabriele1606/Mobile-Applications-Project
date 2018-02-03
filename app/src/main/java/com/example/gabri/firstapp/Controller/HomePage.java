@@ -17,6 +17,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.transition.TransitionManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -77,7 +78,6 @@ public class HomePage extends AppCompatActivity {
 
         Data.getData().setHomePageActivity(this);
 
-        HighlightSection();
 
         isTwoPanes = getResources().getBoolean(R.bool.has_two_panes);
         if (!isTwoPanes) {
@@ -125,7 +125,16 @@ public class HomePage extends AppCompatActivity {
             public void onClick(View view) {
                 boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag("Newslist");
-                if (fragment == null) {
+                Fragment gamelist = getSupportFragmentManager().findFragmentByTag("Gamelist");
+                Fragment maplist = getSupportFragmentManager().findFragmentByTag("Maplist");
+                if (gamelist!=null) {
+                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Gamelist")).commitNow();
+                    getSupportFragmentManager().popBackStackImmediate();
+                }
+                if (maplist!=null) {
+                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Maplist")).commitNow();
+                    getSupportFragmentManager().popBackStackImmediate();
+                }
                     TextView textGames = findViewById(R.id.text_Games);
                     TextView textNews = findViewById(R.id.text_News);
                     TextView textMap = findViewById(R.id.text_Map);
@@ -140,8 +149,6 @@ public class HomePage extends AppCompatActivity {
                         FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
                         mDrawer.closeMenu(true);
                     }
-                } else {
-                }
             }
         });
 
@@ -150,8 +157,14 @@ public class HomePage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
+                Fragment newslist = getSupportFragmentManager().findFragmentByTag("Newslist");
+                Fragment maplist = getSupportFragmentManager().findFragmentByTag("Maplist");
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag("Gamelist");
-                if (fragment == null) {
+                if (newslist!=null)
+                    getSupportFragmentManager().popBackStackImmediate();
+                if (maplist!=null)
+                    getSupportFragmentManager().popBackStackImmediate();
+
                     TextView textGames = findViewById(R.id.text_Games);
                     TextView textNews = findViewById(R.id.text_News);
                     TextView textMap = findViewById(R.id.text_Map);
@@ -166,8 +179,7 @@ public class HomePage extends AppCompatActivity {
                         FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
                         mDrawer.closeMenu(true);
                     }
-                } else {
-                }
+
             }
         });
 
@@ -178,7 +190,16 @@ public class HomePage extends AppCompatActivity {
             public void onClick(View view) {
                 boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag("Maplist");
-                if (fragment == null) {
+                Fragment newslist = getSupportFragmentManager().findFragmentByTag("Newslist");
+                Fragment gamelist = getSupportFragmentManager().findFragmentByTag("Gamelist");
+                if (newslist!=null) {
+                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Newslist")).commitNow();
+                    getSupportFragmentManager().popBackStackImmediate();
+                }
+                if (gamelist!=null)
+                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Gamelist")).commitNow();
+                    getSupportFragmentManager().popBackStackImmediate();
+
                     TextView textGames = findViewById(R.id.text_Games);
                     TextView textNews = findViewById(R.id.text_News);
                     TextView textMap = findViewById(R.id.text_Map);
@@ -193,10 +214,6 @@ public class HomePage extends AppCompatActivity {
                         FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
                         mDrawer.closeMenu(true);
                     }
-                } else {
-                    System.out.println("MAP GIA' PRESENTE NEI FRAGMENT");
-
-                }
             }
         });
 
@@ -324,7 +341,7 @@ public class HomePage extends AppCompatActivity {
 
     }
 
-    public void HighlightSection() {
+    public void HighlightSection(String name) {
         Fragment fragmentNews = getSupportFragmentManager().findFragmentByTag("Newslist");
         Fragment fragmentGame = getSupportFragmentManager().findFragmentByTag("Gamelist");
         Fragment fragmentMap = getSupportFragmentManager().findFragmentByTag("Maplist");
@@ -332,15 +349,15 @@ public class HomePage extends AppCompatActivity {
         TextView textGames = findViewById(R.id.text_Games);
         TextView textMap = findViewById(R.id.text_Map);
 
-        if (fragmentNews!=null)
+        if (name=="News")
             textNews.setBackgroundColor(Color.RED);
         else
             textNews.setBackgroundColor(Color.BLACK);
-        if (fragmentGame!=null)
+        if (name=="Game")
             textGames.setBackgroundColor(Color.RED);
         else
             textGames.setBackgroundColor(Color.BLACK);
-        if (fragmentMap!=null)
+        if (name=="Map")
             textMap.setBackgroundColor(Color.RED);
         else
             textMap.setBackgroundColor(Color.BLACK);
