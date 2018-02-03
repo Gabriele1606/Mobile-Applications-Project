@@ -10,7 +10,10 @@
 
     <color name="test">#484848</color>
     <color name="definitiveBackground">#13262c</color>
+    <color name="definitiveBackground_transparent">#e513262c</color>
     <color name="definitiveText">#177fa5</color>
+    <color name="definitiveText_transparent">#bc177fa5</color>
+    <color name="white_transparent">#a6ffffff</color>
     <color name="definitiveTextSelected">#67b8d6</color>
     <color name="lightGray">#b7b7b7</color>
     <color name="viewBg">#f1f5f8</color>

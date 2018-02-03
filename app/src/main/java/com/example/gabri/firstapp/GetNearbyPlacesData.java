@@ -7,10 +7,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.json.JSONObject;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,6 +22,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
     String googlePlacesData;
     GoogleMap mMap;
     String url;
+    FragmentMap fragmentMap;
     private FragmentMap listener;
 
     @Override
@@ -30,6 +31,7 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             Log.d("GetNearbyPlacesData", "doInBackground entered");
             mMap = (GoogleMap) params[0];
             url = (String) params[1];
+            fragmentMap=(FragmentMap) params[2];
             DownloadUrl downloadUrl = new DownloadUrl();
             googlePlacesData = downloadUrl.readUrl(url);
             Log.d("GooglePlacesReadTask", "doInBackground Exit");
@@ -45,12 +47,14 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
         List<HashMap<String, String>> nearbyPlacesList = null;
         DataParser dataParser = new DataParser();
         nearbyPlacesList =  dataParser.parse(result);
-        ShowNearbyPlaces(nearbyPlacesList);
-        listener.load(nearbyPlacesList);
+        ArrayList<Marker> markers = ShowNearbyPlaces(nearbyPlacesList);
+        listener.load(nearbyPlacesList,markers);
+        //fragmentMap.Blur();
         Log.d("GooglePlacesReadTask", "onPostExecute Exit");
     }
 
-    private void ShowNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
+    private ArrayList<Marker> ShowNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
+        ArrayList<Marker> markers= new ArrayList<Marker>();
         for (int i = 0; i < nearbyPlacesList.size(); i++) {
             Log.d("onPostExecute","Entered into showing locations");
             MarkerOptions markerOptions = new MarkerOptions();
@@ -64,12 +68,14 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
             LatLng latLng = new LatLng(lat, lng);
             markerOptions.position(latLng);
             markerOptions.title(placeName + " : " + vicinity);
-            mMap.addMarker(markerOptions);
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+            Marker marker = mMap.addMarker(markerOptions);
+            markers.add(marker);
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
             //move map camera
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
         }
+        return markers;
     }
 
     public void setListener(FragmentMap fragmentMap){

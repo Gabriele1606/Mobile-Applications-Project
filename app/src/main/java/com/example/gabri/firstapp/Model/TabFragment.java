@@ -50,8 +50,10 @@ public class TabFragment extends Fragment {
 
     @Override
     public void onResume() {
-        HomePage activity = (HomePage) getActivity();
-        activity.HighlightSection();
+        if (getActivity()instanceof HomePage) {
+            HomePage activity = (HomePage) getActivity();
+            activity.HighlightSection("nothing");
+        }
         super.onResume();
     }
 }
