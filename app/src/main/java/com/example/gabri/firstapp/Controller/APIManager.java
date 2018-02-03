@@ -167,7 +167,6 @@ public class APIManager {
 
             @Override
             public void onFailure(Call<RSSList> call, Throwable t) {
-                System.out.println(t.getCause().toString());
             }
         });
 
@@ -292,7 +291,6 @@ public class APIManager {
 
             @Override
             public void onFailure(Call<PlatformXML> call, Throwable t) {
-                System.out.println("non ho ricevuto console");
             }
         });
 
@@ -382,8 +380,7 @@ public class APIManager {
 
                         @Override
                         public void onFailure(Call<GameDetailXML> call, Throwable t) {
-                            // System.out.println(t.getCause().toString());
-                            //System.out.println(t.getMessage());
+
                         }
 
                     });
@@ -477,8 +474,6 @@ public class APIManager {
 
                         @Override
                         public void onFailure(Call<GameDetailXML> call, Throwable t) {
-                            // System.out.println(t.getCause().toString());
-                            //System.out.println(t.getMessage());
                         }
 
                     });

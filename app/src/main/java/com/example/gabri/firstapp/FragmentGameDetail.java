@@ -65,6 +65,8 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
     private TextView playerInDetail;
     private TextView publisherInDetail;
     private TextView developerInDetail;
+    private TextView console;
+    private TextView pubdate;
     private View viewRoot;
     private Context mContext;
     private LayoutInflater inflater;
@@ -108,6 +110,8 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
         this.playerInDetail=(TextView)this.viewRoot.findViewById(R.id.player_in_detail_from_db);
         this.publisherInDetail=(TextView)this.viewRoot.findViewById(R.id.publisher_in_detail_from_db);
         this.developerInDetail=(TextView)this.viewRoot.findViewById(R.id.developer_in_detail_from_db);
+        this.pubdate=(TextView)this.viewRoot.findViewById(R.id.pubdate_3);
+        this.console=(TextView)this.viewRoot.findViewById(R.id.console);
         this.heart=(ImageView)this.viewRoot.findViewById(R.id.favorite_game);
 
         prepareData();
@@ -453,14 +457,14 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
 
 
     private void prepareData() {
-        int paramPassed=getArguments().getInt("GAME ID");
+        Game game = (Game)getArguments().getSerializable("REALGAMEOBJECT");
+        int paramPassed=game.getId();
         if(paramPassed!=0){
             this.gameId=paramPassed;
             DBQuery dbQuery=new DBQuery();
             GameDetail gameDetail;
             Boxart boxart;
             List<Fanart> fanart;
-            game=dbQuery.getGameFromId(this.gameId);
             gameDetail=dbQuery.getGameDetailFromId(this.gameId);
             boxart=dbQuery.getBoxArtFromGame(game);
             fanart=dbQuery.getFanartFromGame(game);
@@ -495,6 +499,12 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
             if(gameDetail.getDeveloper()!=null) {
                 this.developerInDetail.setText(gameDetail.getDeveloper());
             }
+            if(!game.getReleaseDate().equals("null")){
+                this.pubdate.setText("PubDate: "+game.getReleaseDate());
+            }
+            if(!game.getPlatform().equals("null")){
+                this.console.setText("Console: "+game.getPlatform());
+            }
             if(gameDetail.getYoutubeLink()==null){
                 gameDetail.setYoutubeLink("null");
             }
@@ -504,8 +514,7 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.youtube_view, myFragment).commit();
 
 
-        }else
-            System.out.println("NULLAAAAAAAAAA");
+        }
     }
 
 

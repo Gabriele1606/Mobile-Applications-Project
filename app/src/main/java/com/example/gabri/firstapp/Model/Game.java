@@ -15,6 +15,7 @@ import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -22,7 +23,7 @@ import java.util.UUID;
  */
 @Table(database = AppDatabase.class)
 @Root(name="Game", strict=false)
-public class Game {
+public class Game implements Serializable {
     @PrimaryKey
     @Element(name="id",required = false)
     private int id;

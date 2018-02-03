@@ -64,7 +64,7 @@ public class FragmentReadLater extends android.support.v4.app.Fragment  {
 
         view= inflater.inflate(R.layout.fragment_read_later, container, false);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_readlater);
         mAdapter = new ReadLaterAdapter(newsList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);

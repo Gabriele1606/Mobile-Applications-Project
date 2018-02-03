@@ -8,6 +8,8 @@ import android.app.Activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -39,6 +41,7 @@ import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.Game_Table;
 import com.example.gabri.firstapp.Model.Platform;
+import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.R;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
@@ -138,7 +141,7 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public View view;
-        public TextView title, count;
+        public TextView title,pubdate, count;
         public ImageView thumbnail;
         public ProgressBar progressBar;
         public MyViewHolder(View view) {
@@ -148,6 +151,8 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
             title =(TextView) view.findViewById(R.id.titleGame);
             thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
             progressBar=(ProgressBar) view.findViewById(R.id.progressCard);
+            //progressBar.setProgressTintList(ColorStateList.valueOf(Color.parseColor("#67b8d6")));
+            pubdate=(TextView) view.findViewById(R.id.releaseDate);
 
 
         }
@@ -178,7 +183,7 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
             public void onClick(View v) {
                 FragmentGameDetail fragmentGameDetail=new FragmentGameDetail();
                 Bundle bundle=new Bundle();
-                bundle.putInt("GAME ID",game.getId());
+                bundle.putSerializable("REALGAMEOBJECT",game);
                 fragmentGameDetail.setArguments(bundle);
                 boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
 
@@ -206,11 +211,18 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
             }
         });
 
-        if(index!=-1)
+        if(index!=-1) {
             holder.title.setText(game.getGameTitle().substring(0, index));
 
-        else
+        }else {
             holder.title.setText(game.getGameTitle());
+        }
+
+        if(game.getReleaseDate().equals("null")){
+            holder.pubdate.setText("31/12/2006");
+        }else{
+            holder.pubdate.setText(game.getReleaseDate());
+        }
 
         // loading game cover using Glide library
         Glide.with(mContext).load("http://thegamesdb.net/banners/"+dbQuery.getBoxArtFromGame(game).getThumb()).listener(new RequestListener<String, GlideDrawable>() {
@@ -226,6 +238,8 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
                 return false;
             }
         }).into(holder.thumbnail);
+
+
 
 
     }
