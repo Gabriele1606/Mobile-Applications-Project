@@ -19,17 +19,23 @@
         android:theme="@style/mioTheme"
         android:largeHeap="true"
         android:hardwareAccelerated="true" >
+
         <activity
             android:name=".Controller.Login"
             android:theme="@style/mioTheme"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".Controller.HomePage"></activity>
+
+
+        <activity android:name=".SplashScreen.SplashScreenActivity" >
+
+        </activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAWdnzI-5twRBDx2na9YM3V5hPMdcJic3g"/>

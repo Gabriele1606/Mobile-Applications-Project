@@ -77,39 +77,41 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Game game=wishListGame.get(position);
-        holder.gameTitle.setText(game.getGameTitle());
-        holder.console.setText(game.getPlatform());
-        DBQuery dbQuery=new DBQuery();
-        Boxart boxart=dbQuery.getBoxArtFromGame(game);
-        if(game.getReleaseDate().equals("null")) {
-            holder.pubDate.setText("31/12/2006");
-        }else{
-            holder.pubDate.setText(game.getReleaseDate());
-        }
-
-        Glide.with(getContext()).load("http://thegamesdb.net/banners/"+boxart.getThumb()).into(holder.coverImage);
-
-        holder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
-                Bundle bundle=new Bundle();
-                bundle.putString("IDFIREBASE",game.getIdForFirebase());
-                bundle.putSerializable("REALGAMEOBJECT",game);
-
-
-                FragmentGameDetail fragmentGameDetail= new FragmentGameDetail();
-                fragmentGameDetail.setArguments(bundle);
-                //FINAL SOLUTION
-                Fragment fragmentById = Data.getData().getHomePageActivity().getSupportFragmentManager().findFragmentById(R.id.mainframeLayout);
-                FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentGameDetail, "GameDetail");
-                transaction.addToBackStack("TABLAYOUT");
-                transaction.commit();
-
+        final Game game = wishListGame.get(position);
+        if (game != null) {
+            holder.gameTitle.setText(game.getGameTitle());
+            holder.console.setText(game.getPlatform());
+            DBQuery dbQuery = new DBQuery();
+            Boxart boxart = dbQuery.getBoxArtFromGame(game);
+            if (game.getReleaseDate().equals("null")) {
+                holder.pubDate.setText("31/12/2006");
+            } else {
+                holder.pubDate.setText(game.getReleaseDate());
             }
-        });
 
+            Glide.with(getContext()).load("http://thegamesdb.net/banners/" + boxart.getThumb()).into(holder.coverImage);
+
+            holder.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("IDFIREBASE", game.getIdForFirebase());
+                    bundle.putSerializable("REALGAMEOBJECT", game);
+
+
+                    FragmentGameDetail fragmentGameDetail = new FragmentGameDetail();
+                    fragmentGameDetail.setArguments(bundle);
+                    //FINAL SOLUTION
+                    Fragment fragmentById = Data.getData().getHomePageActivity().getSupportFragmentManager().findFragmentById(R.id.mainframeLayout);
+                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentGameDetail, "GameDetail");
+                    transaction.addToBackStack("TABLAYOUT");
+                    transaction.commit();
+
+                }
+            });
+
+        }
     }
 
 
