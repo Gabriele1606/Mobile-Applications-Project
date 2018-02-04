@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import com.example.gabri.firstapp.Adapter.CoverFlowAdapter;
 import com.example.gabri.firstapp.FragmentMap;
+import com.example.gabri.firstapp.FragmentProfile;
 import com.example.gabri.firstapp.FragmentReadLater;
 import com.example.gabri.firstapp.FragmentWishList;
 import com.example.gabri.firstapp.GameDetailXML;
@@ -135,12 +136,10 @@ public class HomePage extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Maplist")).commitNow();
                     getSupportFragmentManager().popBackStackImmediate();
                 }
-                    TextView textGames = findViewById(R.id.text_Games);
-                    TextView textNews = findViewById(R.id.text_News);
-                    TextView textMap = findViewById(R.id.text_Map);
-                    textGames.setBackgroundColor(Color.BLACK);
-                    textMap.setBackgroundColor(Color.BLACK);
-                    textNews.setBackgroundColor(Color.RED);
+
+                HighlightSection("News");
+
+
                     FragmentReadLater fragmentReadLater = new FragmentReadLater();
                     FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentReadLater, "Newslist");
                     transaction.addToBackStack("TABLAYOUT");
@@ -152,6 +151,43 @@ public class HomePage extends AppCompatActivity {
             }
         });
 
+        TextView textviewProfile = (TextView) findViewById(R.id.text_Profile);
+        textviewProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
+
+                Fragment profile = getSupportFragmentManager().findFragmentByTag("Profile");
+                Fragment gamelist = getSupportFragmentManager().findFragmentByTag("Gamelist");
+                Fragment maplist = getSupportFragmentManager().findFragmentByTag("Maplist");
+                Fragment newslist = getSupportFragmentManager().findFragmentByTag("Newslist");
+                if (gamelist!=null) {
+                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Gamelist")).commitNow();
+                    getSupportFragmentManager().popBackStackImmediate();
+                }
+                if (maplist!=null) {
+                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Maplist")).commitNow();
+                    getSupportFragmentManager().popBackStackImmediate();
+                }
+                if (newslist!=null) {
+                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Newslist")).commitNow();
+                    getSupportFragmentManager().popBackStackImmediate();
+                }
+
+                HighlightSection("Profile");
+
+                FragmentProfile fragmentProfile= new FragmentProfile();
+                FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentProfile, "ProfileLayout");
+                transaction.addToBackStack("TABLAYOUT");
+                transaction.commit();
+                if (!TWOPANELS) {
+                    FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
+                    mDrawer.closeMenu(true);
+                }
+            }
+        });
+
+
         TextView textViewGames = (TextView) findViewById(R.id.text_Games);
         textViewGames.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,17 +196,18 @@ public class HomePage extends AppCompatActivity {
                 Fragment newslist = getSupportFragmentManager().findFragmentByTag("Newslist");
                 Fragment maplist = getSupportFragmentManager().findFragmentByTag("Maplist");
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag("Gamelist");
-                if (newslist!=null)
+                if (newslist!=null) {
+                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Newslist")).commitNow();
                     getSupportFragmentManager().popBackStackImmediate();
-                if (maplist!=null)
-                    getSupportFragmentManager().popBackStackImmediate();
+                }
 
-                    TextView textGames = findViewById(R.id.text_Games);
-                    TextView textNews = findViewById(R.id.text_News);
-                    TextView textMap = findViewById(R.id.text_Map);
-                    textGames.setBackgroundColor(Color.RED);
-                    textMap.setBackgroundColor(Color.BLACK);
-                    textNews.setBackgroundColor(Color.BLACK);
+                if (maplist!=null) {
+                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Maplist")).commitNow();
+                    getSupportFragmentManager().popBackStackImmediate();
+                }
+
+                HighlightSection("Game");
+
                     FragmentWishList fragmentWishList = new FragmentWishList();
                     FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentWishList, "Gamelist");
                     transaction.addToBackStack("TABLAYOUT");
@@ -200,12 +237,8 @@ public class HomePage extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Gamelist")).commitNow();
                     getSupportFragmentManager().popBackStackImmediate();
 
-                    TextView textGames = findViewById(R.id.text_Games);
-                    TextView textNews = findViewById(R.id.text_News);
-                    TextView textMap = findViewById(R.id.text_Map);
-                    textGames.setBackgroundColor(Color.BLACK);
-                    textMap.setBackgroundColor(Color.RED);
-                    textNews.setBackgroundColor(Color.BLACK);
+                HighlightSection("Map");
+
                     FragmentMap fragmentMap = new FragmentMap();
                     FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentMap, "Maplist");
                     transaction.addToBackStack("TABLAYOUT");
@@ -345,22 +378,31 @@ public class HomePage extends AppCompatActivity {
         Fragment fragmentNews = getSupportFragmentManager().findFragmentByTag("Newslist");
         Fragment fragmentGame = getSupportFragmentManager().findFragmentByTag("Gamelist");
         Fragment fragmentMap = getSupportFragmentManager().findFragmentByTag("Maplist");
+        Fragment fragmentProfile = getSupportFragmentManager().findFragmentByTag("Profile");
         TextView textNews = findViewById(R.id.text_News);
         TextView textGames = findViewById(R.id.text_Games);
         TextView textMap = findViewById(R.id.text_Map);
+        TextView textProfile = findViewById(R.id.text_Profile);
+        int highlight = getResources().getColor(R.color.definitiveText);
+        int dark = getResources().getColor(R.color.definitiveBackground_transparent);
+
+        if (name=="Profile")
+            textProfile.setBackgroundColor(highlight);
+        else
+            textProfile.setBackgroundColor(dark);
 
         if (name=="News")
-            textNews.setBackgroundColor(Color.RED);
+            textNews.setBackgroundColor(highlight);
         else
-            textNews.setBackgroundColor(Color.BLACK);
+            textNews.setBackgroundColor(dark);
         if (name=="Game")
-            textGames.setBackgroundColor(Color.RED);
+            textGames.setBackgroundColor(highlight);
         else
-            textGames.setBackgroundColor(Color.BLACK);
+            textGames.setBackgroundColor(dark);
         if (name=="Map")
-            textMap.setBackgroundColor(Color.RED);
+            textMap.setBackgroundColor(highlight);
         else
-            textMap.setBackgroundColor(Color.BLACK);
+            textMap.setBackgroundColor(dark);
 
     }
 
