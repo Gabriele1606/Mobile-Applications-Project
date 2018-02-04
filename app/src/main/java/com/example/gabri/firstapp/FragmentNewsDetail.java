@@ -73,7 +73,7 @@ public class FragmentNewsDetail extends android.support.v4.app.Fragment
     private Context mContext;
     private LayoutInflater inflater;
     private YoutubePlayerFragment youtube;
-    private Boolean isFavorite;
+    private Boolean isFavorite=false;
     private String idFirebase;
     private ImageView favorite;
     private RSSFeed realRssObject;

@@ -162,7 +162,28 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         }
 
-        public void getNumberWishlist(){
+        public void getNumberWishlist(final UserInfoHolder userInfoHolder){
+            final List<Object> tmp=new ArrayList<Object>();
+            DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference();
+            databaseReference.child("game").child(Data.getIdUserForRemoteDb()).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.getChildrenCount()>0){
+                                userInfoHolder.notificationNumberGame.setVisibility(View.VISIBLE);
+                                userInfoHolder.notificationNumberGame.setText(Long.toString(dataSnapshot.getChildrenCount()));
+                            }
+                            else{
+                                userInfoHolder.notificationNumberGame.setVisibility(View.GONE);
+                            }
+
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    }
+            );
 
         }
 
@@ -368,6 +389,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 Glide.with(mContext).load(R.drawable.joypad).into(userInfoHolder.backgroundImageBack);
                 userInfoHolder.setWelcomeMessage("Welcome "+Data.getUser().getUsername());
                 getNumberFavoriteNews(userInfoHolder);
+                getNumberWishlist(userInfoHolder);
 
                 MyTask task=new MyTask(userInfoHolder.flipView);
                 task.execute();

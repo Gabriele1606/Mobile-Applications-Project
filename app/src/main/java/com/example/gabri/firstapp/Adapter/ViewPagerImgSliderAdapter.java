@@ -52,7 +52,7 @@ public class ViewPagerImgSliderAdapter extends PagerAdapter {
         ImageView imageView= view.findViewById(R.id.image_slider);
         final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progress);
         if(position<urlImages.size()){
-            Glide.with(context).load(urlImages.get(position)).bitmapTransform(new RoundedCornersTransformation( view.getContext(),100, 0)).listener(new RequestListener<String, GlideDrawable>() {
+            Glide.with(context).load(urlImages.get(position)).bitmapTransform(new RoundedCornersTransformation( view.getContext(),0, 0)).listener(new RequestListener<String, GlideDrawable>() {
                 @Override
                 public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                     //progressBar.setVisibility(View.GONE);

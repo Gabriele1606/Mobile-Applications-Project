@@ -71,7 +71,7 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
     private Context mContext;
     private LayoutInflater inflater;
     private YoutubePlayerFragment youtube;
-    private  Boolean isFavorite;
+    private  Boolean isFavorite=false;
     private ImageView heart;
     private Game game;
     private int numberOfStarComment;

@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -57,6 +58,7 @@ public class FragmentReadLater extends android.support.v4.app.Fragment  {
     private DBQuery dbQuery;
     private ListView listOfNewsToRead;
     private Context mContext;
+    private TextView readLaterEmpty;
 
 
     @Override
@@ -64,7 +66,7 @@ public class FragmentReadLater extends android.support.v4.app.Fragment  {
                              Bundle savedInstanceState) {
 
         view= inflater.inflate(R.layout.fragment_read_later, container, false);
-
+        readLaterEmpty=(TextView)view.findViewById(R.id.readlater_empty);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_readlater);
         mAdapter = new ReadLaterAdapter(newsList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -92,7 +94,13 @@ public class FragmentReadLater extends android.support.v4.app.Fragment  {
                             newsList.add(tmp);
 
                         }
-
+                        if(newsList.size()==0){
+                            recyclerView.setVisibility(View.GONE);
+                            readLaterEmpty.setVisibility(View.VISIBLE);
+                        }else{
+                            readLaterEmpty.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                        }
                         mAdapter.notifyDataSetChanged();
 
                     }
@@ -122,10 +130,17 @@ public class FragmentReadLater extends android.support.v4.app.Fragment  {
                 int position = viewHolder.getAdapterPosition();
                 RSSFeed tmp=newsList.get(position);
                 Toast.makeText(view.getContext(),"News removed from your read more list", Toast.LENGTH_SHORT).show();
-                DatabaseReference databaseWishGame= FirebaseDatabase.getInstance().getReference("news");
-                databaseWishGame.child(Data.getIdUserForRemoteDb()).child(tmp.getIdForFirebase()).removeValue();
+                DatabaseReference databaseReadLater= FirebaseDatabase.getInstance().getReference("news");
+                databaseReadLater.child(Data.getIdUserForRemoteDb()).child(tmp.getIdForFirebase()).removeValue();
                 newsList.remove(position);
                 mAdapter.notifyItemRemoved(position);
+                if(newsList.size()==0){
+                    recyclerView.setVisibility(View.GONE);
+                    readLaterEmpty.setVisibility(View.VISIBLE);
+                }else{
+                    readLaterEmpty.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
 
 
             }

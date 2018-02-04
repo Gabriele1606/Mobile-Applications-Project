@@ -18,6 +18,19 @@
         android:textStyle="bold"
         android:paddingBottom="5dp"/>
 
+    <TextView
+        android:id="@+id/readlater_empty"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Your Wish List is empty ;-("
+        android:textSize="40dp"
+        android:textColor="@color/definitiveTextSelected"
+        android:lineSpacingExtra="20dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_readlater"
         android:layout_width="match_parent"

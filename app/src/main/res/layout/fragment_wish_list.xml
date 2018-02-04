@@ -1,24 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:background="@color/definitiveBackground">
 
     <TextView
-        android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:background="@color/red"
-        android:fontFamily="sans-serif-smallcaps"
-        android:text="Your wish list"
+        android:text="Wish List"
+        android:textSize="26dp"
+        android:background="@color/definitiveBackground"
+        android:textColor="@color/definitiveText"
         android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="26sp" />
+        android:textStyle="bold"
+        android:paddingBottom="5dp"/>
 
-    <ListView
-        android:id="@+id/list_view"
+    <TextView
+        android:id="@+id/wish_list_empty"
+        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:text="Your Wish List is empty ;-("
+        android:textSize="40dp"
+        android:textColor="@color/definitiveText"
+        android:lineSpacingExtra="20dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_wishlist"
+        android:layout_width="match_parent"
+        android:visibility="visible"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical" />
 </LinearLayout>
