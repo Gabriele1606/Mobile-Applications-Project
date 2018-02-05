@@ -84,10 +84,5 @@ public class User {
     public void setWishGameList(List<Game> wishGameList) {
         this.wishGameList = wishGameList;
     }*/
-    public void setDescription(String description){
-        this.description=description;
-    }
-    public String getDescription(){
-        return description;
-    }
+
 }
