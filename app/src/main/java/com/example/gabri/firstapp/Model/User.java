@@ -14,6 +14,7 @@ public class User {
     private String mail;
     private String password;
     private String linkToImage;
+    private String description;
     private Map<String, String> prova=new HashMap<String, String>();
 
     public User(String id, String username, String mail, String password, String linkToImage) {
@@ -66,6 +67,14 @@ public class User {
 
     public void setLinkToImage(String linkToImage) {
         this.linkToImage = linkToImage;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /*public List<Game> getWishGameList() {

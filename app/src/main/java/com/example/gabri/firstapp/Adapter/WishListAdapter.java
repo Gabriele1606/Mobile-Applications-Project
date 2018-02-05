@@ -105,7 +105,7 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.ViewHo
                     //FINAL SOLUTION
                     Fragment fragmentById = Data.getData().getHomePageActivity().getSupportFragmentManager().findFragmentById(R.id.mainframeLayout);
                     FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentGameDetail, "GameDetail");
-                    transaction.addToBackStack("TABLAYOUT");
+                    transaction.addToBackStack("Searchlist");
                     transaction.commit();
 
                 }

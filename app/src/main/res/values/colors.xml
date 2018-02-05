@@ -10,6 +10,7 @@
 
     <color name="test">#484848</color>
     <color name="definitiveBackground">#13262c</color>
+    <color name="searchBackground">#284d59</color>
     <color name="definitiveBackground_transparent">#e513262c</color>
     <color name="definitiveText">#177fa5</color>
     <color name="definitiveText_transparent">#bc177fa5</color>
