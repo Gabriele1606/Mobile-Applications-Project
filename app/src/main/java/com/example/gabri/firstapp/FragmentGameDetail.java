@@ -458,62 +458,67 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
 
     private void prepareData() {
         Game game = (Game)getArguments().getSerializable("REALGAMEOBJECT");
-        int paramPassed=game.getId();
-        if(paramPassed!=0){
-            this.gameId=paramPassed;
-            DBQuery dbQuery=new DBQuery();
-            GameDetail gameDetail;
-            Boxart boxart;
-            List<Fanart> fanart;
-            gameDetail=dbQuery.getGameDetailFromId(this.gameId);
-            boxart=dbQuery.getBoxArtFromGame(game);
-            fanart=dbQuery.getFanartFromGame(game);
+        if(game!=null) {
+            int paramPassed = game.getId();
+            if (paramPassed != 0) {
+                this.gameId = paramPassed;
+                DBQuery dbQuery = new DBQuery();
+                GameDetail gameDetail;
+                Boxart boxart;
+                List<Fanart> fanart;
+                gameDetail = dbQuery.getGameDetailFromId(this.gameId);
+                boxart = dbQuery.getBoxArtFromGame(game);
+                fanart = dbQuery.getFanartFromGame(game);
 
-            this.bigTitle.setText(game.getGameTitle());
-            this.littleTitle.setText(game.getGameTitle());
-            if(gameDetail!=null) {
-                this.description.setText(gameDetail.getOverView());
-                this.underTitle.setText(gameDetail.getPlatform());
-            }
+                this.bigTitle.setText(game.getGameTitle());
+                this.littleTitle.setText(game.getGameTitle());
+                if (gameDetail != null) {
+                    this.description.setText(gameDetail.getOverView());
+                    this.underTitle.setText(gameDetail.getPlatform());
+                }
 
-            Glide.with(this).load("http://thegamesdb.net/banners/"+boxart.getThumb()).into(this.coverImage);
-            if(fanart.size()>0)
-                Glide.with(this).load("http://thegamesdb.net/banners/"+fanart.get(0).getOriginalFanart().toString()).into(this.bigImage);
+                Glide.with(this).load("http://thegamesdb.net/banners/" + boxart.getThumb()).into(this.coverImage);
+                if (fanart.size() > 0) {
+                    Glide.with(this).load("http://thegamesdb.net/banners/" + fanart.get(0).getOriginalFanart().toString()).into(this.bigImage);
+                }else{
+                    Glide.with(this).load(R.drawable.defaultdbgame).into(this.bigImage);
+                }
 
-            //Details section
-            if(game.getGameTitle()!=null) {
-                this.titleInDetail.setText(game.getGameTitle());
-            }
-            if(game.getPlatform()!=null) {
-                this.platformInDetail.setText(game.getPlatform());
-            }
-            if(gameDetail.getCoop()!=null) {
-                this.coopInDetail.setText(gameDetail.getCoop());
-            }
-            if(gameDetail.getPlayers()!=null) {
-                this.playerInDetail.setText(gameDetail.getPlayers());
-            }
-            if(gameDetail.getPublisher()!=null) {
-                this.publisherInDetail.setText(gameDetail.getPublisher());
-            }
-            if(gameDetail.getDeveloper()!=null) {
-                this.developerInDetail.setText(gameDetail.getDeveloper());
-            }
-            if(!game.getReleaseDate().equals("null")){
-                this.pubdate.setText("PubDate: "+game.getReleaseDate());
-            }
-            if(!game.getPlatform().equals("null")){
-                this.console.setText("Console: "+game.getPlatform());
-            }
-            if(gameDetail.getYoutubeLink()==null){
-                gameDetail.setYoutubeLink("null");
-            }
+                //Details section
+                if (game.getGameTitle() != null) {
+                    this.titleInDetail.setText(game.getGameTitle());
+                }
+                if (game.getPlatform() != null) {
+                    this.platformInDetail.setText(game.getPlatform());
+                }
+                if (gameDetail.getCoop() != null) {
+                    this.coopInDetail.setText(gameDetail.getCoop());
+                }
+                if (gameDetail.getPlayers() != null) {
+                    this.playerInDetail.setText(gameDetail.getPlayers());
+                }
+                if (gameDetail.getPublisher() != null) {
+                    this.publisherInDetail.setText(gameDetail.getPublisher());
+                }
+                if (gameDetail.getDeveloper() != null) {
+                    this.developerInDetail.setText(gameDetail.getDeveloper());
+                }
+                if (!game.getReleaseDate().equals("null")) {
+                    this.pubdate.setText("PubDate: " + game.getReleaseDate());
+                }
+                if (!game.getPlatform().equals("null")) {
+                    this.console.setText("Console: " + game.getPlatform());
+                }
+                if (gameDetail.getYoutubeLink() == null) {
+                    gameDetail.setYoutubeLink("null");
+                }
 
 
-            YoutubePlayerFragment myFragment = YoutubePlayerFragment.newInstance(gameDetail.getYoutubeLink());
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.youtube_view, myFragment).commit();
+                YoutubePlayerFragment myFragment = YoutubePlayerFragment.newInstance(gameDetail.getYoutubeLink());
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.youtube_view, myFragment).commit();
 
 
+            }
         }
     }
 

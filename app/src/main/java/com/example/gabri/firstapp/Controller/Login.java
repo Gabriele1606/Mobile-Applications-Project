@@ -35,6 +35,7 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setOnClickOnLoginButton();
         setContentView(R.layout.login);
         Window w= getWindow();
 
@@ -88,6 +89,9 @@ public class Login extends AppCompatActivity {
 
 
 
+    }
+
+    private void setOnClickOnLoginButton() {
     }
 
     @Override

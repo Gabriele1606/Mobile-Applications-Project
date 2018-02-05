@@ -94,7 +94,7 @@ public class FragmentSearch extends Fragment {
             public boolean onQueryTextSubmit(String query) {
 
                 findGameFromDb(query);
-               // findUserFromFirebase(query);
+               findUserFromFirebase(query);
 
 
                 return false;

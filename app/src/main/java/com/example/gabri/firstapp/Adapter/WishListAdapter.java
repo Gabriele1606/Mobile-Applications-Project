@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -121,7 +123,7 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.ViewHo
 
             Glide.with(getContext()).load("http://thegamesdb.net/banners/" + boxart.getThumb()).into(holder.coverImage);
 
-           /* holder.view.setOnClickListener(new View.OnClickListener() {
+            holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
@@ -139,7 +141,7 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.ViewHo
                     transaction.commit();
 
                 }
-            });*/
+            });
 
         }
     }

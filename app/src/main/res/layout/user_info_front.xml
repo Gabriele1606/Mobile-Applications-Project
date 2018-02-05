@@ -34,10 +34,11 @@
                 android:gravity="center">
 
                 <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/user_photo"
                     android:layout_width="140dp"
                     android:layout_height="140dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/image_4" />
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -54,7 +55,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Welcome Gabriele"
                     android:textAlignment="center"
                     android:textColor="@color/cardview_light_background"
                     android:textSize="24sp" />

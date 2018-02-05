@@ -1,6 +1,7 @@
 package com.example.gabri.firstapp.Controller;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -132,6 +133,18 @@ public class HomePage extends AppCompatActivity {
                 }
             });
         }
+
+        //Take user image from FireBase
+        final ImageView userPhoto=(ImageView)findViewById(R.id.user_image_3);
+        final Context context=this;
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        Glide.with(this).load(R.drawable.avatar).into(userPhoto);
+        storageReference.child("images/"+ Data.getUser().getId()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(context).load(uri).into(userPhoto);
+            }
+        });
 
         FlowManager.init(this);
         //To RESET DATABASE ---- PAY ATTENTION
@@ -391,7 +404,7 @@ public class HomePage extends AppCompatActivity {
 
         final HomePage homePage = this;
 
-        Button logoutButton = (Button) findViewById(R.id.logout_button);
+        TextView logoutButton = (TextView) findViewById(R.id.logout_button);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

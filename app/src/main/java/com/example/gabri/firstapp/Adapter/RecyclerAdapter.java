@@ -5,9 +5,15 @@ package com.example.gabri.firstapp.Adapter;
  */
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,6 +28,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.example.gabri.firstapp.Controller.TimerSlider;
@@ -36,11 +45,15 @@ import com.example.gabri.firstapp.Model.Title;
 import com.example.gabri.firstapp.MyTask;
 import com.example.gabri.firstapp.R;
 import com.example.gabri.firstapp.UserInfo;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.twitter.sdk.android.core.models.Image;
 import com.wajahatkarim3.easyflipview.EasyFlipView;
 
 import java.util.ArrayList;
@@ -114,6 +127,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public class UserInfoHolder extends RecyclerView.ViewHolder{
             TextView welcomeMessage;
+            ImageView userPhoto;
+            TextView description;
             ImageView wishList;
             ImageView readLater;
             ImageView backgroundImageFront;
@@ -125,6 +140,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public UserInfoHolder(View itemView) {
             super(itemView);
             this.welcomeMessage= (TextView) itemView.findViewById(R.id.welcome_message);
+            this.description= (TextView) itemView.findViewById(R.id.user_description);
+            this.userPhoto=(ImageView) itemView.findViewById(R.id.user_photo);
             this.wishList=(ImageView) itemView.findViewById(R.id.wish_list_button);
             this.readLater=(ImageView) itemView.findViewById(R.id.notification_button);
             this.backgroundImageFront=(ImageView)itemView.findViewById(R.id.background_image_front);
@@ -383,13 +400,56 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 startImgSlider(imgSliderHolder,position);
                 break;
             case USERINFO:
-                UserInfoHolder userInfoHolder=(UserInfoHolder) viewHolder;
-                //userInfoHolder.backgroundImage.setImageResource(R.drawable.joypad);
+                final UserInfoHolder userInfoHolder=(UserInfoHolder) viewHolder;
                 Glide.with(mContext).load(R.drawable.joypad).into(userInfoHolder.backgroundImageFront);
                 Glide.with(mContext).load(R.drawable.joypad).into(userInfoHolder.backgroundImageBack);
-                userInfoHolder.setWelcomeMessage("Welcome "+Data.getUser().getUsername());
                 getNumberFavoriteNews(userInfoHolder);
                 getNumberWishlist(userInfoHolder);
+
+                //Load profile photo of user
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                Glide.with(mContext).load(R.drawable.avatar).into(userInfoHolder.userPhoto);
+
+                storageReference.child("images/"+ Data.getUser().getId()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(mContext).load(uri).into(userInfoHolder.userPhoto);
+                    }
+                });
+
+                //Load Description from Firebase
+                DatabaseReference databaseReferences= FirebaseDatabase.getInstance().getReference();
+                databaseReferences.child("users").child(Data.getIdUserForRemoteDb()).child("description").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String description = (String) dataSnapshot.getValue();
+                        userInfoHolder.description.setText(description);
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+                //Load Username from firebase
+                databaseReferences.child("users").child(Data.getIdUserForRemoteDb()).child("username").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String username = (String) dataSnapshot.getValue();
+                        userInfoHolder.welcomeMessage.setText("Welcome "+username);
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+                userInfoHolder.setWelcomeMessage("Welcome "+Data.getUser().getUsername());
 
                 MyTask task=new MyTask(userInfoHolder.flipView);
                 task.execute();

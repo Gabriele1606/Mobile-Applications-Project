@@ -8,7 +8,10 @@
     <color name="accent_material_light_1">#8e8d8d</color>
     <color name="white">#ffffff</color>
 
-    <color name="test">#484848</color>
+    <color name="backgroundlogin">#2080a3</color>
+    <color name="test">#2080a3</color>
+    <color name="menulaterale">#d3000000</color>
+    <color name="backgrounLogout">#00000000</color>
     <color name="definitiveBackground">#13262c</color>
     <color name="searchBackground">#284d59</color>
     <color name="definitiveBackground_transparent">#e513262c</color>
