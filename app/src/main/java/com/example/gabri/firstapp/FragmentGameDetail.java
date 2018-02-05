@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -64,11 +65,13 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
     private TextView playerInDetail;
     private TextView publisherInDetail;
     private TextView developerInDetail;
+    private TextView console;
+    private TextView pubdate;
     private View viewRoot;
     private Context mContext;
     private LayoutInflater inflater;
     private YoutubePlayerFragment youtube;
-    private  Boolean isFavorite;
+    private  Boolean isFavorite=false;
     private ImageView heart;
     private Game game;
     private int numberOfStarComment;
@@ -83,6 +86,7 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
 
 
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
         this.viewRoot=inflater.inflate(R.layout.fragment_game_detail,container,false);
         this.mContext=container.getContext();
@@ -106,6 +110,8 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
         this.playerInDetail=(TextView)this.viewRoot.findViewById(R.id.player_in_detail_from_db);
         this.publisherInDetail=(TextView)this.viewRoot.findViewById(R.id.publisher_in_detail_from_db);
         this.developerInDetail=(TextView)this.viewRoot.findViewById(R.id.developer_in_detail_from_db);
+        this.pubdate=(TextView)this.viewRoot.findViewById(R.id.pubdate_3);
+        this.console=(TextView)this.viewRoot.findViewById(R.id.console);
         this.heart=(ImageView)this.viewRoot.findViewById(R.id.favorite_game);
 
         prepareData();
@@ -451,14 +457,14 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
 
 
     private void prepareData() {
-        int paramPassed=getArguments().getInt("GAME ID");
+        Game game = (Game)getArguments().getSerializable("REALGAMEOBJECT");
+        int paramPassed=game.getId();
         if(paramPassed!=0){
             this.gameId=paramPassed;
             DBQuery dbQuery=new DBQuery();
             GameDetail gameDetail;
             Boxart boxart;
             List<Fanart> fanart;
-            game=dbQuery.getGameFromId(this.gameId);
             gameDetail=dbQuery.getGameDetailFromId(this.gameId);
             boxart=dbQuery.getBoxArtFromGame(game);
             fanart=dbQuery.getFanartFromGame(game);
@@ -493,6 +499,12 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
             if(gameDetail.getDeveloper()!=null) {
                 this.developerInDetail.setText(gameDetail.getDeveloper());
             }
+            if(!game.getReleaseDate().equals("null")){
+                this.pubdate.setText("PubDate: "+game.getReleaseDate());
+            }
+            if(!game.getPlatform().equals("null")){
+                this.console.setText("Console: "+game.getPlatform());
+            }
             if(gameDetail.getYoutubeLink()==null){
                 gameDetail.setYoutubeLink("null");
             }
@@ -502,8 +514,7 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.youtube_view, myFragment).commit();
 
 
-        }else
-            System.out.println("NULLAAAAAAAAAA");
+        }
     }
 
 
@@ -516,40 +527,9 @@ public class FragmentGameDetail extends android.support.v4.app.Fragment
         mAppBarLayout   = (AppBarLayout) this.viewRoot.findViewById(R.id.main_appbar);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        System.out.println("IL MENU è STATO CREATO----->");
-        inflater.inflate(R.menu.menu_main, menu);
-        super.onCreateOptionsMenu(menu,inflater);
-        //Questo valore dovra poi essere settato in maniera dinamica
-        this.isFavorite=false;
 
-        MenuItem favorite =menu.getItem(R.id.menu_favorite);
-        if(!this.isFavorite){
-            favorite.setIcon(R.drawable.heartoff);
-        }else{
-            favorite.setIcon(R.drawable.hearton);
-        }
 
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        System.out.println("HAI CLICCATO");
-        if(item.getItemId()==R.id.menu_favorite){
-            if(this.isFavorite==false){
-                item.setIcon(R.drawable.hearton);
-                addGameToWishList(this.gameId);
-                this.isFavorite=true;
-            }else{
-                item.setIcon(R.drawable.heartoff);
-                removeGameToWishList(this.gameId);
-                this.isFavorite=false;
-            }
-        }
-        return true;
-    }
 
 
 

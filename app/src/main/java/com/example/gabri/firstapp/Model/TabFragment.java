@@ -14,7 +14,9 @@ import android.view.ViewGroup;
 
 import com.example.gabri.firstapp.Adapter.SampleFragmentPagerAdapter;
 import com.example.gabri.firstapp.Controller.APIManager;
+import com.example.gabri.firstapp.Controller.HomePage;
 import com.example.gabri.firstapp.R;
+import com.google.zxing.aztec.encoder.HighLevelEncoder;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.Calendar;
@@ -44,5 +46,14 @@ public class TabFragment extends Fragment {
 
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        if (getActivity()instanceof HomePage) {
+            HomePage activity = (HomePage) getActivity();
+            activity.HighlightSection("Home");
+        }
+        super.onResume();
     }
 }

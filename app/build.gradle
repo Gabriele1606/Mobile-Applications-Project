@@ -42,7 +42,7 @@ dependencies {
     // CardView
     compile 'com.android.support:cardview-v7:27.0.+'
     // Glide
-    compile 'com.github.bumptech.glide:glide:3.7.0'
+   // compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-simplexml:2.+'
 
@@ -86,7 +86,33 @@ dependencies {
 
     //Support Design Google
     compile 'com.android.support:design:27.0.2'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
+   // compile 'com.github.bumptech.glide:glide:3.7.0'
+
+
+    //Support Maps APIs Google
+    compile 'com.google.android.gms:play-services-maps:11.6.2'
+    compile 'com.google.android.gms:play-services-location:11.6.2'
+
+    //used for button effects
+    compile 'com.jakewharton:butterknife:7.0.1'
+    annotationProcessor 'com.jakewharton:butterknife:7.0.1'
+
+    //flip card view
+    compile 'com.github.sachinvarma:EasyFlipView:2.0.4'
+    //Blurry
+    compile 'jp.wasabeef:blurry:2.1.1'
+
+//Firebase storage
+    compile 'com.google.firebase:firebase-storage:11.6.2'
+    compile 'com.firebaseui:firebase-ui-storage:3.1.2'
+
+    compile 'com.github.bumptech.glide:glide:4.6.1'
+
+
+
+
+    //Facebook per condivisione
+    compile 'com.facebook.android:facebook-share:[4,5)'
 }
 
 apply plugin: 'com.google.gms.google-services'

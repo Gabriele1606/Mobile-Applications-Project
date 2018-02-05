@@ -3,6 +3,11 @@
     package="com.example.gabri.firstapp">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
 
 
     <application
@@ -12,18 +17,36 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/mioTheme"
-        android:largeHeap="true">
+        android:largeHeap="true"
+        android:hardwareAccelerated="true" >
+
         <activity
             android:name=".Controller.Login"
             android:theme="@style/mioTheme"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".Controller.HomePage"></activity>
+        <activity android:name=".Facebook.FacebookActivity"></activity>
+
+
+        <activity android:name=".SplashScreen.SplashScreenActivity" ></activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAWdnzI-5twRBDx2na9YM3V5hPMdcJic3g"/>
+
+
+        <provider android:authorities="com.facebook.app.FacebookContentProvider438038333265735"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
+
+
     </application>
+
+
 
 </manifest>

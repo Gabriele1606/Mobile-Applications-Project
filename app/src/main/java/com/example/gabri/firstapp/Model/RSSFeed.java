@@ -1,15 +1,26 @@
 package com.example.gabri.firstapp.Model;
 
+import android.support.annotation.AttrRes;
+
+import com.example.gabri.firstapp.Controller.Filter;
+
+import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Path;
 import org.simpleframework.xml.Root;
+
+import java.io.Serializable;
 
 /**
  * Created by Gabri on 12/11/17.
  */
 @Root(name="item", strict=false)
-public class RSSFeed {
+public class RSSFeed implements Serializable {
     @Element(name = "title", required = false)
     private String title;
+
+    @Element(name = "link", required = false)
+    private String link;
 
     @Element(name = "description", required = false)
     private String description;
@@ -20,6 +31,11 @@ public class RSSFeed {
     @Element(name = "guid", required = false)
     private String guid;
 
+    @Element(name = "creator", required = false)
+    private String creator;
+
+    @Attribute(name = "url", required = false)
+    @Path("content")
     private String imageLink;
 
     private String idForFirebase;
@@ -63,7 +79,7 @@ public class RSSFeed {
     }
 
     public String getPubdate() {
-        return pubdate;
+        return this.pubdate;
     }
 
     public void setPubdate(String pubdate) {
@@ -85,4 +101,21 @@ public class RSSFeed {
     public void setIdForFirebase(String idForFirebase) {
         this.idForFirebase = idForFirebase;
     }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
+
 }

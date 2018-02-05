@@ -16,16 +16,29 @@ import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gabri.firstapp.Adapter.CommentAdapter;
 import com.example.gabri.firstapp.Model.Comment;
+import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
+import com.example.gabri.firstapp.Model.RSSFeed;
+import com.example.gabri.firstapp.View.LikeButtonView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,13 +65,19 @@ public class FragmentNewsDetail extends android.support.v4.app.Fragment
     private TextView description;
     private TextView underTitle;
     private TextView title;
-    private TextView linkToMultiplayer;
+    private TextView author;
+    private TextView pubdate;
+    private TextView linkToGamespot;
     private ImageView bigImage;
-    private ImageView contentImage;
     private View viewRoot;
     private Context mContext;
     private LayoutInflater inflater;
     private YoutubePlayerFragment youtube;
+    private Boolean isFavorite=false;
+    private String idFirebase;
+    private ImageView favorite;
+    private RSSFeed realRssObject;
+
 
 
 
@@ -78,17 +97,70 @@ public class FragmentNewsDetail extends android.support.v4.app.Fragment
 
         this.bigTitle=(TextView)this.viewRoot.findViewById(R.id.big_title);
         this.littleTitle=(TextView)this.viewRoot.findViewById(R.id.main_textview_title);
+        this.author=(TextView)this.viewRoot.findViewById(R.id.author);
         this.description=(TextView)this.viewRoot.findViewById(R.id.description);
         this.underTitle=(TextView)this.viewRoot.findViewById(R.id.under_title);
         this.bigImage=(ImageView)this.viewRoot.findViewById(R.id.main_imageview_placeholder);
         this.title=(TextView)this.viewRoot.findViewById(R.id.content_title);
-        this.contentImage=(ImageView)this.viewRoot.findViewById(R.id.content_image);
-        this.linkToMultiplayer=(TextView)this.viewRoot.findViewById(R.id.multiplayer_link);
-
+        this.linkToGamespot=(TextView)this.viewRoot.findViewById(R.id.gamespot_link);
+        this.pubdate=(TextView)this.viewRoot.findViewById(R.id.pubdate_2);
+        this.favorite=(ImageView)this.viewRoot.findViewById(R.id.favorite_star);
         prepareData();
+        verifyIfNewsIsPreferred();
+        setFavoriteClick();
 
         return this.viewRoot;
 
+    }
+
+    private void setFavoriteClick() {
+
+        this.favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isFavorite==false){
+                    Toast.makeText(viewRoot.getContext(), "News added from your read more list", Toast.LENGTH_SHORT).show();
+                    DatabaseReference databaseWishGame = FirebaseDatabase.getInstance().getReference("news").child(Data.getIdUserForRemoteDb());
+                    String id = databaseWishGame.push().getKey();
+                    realRssObject.setIdForFirebase(id);
+                    databaseWishGame.child(id).setValue(realRssObject);
+                    favorite.setImageResource(R.drawable.readlateron);
+                    isFavorite=true;
+                }else{
+                    Toast.makeText(viewRoot.getContext(), "News removed from your read more list", Toast.LENGTH_SHORT).show();
+                    DatabaseReference databaseWishGame= FirebaseDatabase.getInstance().getReference("news");
+                    databaseWishGame.child(Data.getIdUserForRemoteDb()).child((realRssObject).getIdForFirebase()).removeValue();
+                    favorite.setImageResource(R.drawable.readlateroff);
+                    isFavorite=false;
+                }
+            }
+        });
+
+
+    }
+
+    private void verifyIfNewsIsPreferred() {
+        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference();
+        databaseReference.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.hasChild("news"+"/"+ Data.getIdUserForRemoteDb()+"/"+idFirebase)){
+                            isFavorite=true;
+                            favorite.setImageResource(R.drawable.readlateron);
+                        }
+                        else {
+                            isFavorite = false;
+                            favorite.setImageResource(R.drawable.readlateroff);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                }
+        );
     }
 
     private void setContex(Context mContext){
@@ -97,23 +169,27 @@ public class FragmentNewsDetail extends android.support.v4.app.Fragment
 
 
     private void prepareData() {
-        String title =getArguments().getString("TITLE");
-        String text =getArguments().getString("TEXT");
-        String link =getArguments().getString("IMAGE");
-        String multiplayerLink=getArguments().getString("MULTIPLAYERLINK");
-        String releaseDate=getArguments().getString("DATE");
+        this.realRssObject=((RSSFeed)getArguments().getSerializable("REALRSSOBJECT"));
+        String title =realRssObject.getTitle();
+        String text =realRssObject.getDescription();
+        String link =realRssObject.getImageLink();
+        String releaseDate=realRssObject.getPubdate();
+        String author=realRssObject.getCreator();
+        this.idFirebase=getArguments().getString("IDFIREBASE");
+        String gamespotLink="https://www.gamespot.com";
 
-
-            this.bigTitle.setText("Multiplayer.it");
-            this.littleTitle.setText("Multiplayer.it");
+            this.bigTitle.setText("GameSpot Reviews");
+            this.littleTitle.setText("GameSpot Reviews");
             this.description.setText(text);
             this.underTitle.setText("Publication Date: "+releaseDate);
+            this.author.setText("Creator: "+author);
+            this.pubdate.setText(releaseDate);
             this.title.setText(title);
-            this.linkToMultiplayer.setText(Html.fromHtml("<html><a href=\""+multiplayerLink+"\">Read More on Multiplayer.it</a><html>"));
-            this.linkToMultiplayer.setMovementMethod(LinkMovementMethod.getInstance());
+            this.linkToGamespot.setText(Html.fromHtml("<html><a href=\""+gamespotLink+"\">Read More on Gamespot.com</a><html>"));
+            this.linkToGamespot.setMovementMethod(LinkMovementMethod.getInstance());
 
 
-            Glide.with(this).load(link).into(this.contentImage);
+            Glide.with(this).load(link).into(this.bigImage);
 
 
 
@@ -122,7 +198,6 @@ public class FragmentNewsDetail extends android.support.v4.app.Fragment
 
 
     }
-
 
 
 

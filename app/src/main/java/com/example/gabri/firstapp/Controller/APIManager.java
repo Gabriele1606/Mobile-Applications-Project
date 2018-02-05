@@ -145,7 +145,7 @@ public class APIManager {
         final List<Object> list= objectList;
         final RecyclerAdapter recycler = recyclerAdapter;
 
-        Retrofit retrofitObject = new Retrofit.Builder().baseUrl("https://multiplayer.it")
+        Retrofit retrofitObject = new Retrofit.Builder().baseUrl("https://www.gamespot.com")
                 .addConverterFactory(SimpleXmlConverterFactory.create())
                 .build();
 
@@ -156,7 +156,8 @@ public class APIManager {
             public void onResponse(Call<RSSList> call, Response<RSSList> response) {
                 List<RSSFeed> rssList=response.body().getRssList();
                 Filter filter=new Filter();
-                filter.setImageLink(rssList);
+                filter.filterPubDate(rssList);
+                filter.removeImagesTagFromDescription(rssList);
                 filter.cleanDescriptionFromHTML(rssList);
                 int size = list.size();
                 list.addAll(rssList);
@@ -166,7 +167,6 @@ public class APIManager {
 
             @Override
             public void onFailure(Call<RSSList> call, Throwable t) {
-                System.out.println(t.getCause().toString());
             }
         });
 
@@ -291,7 +291,6 @@ public class APIManager {
 
             @Override
             public void onFailure(Call<PlatformXML> call, Throwable t) {
-                System.out.println("non ho ricevuto console");
             }
         });
 
@@ -381,8 +380,7 @@ public class APIManager {
 
                         @Override
                         public void onFailure(Call<GameDetailXML> call, Throwable t) {
-                            // System.out.println(t.getCause().toString());
-                            //System.out.println(t.getMessage());
+
                         }
 
                     });
@@ -448,7 +446,6 @@ public class APIManager {
                     if (ids.contains(gameId)){
                         continue;
                     }
-                    System.out.println();
                     //System.out.println("GIOCHI PIATTAFORMA: "+platformOfSpecifiedDeveloper[0].get(i).getId()+platformOfSpecifiedDeveloper[0].get(i).getGameList());
                     callToGameDetail = possibleAPI.getGameDetail(gameId);
                     final int finalJ = j;
@@ -477,8 +474,6 @@ public class APIManager {
 
                         @Override
                         public void onFailure(Call<GameDetailXML> call, Throwable t) {
-                            // System.out.println(t.getCause().toString());
-                            //System.out.println(t.getMessage());
                         }
 
                     });

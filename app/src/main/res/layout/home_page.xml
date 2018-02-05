@@ -3,14 +3,14 @@
 xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawerlayout"
+    android:id="@+id/flowingdrawer"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:clipChildren="false"
 android:clipToPadding="false"
 app:edPosition="1"
 app:edMenuSize="260dp"
-app:edMenuBackground="@color/black">
+app:edMenuBackground="@color/definitiveBackground_transparent">
 
 <!--content-->
     <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -40,8 +40,7 @@ app:edMenuBackground="@color/black">
     <FrameLayout
         android:id="@+id/id_container_menu"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -58,6 +57,25 @@ app:edMenuBackground="@color/black">
                     android:layout_height="150dp"
                     android:layout_gravity="center"
                     android:src="@drawable/image_4" />
+                <TextView
+                    android:id="@+id/text_Home"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="8sp"
+                    android:text="Home"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    android:textColor="@color/white"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/text_Profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="8sp"
+                    android:text="Profile"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    android:textColor="@color/white"
+                    android:textSize="24sp" />
 
                 <TextView
                     android:id="@+id/text_News"
@@ -75,6 +93,26 @@ app:edMenuBackground="@color/black">
                     android:layout_height="wrap_content"
                     android:lineSpacingExtra="8sp"
                     android:text="Games"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    android:textColor="@color/white"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/text_Map"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="8sp"
+                    android:text="Map"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    android:textColor="@color/white"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/text_Search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="8sp"
+                    android:text="Search"
                     android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                     android:textColor="@color/white"
                     android:textSize="24sp" />

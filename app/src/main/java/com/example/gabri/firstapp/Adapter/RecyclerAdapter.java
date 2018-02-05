@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.daimajia.slider.library.SliderLayout;
@@ -34,6 +33,7 @@ import com.example.gabri.firstapp.Model.ImgSlider;
 import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.Model.Title;
+import com.example.gabri.firstapp.MyTask;
 import com.example.gabri.firstapp.R;
 import com.example.gabri.firstapp.UserInfo;
 import com.google.firebase.database.DataSnapshot;
@@ -41,7 +41,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.wajahatkarim3.easyflipview.EasyFlipView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 
@@ -92,6 +94,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public class RssFeedHolder extends RecyclerView.ViewHolder{
         public TextView rssText;
         public TextView rssTitle;
+        public TextView rssPubDate;
         public ImageView imageView;
         public ImageView readLaterButton;
         public Boolean isFavorite;
@@ -102,8 +105,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             //rssText = (TextView) itemView.findViewById(R.id.text_news);
             //rssText = (TextView) itemView.findViewById(R.id.text_news);
             rssTitle=(TextView) itemView.findViewById(R.id.title_news);
+            rssPubDate=(TextView) itemView.findViewById(R.id.pubdate);
             imageView=(ImageView)itemView.findViewById(R.id.image_rss);
-            readLaterButton=(ImageView) itemView.findViewById(R.id.read_later);
+            //readLaterButton=(ImageView) itemView.findViewById(R.id.read_later);
 
         }
     }
@@ -112,16 +116,76 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             TextView welcomeMessage;
             ImageView wishList;
             ImageView readLater;
+            ImageView backgroundImageFront;
+            ImageView backgroundImageBack;
+            TextView notificationNumberNews;
+            TextView notificationNumberGame;
+            EasyFlipView flipView;
 
         public UserInfoHolder(View itemView) {
             super(itemView);
             this.welcomeMessage= (TextView) itemView.findViewById(R.id.welcome_message);
             this.wishList=(ImageView) itemView.findViewById(R.id.wish_list_button);
             this.readLater=(ImageView) itemView.findViewById(R.id.notification_button);
+            this.backgroundImageFront=(ImageView)itemView.findViewById(R.id.background_image_front);
+            this.backgroundImageBack=(ImageView)itemView.findViewById(R.id.background_image_back);
+            this.notificationNumberNews=(TextView) itemView.findViewById(R.id.number_of_favorite_news);
+            this.notificationNumberGame=(TextView) itemView.findViewById(R.id.number_of_wishlist);
+            this.flipView=(EasyFlipView)itemView.findViewById(R.id.flip_view);
 
         }
         public void setWelcomeMessage(String message){this.welcomeMessage.setText(message);}
     }
+
+        public void getNumberFavoriteNews(final UserInfoHolder userInfoHolder){
+            final List<Object> tmp=new ArrayList<Object>();
+            DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference();
+            databaseReference.child("news").child(Data.getIdUserForRemoteDb()).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.getChildrenCount()>0){
+                                userInfoHolder.notificationNumberNews.setVisibility(View.VISIBLE);
+                                userInfoHolder.notificationNumberNews.setText(Long.toString(dataSnapshot.getChildrenCount()));
+                            }
+                            else{
+                                userInfoHolder.notificationNumberNews.setVisibility(View.GONE);
+                            }
+
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    }
+            );
+
+        }
+
+        public void getNumberWishlist(final UserInfoHolder userInfoHolder){
+            final List<Object> tmp=new ArrayList<Object>();
+            DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference();
+            databaseReference.child("game").child(Data.getIdUserForRemoteDb()).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.getChildrenCount()>0){
+                                userInfoHolder.notificationNumberGame.setVisibility(View.VISIBLE);
+                                userInfoHolder.notificationNumberGame.setText(Long.toString(dataSnapshot.getChildrenCount()));
+                            }
+                            else{
+                                userInfoHolder.notificationNumberGame.setVisibility(View.GONE);
+                            }
+
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    }
+            );
+
+        }
 
     public class SliderHolder extends RecyclerView.ViewHolder{
         SliderLayout sliderShow;
@@ -268,13 +332,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                if(dataSnapshot.hasChild("news"+"/"+Data.getIdUserForRemoteDb()+"/"+String.valueOf(((RSSFeed)listObject.get(position)).getIdForFirebase()))){
-                                    rssFeedHolder.isFavorite=true;
-                                    rssFeedHolder.readLaterButton.setImageResource(R.drawable.readlateron);
-                                }
-                                else {
-                                    rssFeedHolder.isFavorite = false;
-                                    rssFeedHolder.readLaterButton.setImageResource(R.drawable.readlateroff);
+                                if (listObject.size() > position) {
+                                    if (dataSnapshot.hasChild("news" + "/" + Data.getIdUserForRemoteDb() + "/" + String.valueOf(((RSSFeed) listObject.get(position)).getIdForFirebase()))) {
+                                        rssFeedHolder.isFavorite = true;
+                                        //rssFeedHolder.readLaterButton.setImageResource(R.drawable.readlateron);
+                                    } else {
+                                        rssFeedHolder.isFavorite = false;
+                                        //rssFeedHolder.readLaterButton.setImageResource(R.drawable.readlateroff);
+                                    }
                                 }
                             }
 
@@ -285,40 +350,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                 );
 
-                rssFeedHolder.readLaterButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if(!rssFeedHolder.isFavorite) {
-                            Toast.makeText(rssFeedHolder.view.getContext(), "News added from your read more list", Toast.LENGTH_SHORT).show();
-                            DatabaseReference databaseWishGame = FirebaseDatabase.getInstance().getReference("news").child(Data.getIdUserForRemoteDb());
-                            String id = databaseWishGame.push().getKey();
-                            ((RSSFeed) listObject.get(position)).setIdForFirebase(id);
-                            databaseWishGame.child(id).setValue(listObject.get(position));
-                            rssFeedHolder.readLaterButton.setImageResource(R.drawable.readlateron);
-                        }
-                        else{
-                            Toast.makeText(rssFeedHolder.view.getContext(), "News removed from your read more list", Toast.LENGTH_SHORT).show();
-                            DatabaseReference databaseWishGame= FirebaseDatabase.getInstance().getReference("news");
-                            databaseWishGame.child(Data.getIdUserForRemoteDb()).child(((RSSFeed)listObject.get(position)).getIdForFirebase()).removeValue();
-                            rssFeedHolder.readLaterButton.setImageResource(R.drawable.readlateroff);
-                        }
-                    }
-                });
-
-
                 rssFeedHolder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
 
                         Bundle bundle=new Bundle();
-                        bundle.putString("TITLE",((RSSFeed)listObject.get(position)).getTitle());
-                        bundle.putString("TEXT", ((RSSFeed)listObject.get(position)).getDescription());
-                        bundle.putString("IMAGE", ((RSSFeed)listObject.get(position)).getImageLink());
-                        bundle.putString("DATE", ((RSSFeed)listObject.get(position)).getPubdate());
-                        bundle.putString("MULTIPLAYERLINK", ((RSSFeed)listObject.get(position)).getGuid());
+                        bundle.putString("IDFIREBASE",String.valueOf(((RSSFeed)listObject.get(position)).getIdForFirebase()));
+                        bundle.putSerializable("REALRSSOBJECT",((RSSFeed)listObject.get(position)));
 
-                        if(!TWOPANELS){
                             FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
                             fragmentNewsDetail.setArguments(bundle);
                             //FINAL SOLUTION
@@ -326,13 +366,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                             FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentNewsDetail, "GameDetail");
                             transaction.addToBackStack("TABLAYOUT");
                             transaction.commit();
-                        }else{
-                            FragmentNewsDetail fragmentNewsDetail= new FragmentNewsDetail();
-                            fragmentNewsDetail.setArguments(bundle);
-                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentNewsDetail, "GameDetail");
-                            transaction.commit();
-                            Data.getData().getHomePageActivity().enlargeDetailGame();
-                        }
+
                     }
                 });
                 break;
@@ -350,25 +384,26 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 break;
             case USERINFO:
                 UserInfoHolder userInfoHolder=(UserInfoHolder) viewHolder;
+                //userInfoHolder.backgroundImage.setImageResource(R.drawable.joypad);
+                Glide.with(mContext).load(R.drawable.joypad).into(userInfoHolder.backgroundImageFront);
+                Glide.with(mContext).load(R.drawable.joypad).into(userInfoHolder.backgroundImageBack);
                 userInfoHolder.setWelcomeMessage("Welcome "+Data.getUser().getUsername());
+                getNumberFavoriteNews(userInfoHolder);
+                getNumberWishlist(userInfoHolder);
 
+                MyTask task=new MyTask(userInfoHolder.flipView);
+                task.execute();
                 userInfoHolder.readLater.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
                         boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
 
-                        if(!TWOPANELS){
                             FragmentReadLater fragmentReadLater= new FragmentReadLater();
                             FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentReadLater, "Newslist");
                             transaction.addToBackStack("TABLAYOUT");
                             transaction.commit();
-                        }else{
-                            FragmentReadLater fragmentReadLater= new FragmentReadLater();
-                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentReadLater, "Newslist");
-                            transaction.commit();
-                            Data.getData().getHomePageActivity().enlargeWishList();
-                        }
+
 
                     }
                 });
@@ -378,17 +413,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     public void onClick(View view) {
                         boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
 
-                        if(!TWOPANELS){
                             FragmentWishList fragmentWishList= new FragmentWishList();
                             FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentWishList, "Gamelist");
                             transaction.addToBackStack("TABLAYOUT");
                             transaction.commit();
-                        }else{
-                            FragmentWishList fragmentWishList= new FragmentWishList();
-                            FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framegameDetail,fragmentWishList, "Gamelist");
-                            transaction.commit();
-                            Data.getData().getHomePageActivity().enlargeWishList();
-                        }
+
                     }
                 });
                 break;
@@ -444,6 +473,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private void setRssCard(RssFeedHolder rssFeedHolder, int position){
         //rssFeedHolder.rssText.setText(((RSSFeed)listObject.get(position)).getDescription());
         rssFeedHolder.rssTitle.setText(((RSSFeed)listObject.get(position)).getTitle());
+        rssFeedHolder.rssPubDate.setText(((RSSFeed)listObject.get(position)).getPubdate());
         Glide.with(mContext).load(((RSSFeed)listObject.get(position)).getImageLink()).into(rssFeedHolder.imageView);
     }
 
