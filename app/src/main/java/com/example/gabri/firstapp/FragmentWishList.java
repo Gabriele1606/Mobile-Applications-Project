@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -17,6 +18,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,10 @@ import com.example.gabri.firstapp.Controller.HomePage;
 import com.example.gabri.firstapp.Controller.TimerLoad;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -53,6 +59,10 @@ public class FragmentWishList extends android.support.v4.app.Fragment {
     private List<Integer> idGame;
     private DBQuery dbQuery;
     private TextView emtpyListText;
+    private CallbackManager callbackManager;
+    private ShareDialog shareDialog;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,6 +71,7 @@ public class FragmentWishList extends android.support.v4.app.Fragment {
         view= inflater.inflate(R.layout.fragment_wish_list, container, false);
         this.recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_wishlist);
         mAdapter = new WishListAdapter(gameList);
+        mAdapter.setFragmentWishList(this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -107,6 +118,20 @@ public class FragmentWishList extends android.support.v4.app.Fragment {
 
         return view;
     }
+
+    public void setFacebookShare(Game game) {
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
+
+        if (ShareDialog.canShow(ShareLinkContent.class)) {
+            ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                    .setQuote("I'm looking for this GAME. Can you help Me?")
+                    .setContentUrl(Uri.parse("http://thegamesdb.net/game/"+game.getId()))
+                    .build();
+            shareDialog.show(linkContent);
+        }
+    }
+
 
     private void setSwipe() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {

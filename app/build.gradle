@@ -101,6 +101,10 @@ dependencies {
     compile 'com.github.sachinvarma:EasyFlipView:2.0.4'
     //Blurry
     compile 'jp.wasabeef:blurry:2.1.1'
+
+
+    //Facebook per condivisione
+    compile 'com.facebook.android:facebook-share:[4,5)'
 }
 
 apply plugin: 'com.google.gms.google-services'

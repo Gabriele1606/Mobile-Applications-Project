@@ -1,30 +1,41 @@
 
 package com.example.gabri.firstapp.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gabri.firstapp.Boxart;
+import com.example.gabri.firstapp.Controller.HomePage;
 import com.example.gabri.firstapp.DBQuery;
 import com.example.gabri.firstapp.FragmentGameDetail;
 
 import com.example.gabri.firstapp.FragmentNewsDetail;
+import com.example.gabri.firstapp.FragmentWishList;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
 
 import com.example.gabri.firstapp.R;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookActivity;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookSdk;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -39,6 +50,12 @@ import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.ViewHolder> {
 
     private List<Game> wishListGame;
+    private FragmentWishList fragmentWishList;
+
+    public void setFragmentWishList(FragmentWishList fragmentWishList) {
+        this.fragmentWishList = fragmentWishList;
+    }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView coverImage;
@@ -49,6 +66,8 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.ViewHo
         private Game game;
         private Context mContex;
         private View view;
+        private ImageView shareButton;
+
 
         public ViewHolder(View view) {
             super(view);
@@ -56,6 +75,7 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.ViewHo
             gameTitle = (TextView) view.findViewById(R.id.game_row_title);
             pubDate = (TextView) view.findViewById(R.id.pub_date_game_row);
             console=(TextView) view.findViewById(R.id.console_game_row);
+            shareButton=(ImageView) view.findViewById(R.id.facebook_share);
             this.view=view;
 
         }
@@ -83,6 +103,16 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.ViewHo
             holder.console.setText(game.getPlatform());
             DBQuery dbQuery = new DBQuery();
             Boxart boxart = dbQuery.getBoxArtFromGame(game);
+
+
+            holder.shareButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (fragmentWishList!=null)
+                    fragmentWishList.setFacebookShare(game);
+                }
+            });
+
             if (game.getReleaseDate().equals("null")) {
                 holder.pubDate.setText("31/12/2006");
             } else {
@@ -91,7 +121,7 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.ViewHo
 
             Glide.with(getContext()).load("http://thegamesdb.net/banners/" + boxart.getThumb()).into(holder.coverImage);
 
-            holder.view.setOnClickListener(new View.OnClickListener() {
+           /* holder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
@@ -105,15 +135,14 @@ public class WishListAdapter extends RecyclerView.Adapter<WishListAdapter.ViewHo
                     //FINAL SOLUTION
                     Fragment fragmentById = Data.getData().getHomePageActivity().getSupportFragmentManager().findFragmentById(R.id.mainframeLayout);
                     FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentGameDetail, "GameDetail");
-                    transaction.addToBackStack("Searchlist");
+                    transaction.addToBackStack("TABLAYOUT");
                     transaction.commit();
 
                 }
-            });
+            });*/
 
         }
     }
-
 
 
     @Override

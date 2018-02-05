@@ -30,15 +30,23 @@
             </intent-filter>
         </activity>
         <activity android:name=".Controller.HomePage"></activity>
+        <activity android:name=".Facebook.FacebookActivity"></activity>
 
 
-        <activity android:name=".SplashScreen.SplashScreenActivity" >
-
-        </activity>
+        <activity android:name=".SplashScreen.SplashScreenActivity" ></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAWdnzI-5twRBDx2na9YM3V5hPMdcJic3g"/>
+
+
+        <provider android:authorities="com.facebook.app.FacebookContentProvider438038333265735"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
+
+
     </application>
+
+
 
 </manifest>
