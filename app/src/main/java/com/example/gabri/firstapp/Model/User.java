@@ -69,6 +69,14 @@ public class User {
         this.linkToImage = linkToImage;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     /*public List<Game> getWishGameList() {
         return wishGameList;
     }

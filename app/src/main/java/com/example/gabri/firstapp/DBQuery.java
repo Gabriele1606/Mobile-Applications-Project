@@ -142,4 +142,12 @@ public class DBQuery {
         gameDetails= SQLite.select().from(GameDetail.class).where(GameDetail_Table.id.in(ids)).queryList();
         return gameDetails;
     }
+
+    public List<Game> getGameListFromName(String gameName){
+        List<Game> gameList;
+
+        gameList = SQLite.select().from(Game.class).where(Game_Table.gameTitle.like("%"+gameName+"%")).queryList();
+
+        return gameList;
+    }
 }

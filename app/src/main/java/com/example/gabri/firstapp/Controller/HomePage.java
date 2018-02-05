@@ -51,6 +51,7 @@ import com.example.gabri.firstapp.Adapter.CoverFlowAdapter;
 import com.example.gabri.firstapp.FragmentMap;
 import com.example.gabri.firstapp.FragmentProfile;
 import com.example.gabri.firstapp.FragmentReadLater;
+import com.example.gabri.firstapp.FragmentSearch;
 import com.example.gabri.firstapp.FragmentWishList;
 import com.example.gabri.firstapp.GameDetailXML;
 import com.example.gabri.firstapp.GameEntity;
@@ -351,6 +352,41 @@ public class HomePage extends AppCompatActivity {
             }
 
 
+        });
+
+
+
+
+        TextView textViewSearch = (TextView) findViewById(R.id.text_Search);
+        textViewSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
+                Fragment newslist = getSupportFragmentManager().findFragmentByTag("Newslist");
+                Fragment maplist = getSupportFragmentManager().findFragmentByTag("Maplist");
+                Fragment fragment = getSupportFragmentManager().findFragmentByTag("Gamelist");
+                if (newslist!=null) {
+                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Newslist")).commitNow();
+                    getSupportFragmentManager().popBackStackImmediate();
+                }
+
+                if (maplist!=null) {
+                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Maplist")).commitNow();
+                    getSupportFragmentManager().popBackStackImmediate();
+                }
+
+                HighlightSection("Search");
+
+                FragmentSearch fragmentSearch = new FragmentSearch();
+                FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentSearch, "Searchlist");
+                transaction.addToBackStack("TABLAYOUT");
+                transaction.commit();
+                if (!TWOPANELS) {
+                    FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
+                    mDrawer.closeMenu(true);
+                }
+
+            }
         });
 
         final HomePage homePage = this;
