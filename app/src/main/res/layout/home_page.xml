@@ -58,6 +58,16 @@ app:edMenuBackground="@color/definitiveBackground_transparent">
                     android:layout_gravity="center"
                     android:src="@drawable/image_4" />
                 <TextView
+                    android:id="@+id/text_Home"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="8sp"
+                    android:text="Home"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    android:textColor="@color/white"
+                    android:textSize="24sp" />
+
+                <TextView
                     android:id="@+id/text_Profile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

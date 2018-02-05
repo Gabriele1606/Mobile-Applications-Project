@@ -14,6 +14,7 @@ public class User {
     private String mail;
     private String password;
     private String linkToImage;
+    private String description;
     private Map<String, String> prova=new HashMap<String, String>();
 
     public User(String id, String username, String mail, String password, String linkToImage) {
@@ -25,7 +26,7 @@ public class User {
         prova.put("name1", "John");
         prova.put("name2", "Tim");
         prova.put("name3", "Sam");
-
+        this.description="Personal Description, have fun!";
     }
 
     public String getId() {
@@ -75,4 +76,10 @@ public class User {
     public void setWishGameList(List<Game> wishGameList) {
         this.wishGameList = wishGameList;
     }*/
+    public void setDescription(String description){
+        this.description=description;
+    }
+    public String getDescription(){
+        return description;
+    }
 }

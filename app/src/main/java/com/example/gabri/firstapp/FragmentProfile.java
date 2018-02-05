@@ -1,32 +1,64 @@
 package com.example.gabri.firstapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.Editable;
+import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.gabri.firstapp.Adapter.ReadLaterAdapter;
 import com.example.gabri.firstapp.Controller.HomePage;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.RSSFeed;
+import com.example.gabri.firstapp.Model.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +76,7 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
     private Context mContext;
     private RecyclerView recyclerView;
     private ReadLaterAdapter mAdapter;
+    private final int PICK_IMAGE_REQUEST=71;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,13 +91,94 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
 
+        final ImageView editProfile= (ImageView)view.findViewById(R.id.edit_profile);
+        editProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Animation animFadeOut = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out);
+                Animation animFadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
+                final EditText editName = (EditText) getActivity().findViewById(R.id.user_name);
+                EditText editDescription= getActivity().findViewById(R.id.description_user);
+                if (!editName.isEnabled()) {
+                    animFadeOut.reset();
+                    editProfile.clearAnimation();
+                    editProfile.startAnimation(animFadeOut);
+                    editName.setEnabled(true);
+                    editDescription.setEnabled(true);
+                    new Handler().postDelayed(new Runnable() {
+                        public void run() {
+                            editName.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN , 0, 0, 0));
+                            editName.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP , 0, 0, 0));
+                        }
+                    }, 200);
+
+                    editProfile.setImageResource(R.drawable.checked);
+                    animFadeIn.reset();
+                    editProfile.clearAnimation();
+                    editProfile.startAnimation(animFadeIn);
+
+                }else{
+                    animFadeOut.reset();
+                    editProfile.clearAnimation();
+                    editProfile.startAnimation(animFadeOut);
+                    editName.setEnabled(false);
+                    editDescription.setEnabled(false);
+                    onModified();
+                    editProfile.setImageResource(R.drawable.user_edit);
+                    animFadeIn.reset();
+                    editProfile.clearAnimation();
+                    editProfile.startAnimation(animFadeIn);
+                }
+
+            }
+        });
+
+        ImageView profileImage=view.findViewById(R.id.user_profile_photo);
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            chooseImage();
+            }
+        });
+
+
+
         final TextView numberWish = (TextView) view.findViewById(R.id.number_wishlist_profile);
         final TextView numberNews = (TextView) view.findViewById(R.id.number_news_profile);
-        final TextView textUsername= (TextView) view.findViewById(R.id.user_name);
-
+        final EditText textUsername= (EditText) view.findViewById(R.id.user_name);
+        final EditText textDecription=(EditText)view.findViewById(R.id.description_user);
         setSwipe();
 
         this.mContext=container.getContext();
+
+
+        final ImageView imageProfile=view.findViewById(R.id.user_profile_photo);
+        imageProfile.setBackgroundColor(getResources().getColor(R.color.transparent));
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        Glide.with(getActivity()).asBitmap().load(R.drawable.avatar).apply(RequestOptions.circleCropTransform()).into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(),  addBorder(resource, getActivity()));
+                circularBitmapDrawable.setCircular(true);
+                imageProfile.setImageDrawable(circularBitmapDrawable);
+            }
+        });
+
+        storageReference.child("images/"+ Data.getUser().getId()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                System.out.println("URI :" +uri.toString());
+                Glide.with(getActivity()).asBitmap().load(uri).apply(RequestOptions.circleCropTransform()).into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(),  addBorder(resource, getActivity()));
+                        circularBitmapDrawable.setCircular(true);
+                        imageProfile.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
+            }
+        });
+
 
         DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference();
 
@@ -73,6 +187,21 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String username = (String) dataSnapshot.getValue();
                 textUsername.setText(username);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        databaseReference.child("users").child(Data.getIdUserForRemoteDb()).child("description").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String description = (String) dataSnapshot.getValue();
+                textDecription.setText(description);
+
             }
 
             @Override
@@ -141,6 +270,13 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
                     }
                 }
         );
+
+
+
+
+
+
+
         return view;
     }
 
@@ -217,5 +353,50 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
 
     private int convertDpToPx(int dp){
         return Math.round(dp * (getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
+
+    public void onModified(){
+        User user = Data.getUser();
+        DatabaseReference databaseUsers;
+        databaseUsers= FirebaseDatabase.getInstance().getReference("users");
+        EditText userEdit=getActivity().findViewById(R.id.user_name);
+        Editable text = userEdit.getText();
+        user.setUsername(text.toString());
+
+        EditText descriptionEdit=getActivity().findViewById(R.id.description_user);
+        Editable textDescription  = descriptionEdit.getText();
+        user.setDescription(textDescription.toString());
+
+        databaseUsers.child(user.getId()).setValue(user);
+    }
+
+    private void chooseImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        getActivity().startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+
+
+    private static Bitmap addBorder(Bitmap resource, Context context) {
+        int w = resource.getWidth();
+        int h = resource.getHeight();
+        int radius = Math.min(h / 2, w / 2);
+        Bitmap output = Bitmap.createBitmap(w + 8, h + 8, Bitmap.Config.ARGB_8888);
+        Paint p = new Paint();
+        p.setAntiAlias(true);
+        Canvas c = new Canvas(output);
+        c.drawARGB(0, 0, 0, 0);
+        p.setStyle(Paint.Style.FILL);
+        c.drawCircle((w / 2) + 4, (h / 2) + 4, radius, p);
+        p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        c.drawBitmap(resource, 4, 4, p);
+        p.setXfermode(null);
+        p.setStyle(Paint.Style.STROKE);
+        p.setColor(ContextCompat.getColor(context, R.color.white));
+        p.setStrokeWidth(15);
+        c.drawCircle((w / 2) + 4, (h / 2) + 4, radius, p);
+        return output;
     }
 }
