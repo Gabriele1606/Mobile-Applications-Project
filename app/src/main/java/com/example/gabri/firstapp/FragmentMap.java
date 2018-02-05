@@ -80,12 +80,16 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
     GoogleApiClient mGoogleApiClient;
     GetNearbyPlacesData getNearbyPlacesData;
     FragmentMap fragmentMap;
+    SupportMapFragment mapFragment;
+    private View view;
+    private Context context;
 
     // This event fires 1st, before creation of fragment or any views
     // The onAttach method is called when the Fragment instance is associated with an Activity.
     // This does not mean the Activity is fully initialized.
     @Override
     public void onAttach(Context context) {
+        this.context=context;
         super.onAttach(context);
         fragmentMap = this;
         if (context instanceof Activity) {
@@ -109,10 +113,10 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
         boolean TWOPANELS = getActivity().getResources().getBoolean(R.bool.has_two_panes);
         if (TWOPANELS)
             view = inflater.inflate(R.layout.fragment_map_extended, parent, false);
-            else
-        view = inflater.inflate(R.layout.fragment_map, parent, false);
+        else
+            view = inflater.inflate(R.layout.fragment_map, parent, false);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.el_fragment_Map);
+        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.el_fragment_Map);
         mapFragment.getMapAsync(this);
 
         return view;
@@ -123,7 +127,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
     // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-
+        this.view=view;
         //lv.setAdapter(adapter);
     }
 
@@ -145,14 +149,14 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-         mMap = googleMap;
-         googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-             @Override
-             public void onMapLoaded() {
-                 fragmentMap.Blur();
-                 fragmentMap.moveGuideline(0.61f);
-             }
-         });
+        mMap = googleMap;
+        googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                fragmentMap.Blur();
+                fragmentMap.moveGuideline(0.61f);
+            }
+        });
         try {
             boolean success = mMap.setMapStyle(
                     MapStyleOptions.loadRawResourceStyle(
@@ -166,42 +170,42 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
         }
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(getActivity(),
-                   android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    android.Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 buildGoogleApiClient();
                 mMap.setMyLocationEnabled(true);
-                if (Data.getData().getLocation()!=null)
-                System.out.println("CURRENT POSITION: " + Data.getData().getLocation().getLatitude()+","+Data.getData().getLocation().getLongitude());
+                if (Data.getData().getLocation() != null)
+                    System.out.println("CURRENT POSITION: " + Data.getData().getLocation().getLatitude() + "," + Data.getData().getLocation().getLongitude());
             }
-        }
-        else {
+        } else {
             buildGoogleApiClient();
             mMap.setMyLocationEnabled(true);
         }
         mMap.clear();
         String url;
-        if (Data.getData().getLocation()!=null){
-            url= getUrl(Data.getData().getLocation().getLatitude(), Data.getData().getLocation().getLongitude(), "negozio%20di%20videogiochi");
-        }else{
+        if (Data.getData().getLocation() != null) {
+            url = getUrl(Data.getData().getLocation().getLatitude(), Data.getData().getLocation().getLongitude(), "negozio%20di%20videogiochi");
+        } else {
             url = getUrl(45.464233f, 9.190061f, "negozio%20di%20videogiochi");
         }
         Object[] DataTransfer = new Object[3];
         DataTransfer[0] = mMap;
         DataTransfer[1] = url;
-        DataTransfer[2]=this;
+        DataTransfer[2] = this;
         Log.d("onClick", url);
         getNearbyPlacesData = new GetNearbyPlacesData();
         getNearbyPlacesData.setListener(this);
         getNearbyPlacesData.execute(DataTransfer);
 
 
-        Toast.makeText(getActivity(),"Nearby Game Shops", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "Nearby Game Shops", Toast.LENGTH_LONG).show();
 
     }
+
     // The onCreateView method is called when Fragment should create its View object hierarchy,
     // either dynamically or via XML layout inflation.
     protected synchronized void buildGoogleApiClient() {
-      GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
@@ -211,7 +215,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
 
     @Override
     public void onStop() {
-        if (getNearbyPlacesData!=null)
+        if (getNearbyPlacesData != null)
             getNearbyPlacesData.cancel(true);
         System.out.println("STOPPED FRAGMENT MAP");
         super.onStop();
@@ -252,9 +256,9 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-        Toast.makeText(getActivity(),"Your Current Location", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "Your Current Location", Toast.LENGTH_LONG).show();
 
-        Log.d("onLocationChanged", String.format("latitude:%.3f longitude:%.3f",latitude,longitude));
+        Log.d("onLocationChanged", String.format("latitude:%.3f longitude:%.3f", latitude, longitude));
 
         //stop location updates
         if (mGoogleApiClient != null) {
@@ -273,7 +277,7 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
         if (ContextCompat.checkSelfPermission(getActivity(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-          //  LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            //  LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
     }
 
@@ -288,62 +292,61 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
     }
 
     public void load(final List<HashMap<String, String>> nearbyPlacesList, final ArrayList<Marker> markers) {
-        MapListAdapter mapListAdapter= new MapListAdapter(getActivity(),R.id.listMap,nearbyPlacesList);
-        ListView listView = (ListView)getActivity().findViewById(R.id.listMap);
+        MapListAdapter mapListAdapter = new MapListAdapter(getActivity(), R.id.listMap, nearbyPlacesList);
+        ListView listView = (ListView) getActivity().findViewById(R.id.listMap);
 
 
-        if (mMap!=null& listView!=null)
-           listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-               @Override
-               public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                   HashMap<String, String> object= nearbyPlacesList.get(i);
-                   double lat= Double.parseDouble(object.get("lat"));
-                   double lng= Double.parseDouble(object.get("lng"));
-                   LatLng latLng = new LatLng(lat, lng);
-                   mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                   mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-                   for (Marker m :
-                           markers) {
-                       if (m.getPosition().equals(latLng)) {
+        if (mMap != null & listView != null)
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    HashMap<String, String> object = nearbyPlacesList.get(i);
+                    double lat = Double.parseDouble(object.get("lat"));
+                    double lng = Double.parseDouble(object.get("lng"));
+                    LatLng latLng = new LatLng(lat, lng);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+                    for (Marker m :
+                            markers) {
+                        if (m.getPosition().equals(latLng)) {
 
-                           mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                               @Override
-                               public boolean onMarkerClick(Marker marker) {
-                                   return false;
-                               }
-                           });
-                           m.showInfoWindow();
-                           mMap.getUiSettings().setMapToolbarEnabled(true);
-                       }
-                   }
+                            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                                @Override
+                                public boolean onMarkerClick(Marker marker) {
+                                    return false;
+                                }
+                            });
+                            m.showInfoWindow();
+                            mMap.getUiSettings().setMapToolbarEnabled(true);
+                        }
+                    }
 
-               }
-           });
-        if (listView!=null)
-        listView.setAdapter(mapListAdapter);
+                }
+            });
+        if (listView != null)
+            listView.setAdapter(mapListAdapter);
         //Blur();
     }
 
 
-
     @Override
     public void onResume() {
-        if (getActivity()instanceof HomePage) {
+        if (getActivity() instanceof HomePage) {
             HomePage activity = (HomePage) getActivity();
             activity.HighlightSection("Map");
         }
         super.onResume();
     }
 
-    public void Blur(){
-        final ImageView viewById = (ImageView) getActivity().findViewById(R.id.backList);
+    public void Blur() {
+        final ImageView viewById = (ImageView) view.findViewById(R.id.backList);
         mMap.snapshot(new GoogleMap.SnapshotReadyCallback() {
             @Override
             public void onSnapshotReady(Bitmap bitmap) {
-                Blurry.with(getActivity())
+                Blurry.with(context)
                         .radius(15)
                         .sampling(8)
-                        .color(Color.argb(150   ,23,127,165))
+                        .color(Color.argb(150, 23, 127, 165))
                         .async()
                         .animate(500).from(bitmap).into(viewById);
             }
@@ -351,15 +354,36 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
     }
 
 
-    public void moveGuideline(float percent){
-        boolean isTwoPanes=getResources().getBoolean(R.bool.has_two_panes);
-        if (!isTwoPanes){
-            ConstraintLayout constraintLayout= getActivity().findViewById(R.id.constraintMap);
-            ConstraintSet constraintset= new ConstraintSet();
+    public void moveGuideline(float percent) {
+        boolean isTwoPanes = getResources().getBoolean(R.bool.has_two_panes);
+        if (!isTwoPanes) {
+            ConstraintLayout constraintLayout = getActivity().findViewById(R.id.constraintMap);
+            ConstraintSet constraintset = new ConstraintSet();
             constraintset.clone(constraintLayout);
-            constraintset.setGuidelinePercent(R.id.guideline_map,percent);
+            constraintset.setGuidelinePercent(R.id.guideline_map, percent);
             TransitionManager.beginDelayedTransition(constraintLayout);
             constraintset.applyTo(constraintLayout);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+            if (!(ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)&&mMap != null) {
+                mMap.setMyLocationEnabled(false);
+            }
+        mGoogleApiClient.disconnect();
+        try{
+            getChildFragmentManager().beginTransaction().remove(mapFragment);
+
+        }catch (Error e){
+            System.out.println("DESTROY: Fragment");
+        }
+
+        try{
+            getNearbyPlacesData.cancel(true);
+        }catch (Error e){
+            System.out.println("CANCEL: AsyncTask");
+        }
+        super.onDestroy();
     }
 }

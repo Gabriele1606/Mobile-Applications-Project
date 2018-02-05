@@ -52,7 +52,7 @@ public class TabFragment extends Fragment {
     public void onResume() {
         if (getActivity()instanceof HomePage) {
             HomePage activity = (HomePage) getActivity();
-            activity.HighlightSection("nothing");
+            activity.HighlightSection("Home");
         }
         super.onResume();
     }

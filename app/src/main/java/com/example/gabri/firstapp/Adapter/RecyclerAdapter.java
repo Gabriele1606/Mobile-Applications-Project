@@ -332,7 +332,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                if (listObject.size() >= position) {
+                                if (listObject.size() > position) {
                                     if (dataSnapshot.hasChild("news" + "/" + Data.getIdUserForRemoteDb() + "/" + String.valueOf(((RSSFeed) listObject.get(position)).getIdForFirebase()))) {
                                         rssFeedHolder.isFavorite = true;
                                         //rssFeedHolder.readLaterButton.setImageResource(R.drawable.readlateron);

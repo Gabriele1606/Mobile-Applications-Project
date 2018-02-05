@@ -14,6 +14,7 @@
     <color name="definitiveBackground_transparent">#e513262c</color>
     <color name="definitiveText">#177fa5</color>
     <color name="definitiveText_transparent">#bc177fa5</color>
+    <color name="transparent">#00ffffff</color>
     <color name="white_transparent">#a6ffffff</color>
     <color name="definitiveTextSelected">#67b8d6</color>
     <color name="lightGray">#b7b7b7</color>

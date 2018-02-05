@@ -1,6 +1,8 @@
 package com.example.gabri.firstapp.Adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -10,11 +12,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.gabri.firstapp.R;
-import com.example.gabri.firstapp.RoundedCornersTransformation;
 
 import java.util.List;
 
@@ -52,19 +54,20 @@ public class ViewPagerImgSliderAdapter extends PagerAdapter {
         ImageView imageView= view.findViewById(R.id.image_slider);
         final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progress);
         if(position<urlImages.size()){
-            Glide.with(context).load(urlImages.get(position)).bitmapTransform(new RoundedCornersTransformation( view.getContext(),0, 0)).listener(new RequestListener<String, GlideDrawable>() {
+            Glide.with(context).load(urlImages.get(position)).listener(new RequestListener<Drawable>() {
                 @Override
-                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                    //progressBar.setVisibility(View.GONE);
+                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                     return false;
                 }
 
                 @Override
-                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                     progressBar.setVisibility(View.GONE);
                     return false;
                 }
             }).into(imageView);
+
+
         }
         ViewPager vp= (ViewPager) container;
         vp.addView(view,0);

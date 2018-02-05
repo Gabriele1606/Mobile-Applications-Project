@@ -26,7 +26,7 @@ public class User {
         prova.put("name1", "John");
         prova.put("name2", "Tim");
         prova.put("name3", "Sam");
-
+        this.description="Personal Description, have fun!";
     }
 
     public String getId() {
@@ -84,4 +84,5 @@ public class User {
     public void setWishGameList(List<Game> wishGameList) {
         this.wishGameList = wishGameList;
     }*/
+
 }
