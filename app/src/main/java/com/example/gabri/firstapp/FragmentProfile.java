@@ -79,6 +79,7 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
     private final int PICK_IMAGE_REQUEST = 71;
     private User user;
     private boolean anotherUser = false;
+    private Context context;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -94,24 +95,7 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
         recyclerView.setAdapter(mAdapter);
         this.mContext = container.getContext();
 
-        ImageView profileImage = view.findViewById(R.id.user_profile_photo);
 
-        if (!anotherUser) {
-            enableModify(true);
-            profileImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    chooseImage();
-                }
-            });
-            setSwipe();
-            loadImageProfile(Data.getUser().getId());
-            fillUserData(Data.getUser().getId());
-        } else {
-            enableModify(false);
-            loadImageProfile(user.getId());
-            fillUserData(user.getId());
-        }
 
         return view;
     }
@@ -227,10 +211,10 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Animation animFadeOut = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out);
-                Animation animFadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
-                final EditText editName = (EditText) getActivity().findViewById(R.id.user_name);
-                EditText editDescription = getActivity().findViewById(R.id.description_user);
+                Animation animFadeOut = AnimationUtils.loadAnimation(view.getContext(), R.anim.fade_out);
+                Animation animFadeIn = AnimationUtils.loadAnimation(view.getContext(), R.anim.fade_in);
+                final EditText editName = (EditText) view.findViewById(R.id.user_name);
+                EditText editDescription = view.findViewById(R.id.description_user);
                 if (!editName.isEnabled()) {
                     animFadeOut.reset();
                     editProfile.clearAnimation();
@@ -269,8 +253,26 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
 
     @Override
     public void onResume() {
-        if (getActivity() instanceof HomePage) {
-            HomePage activity = (HomePage) getActivity();
+        ImageView profileImage = view.findViewById(R.id.user_profile_photo);
+
+        if (!anotherUser) {
+            enableModify(true);
+            profileImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    chooseImage();
+                }
+            });
+            setSwipe();
+            loadImageProfile(Data.getUser().getId());
+            fillUserData(Data.getUser().getId());
+        } else {
+            enableModify(false);
+            loadImageProfile(user.getId());
+            fillUserData(user.getId());
+        }
+        if (view.getContext() instanceof HomePage) {
+            HomePage activity = (HomePage) view.getContext();
             activity.HighlightSection("Profile");
         }
         super.onResume();
@@ -347,11 +349,11 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
         User user = Data.getUser();
         DatabaseReference databaseUsers;
         databaseUsers = FirebaseDatabase.getInstance().getReference("users");
-        EditText userEdit = getActivity().findViewById(R.id.user_name);
+        EditText userEdit = view.findViewById(R.id.user_name);
         Editable text = userEdit.getText();
         user.setUsername(text.toString());
 
-        EditText descriptionEdit = getActivity().findViewById(R.id.description_user);
+        EditText descriptionEdit = getView().findViewById(R.id.description_user);
         Editable textDescription = descriptionEdit.getText();
         user.setDescription(textDescription.toString());
 
@@ -392,15 +394,21 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
         this.anotherUser = true;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        this.context=context;
+        super.onAttach(context);
+    }
+
     public void loadImageProfile(String id) {
         final ImageView imageProfile = view.findViewById(R.id.user_profile_photo);
 
         imageProfile.setBackgroundColor(getResources().getColor(R.color.transparent));
 
-        Glide.with(getActivity()).asBitmap().load(R.drawable.avatar).apply(RequestOptions.circleCropTransform()).into(new SimpleTarget<Bitmap>() {
+        Glide.with(view).asBitmap().load(R.drawable.avatar).apply(RequestOptions.circleCropTransform()).into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), addBorder(resource, getActivity()));
+                RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), addBorder(resource, getContext()));
                 circularBitmapDrawable.setCircular(true);
                 imageProfile.setImageDrawable(circularBitmapDrawable);
             }
@@ -410,10 +418,10 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
             @Override
             public void onSuccess(Uri uri) {
                 System.out.println("URI :" + uri.toString());
-                Glide.with(getActivity()).asBitmap().load(uri).apply(RequestOptions.circleCropTransform()).into(new SimpleTarget<Bitmap>() {
+                Glide.with(view).asBitmap().load(uri).apply(RequestOptions.circleCropTransform()).into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), addBorder(resource, getActivity()));
+                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), addBorder(resource, getContext()));
                         circularBitmapDrawable.setCircular(true);
                         imageProfile.setImageDrawable(circularBitmapDrawable);
                     }
