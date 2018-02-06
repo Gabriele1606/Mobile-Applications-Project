@@ -2,7 +2,9 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
-        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="mioTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -25,6 +27,31 @@
         <item name="android:textColor">@color/gray</item>
         <item name="android:textSize">15dp</item>
         <item name="android:fontFamily">Lato</item>
+    </style>
+
+
+
+    <style name="LoginTheme" parent="FirebaseUI">
+        <!-- Required for sign-in flow styling -->
+        <item name="colorPrimary">@color/definitiveBackground</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="colorAccent">@color/definitiveText</item>
+
+        <item name="colorControlNormal">@color/material_green_500</item>
+        <item name="colorControlActivated">@color/definitiveTextSelected</item>
+        <item name="colorControlHighlight">@color/definitiveBackground</item>
+        <item name="android:windowBackground">@color/menucolor</item>
+    </style>
+
+    <style name="FirebaseUI.Text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="FirebaseUI.Text.Link">
+        <item name="android:textColor"></item>
     </style>
 
     

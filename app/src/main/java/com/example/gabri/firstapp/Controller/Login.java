@@ -98,6 +98,7 @@ public class Login extends AppCompatActivity {
                         AuthUI.getInstance()
                                 .createSignInIntentBuilder()
                                 .setAvailableProviders(providers)
+                                .setTheme(R.style.LoginTheme)
                                 .build(),
                         RC_SIGN_IN);
             }
@@ -113,6 +114,7 @@ public class Login extends AppCompatActivity {
                         AuthUI.getInstance()
                                 .createSignInIntentBuilder()
                                 .setAvailableProviders(providers)
+                                .setTheme(R.style.LoginTheme)
                                 .build(),
                         RC_SIGN_IN);
             }
