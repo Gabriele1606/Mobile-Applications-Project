@@ -14,11 +14,26 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.36" />
 
+    <ImageView
+        android:id="@+id/backList"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_map"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:color/transparent" />
+
     <ListView
         android:id="@+id/listMap"
-        android:layout_width="185dp"
-        android:layout_height="659dp"
-        tools:layout_editor_absoluteX="13dp" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_map"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <fragment
         android:id="@+id/el_fragment_Map"

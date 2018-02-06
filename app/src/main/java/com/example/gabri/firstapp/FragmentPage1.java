@@ -10,6 +10,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,7 +65,10 @@ public class FragmentPage1 extends Fragment{
 
         recyclerAdapter= new RecyclerAdapter(view.getContext(),listObject);
 
-        RecyclerView.LayoutManager vLayoutManager= new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL,false);
+        boolean isTwoPanes = getResources().getBoolean(R.bool.has_two_panes);
+        RecyclerView.LayoutManager vLayoutManager;
+        vLayoutManager= new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false);
+
         vrecyclerView.setLayoutManager(vLayoutManager);
         vrecyclerView.setItemAnimator(new SlideInDownAnimator());
         vrecyclerView.addItemDecoration(new DividerItemDecoration(view.getContext(),DividerItemDecoration.VERTICAL));

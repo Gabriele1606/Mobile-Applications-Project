@@ -30,12 +30,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.3" />
+        app:layout_constraintGuide_percent="0.30" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@color/menucolor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,27 +46,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="vertical">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/user_image_3"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:layout_marginBottom="35dp"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:layout_marginBottom="35dp" />
 
             <TextView
                 android:id="@+id/text_Home"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:padding="15dp"
                 android:lineSpacingExtra="8sp"
+                android:padding="15dp"
                 android:text="Home"
                 android:textAlignment="center"
-                android:textColor="@color/definitiveTextSelected"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textColor="@color/definitiveTextSelected"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -73,8 +74,8 @@
                 android:id="@+id/text_Profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="15dp"
                 android:lineSpacingExtra="8sp"
+                android:padding="15dp"
                 android:text="Profile"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
@@ -86,8 +87,8 @@
                 android:id="@+id/text_News"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="15dp"
                 android:lineSpacingExtra="8sp"
+                android:padding="15dp"
                 android:text="News"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
@@ -99,8 +100,8 @@
                 android:id="@+id/text_Games"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="15dp"
                 android:lineSpacingExtra="8sp"
+                android:padding="15dp"
                 android:text="Games"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
@@ -125,8 +126,8 @@
                 android:id="@+id/text_Search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="15dp"
                 android:lineSpacingExtra="8sp"
+                android:padding="15dp"
                 android:text="Search"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
@@ -139,8 +140,8 @@
                 android:id="@+id/logout_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="15dp"
                 android:lineSpacingExtra="8sp"
+                android:padding="15dp"
                 android:text="LogOut"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"

@@ -39,6 +39,7 @@ import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 public class ReadLaterAdapter extends RecyclerView.Adapter<ReadLaterAdapter.ViewHolder> {
 
     private List<RSSFeed> readLaterRss;
+    private ViewGroup parent;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView coverImage;
@@ -69,7 +70,6 @@ public class ReadLaterAdapter extends RecyclerView.Adapter<ReadLaterAdapter.View
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.read_later_list_row, parent, false);
-
         return new ViewHolder(itemView);
     }
 

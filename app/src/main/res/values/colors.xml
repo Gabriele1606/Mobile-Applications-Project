@@ -10,6 +10,7 @@
 
     <color name="backgroundlogin">#2080a3</color>
     <color name="test">#2080a3</color>
+    <color name="menucolor">#244954</color>
     <color name="menulaterale">#d3000000</color>
     <color name="backgrounLogout">#00000000</color>
     <color name="definitiveBackground">#13262c</color>

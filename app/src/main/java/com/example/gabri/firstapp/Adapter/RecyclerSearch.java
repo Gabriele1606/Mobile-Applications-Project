@@ -61,6 +61,7 @@ public class RecyclerSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public TextView gameTitle;
         public TextView consoleGame;
         public TextView dateGame;
+        public ImageView facebookImage;
 
         public GameHolder(View view) {
             super(view);
@@ -68,6 +69,7 @@ public class RecyclerSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder
             gameTitle=(TextView)view.findViewById(R.id.game_row_title);
             consoleGame=(TextView)view.findViewById(R.id.console_game_row);
             dateGame=(TextView)view.findViewById(R.id.pub_date_game_row);
+            facebookImage=(ImageView) view.findViewById(R.id.facebook_share);
             this.view=view;
         }
     }
@@ -78,6 +80,7 @@ public class RecyclerSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder
         public TextView textUsername;
         public TextView descriptionUser;
         public TextView dateGame;
+        public ImageView facebookImage;
 
         public UserHolder(View view) {
             super(view);
@@ -85,6 +88,8 @@ public class RecyclerSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder
             textUsername=(TextView)view.findViewById(R.id.game_row_title);
             descriptionUser=(TextView)view.findViewById(R.id.console_game_row);
             dateGame=(TextView)view.findViewById(R.id.pub_date_game_row);
+            facebookImage=(ImageView) view.findViewById(R.id.facebook_share);
+            facebookImage.setVisibility(View.GONE);
             dateGame.setVisibility(View.GONE);
             this.view=view;
 
@@ -203,6 +208,7 @@ public class RecyclerSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder
         gameHolder.consoleGame.setText(game.getPlatform());
         gameHolder.gameTitle.setText(game.getGameTitle());
         gameHolder.dateGame.setText(game.getReleaseDate());
+        gameHolder.facebookImage.setVisibility(View.GONE);
         gameHolder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
