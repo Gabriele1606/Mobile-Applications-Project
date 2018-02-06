@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -46,11 +47,14 @@ import com.example.gabri.firstapp.Model.Game_Table;
 import com.example.gabri.firstapp.Model.Platform;
 import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.R;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.List;
-
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.MyViewHolder> {
@@ -96,7 +100,6 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
                 totalItemCount = layoutManager.getItemCount();
                 lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
-                System.out.println("visibleItemcount: "+visibleItemCount+" totalItemcount: "+totalItemCount +" lastVisibleItem: "+lastVisibleItem);
 
                 if (dx!=0||dy!=0){
                 if (!isLoading && totalItemCount <= (lastVisibleItem + visibleItemCount)) {
@@ -226,6 +229,37 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
         }else{
             holder.pubdate.setText(game.getReleaseDate());
         }
+
+
+//FINIRE
+
+
+
+
+        //Check if thumb is in Firebase
+
+       /* String string="http://thegamesdb.net/banners/boxart/thumb/original/front/9040-1.jpg";
+        String match="([0-9].*\\.jpg?)";
+        Pattern pattern = Pattern.compile(match);
+        Matcher matcher = pattern.matcher(string);
+        if (matcher.find())
+        System.out.println("MATCH: "+matcher.group(1));*/
+
+
+       /*
+        final String regex = "([0-9].*\\.jpg?)";
+        final String string = "boxart/thumb/original/front/9040-1.jpg";
+
+        final Pattern pattern = Pattern.compile(regex);
+        final Matcher matcher = pattern.matcher(string);
+
+        while (matcher.find()) {
+            System.out.println("Full match: " + matcher.group(0));
+            for (int i = 1; i <= matcher.groupCount(); i++) {
+                System.out.println("Group " + i + ": " + matcher.group(i));
+            }
+        }*/
+
         Glide.with(mContext).load("http://thegamesdb.net/banners/"+dbQuery.getBoxArtFromGame(game).getThumb()).listener(new RequestListener<Drawable>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {

@@ -72,17 +72,19 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class FragmentProfile extends android.support.v4.app.Fragment {
 
     private View view;
-    private List<RSSFeed> newsList=new ArrayList<RSSFeed>();
+    private List<RSSFeed> newsList = new ArrayList<RSSFeed>();
     private Context mContext;
     private RecyclerView recyclerView;
     private ReadLaterAdapter mAdapter;
-    private final int PICK_IMAGE_REQUEST=71;
+    private final int PICK_IMAGE_REQUEST = 71;
+    private User user;
+    private boolean anotherUser = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view= inflater.inflate(R.layout.profile_layout, container, false);
+        view = inflater.inflate(R.layout.profile_layout, container, false);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view_readlater);
         mAdapter = new ReadLaterAdapter(newsList);
@@ -90,99 +92,39 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
+        this.mContext = container.getContext();
 
-        final ImageView editProfile= (ImageView)view.findViewById(R.id.edit_profile);
-        editProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Animation animFadeOut = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out);
-                Animation animFadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
-                final EditText editName = (EditText) getActivity().findViewById(R.id.user_name);
-                EditText editDescription= getActivity().findViewById(R.id.description_user);
-                if (!editName.isEnabled()) {
-                    animFadeOut.reset();
-                    editProfile.clearAnimation();
-                    editProfile.startAnimation(animFadeOut);
-                    editName.setEnabled(true);
-                    editDescription.setEnabled(true);
-                    new Handler().postDelayed(new Runnable() {
-                        public void run() {
-                            editName.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN , 0, 0, 0));
-                            editName.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP , 0, 0, 0));
-                        }
-                    }, 200);
+        ImageView profileImage = view.findViewById(R.id.user_profile_photo);
 
-                    editProfile.setImageResource(R.drawable.checked);
-                    animFadeIn.reset();
-                    editProfile.clearAnimation();
-                    editProfile.startAnimation(animFadeIn);
-
-                }else{
-                    animFadeOut.reset();
-                    editProfile.clearAnimation();
-                    editProfile.startAnimation(animFadeOut);
-                    editName.setEnabled(false);
-                    editDescription.setEnabled(false);
-                    onModified();
-                    editProfile.setImageResource(R.drawable.user_edit);
-                    animFadeIn.reset();
-                    editProfile.clearAnimation();
-                    editProfile.startAnimation(animFadeIn);
+        if (!anotherUser) {
+            enableModify(true);
+            profileImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    chooseImage();
                 }
+            });
+            setSwipe();
+            loadImageProfile(Data.getUser().getId());
+            fillUserData(Data.getUser().getId());
+        } else {
+            enableModify(false);
+            loadImageProfile(user.getId());
+            fillUserData(user.getId());
+        }
 
-            }
-        });
+        return view;
+    }
 
-        ImageView profileImage=view.findViewById(R.id.user_profile_photo);
-        profileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            chooseImage();
-            }
-        });
-
-
+    private void fillUserData(String id) {
 
         final TextView numberWish = (TextView) view.findViewById(R.id.number_wishlist_profile);
         final TextView numberNews = (TextView) view.findViewById(R.id.number_news_profile);
-        final EditText textUsername= (EditText) view.findViewById(R.id.user_name);
-        final EditText textDecription=(EditText)view.findViewById(R.id.description_user);
-        setSwipe();
+        final EditText textUsername = (EditText) view.findViewById(R.id.user_name);
+        final EditText textDecription = (EditText) view.findViewById(R.id.description_user);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
 
-        this.mContext=container.getContext();
-
-
-        final ImageView imageProfile=view.findViewById(R.id.user_profile_photo);
-        imageProfile.setBackgroundColor(getResources().getColor(R.color.transparent));
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-        Glide.with(getActivity()).asBitmap().load(R.drawable.avatar).apply(RequestOptions.circleCropTransform()).into(new SimpleTarget<Bitmap>() {
-            @Override
-            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(),  addBorder(resource, getActivity()));
-                circularBitmapDrawable.setCircular(true);
-                imageProfile.setImageDrawable(circularBitmapDrawable);
-            }
-        });
-
-        storageReference.child("images/"+ Data.getUser().getId()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                System.out.println("URI :" +uri.toString());
-                Glide.with(getActivity()).asBitmap().load(uri).apply(RequestOptions.circleCropTransform()).into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(),  addBorder(resource, getActivity()));
-                        circularBitmapDrawable.setCircular(true);
-                        imageProfile.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
-            }
-        });
-
-
-        DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference();
-
-        databaseReference.child("users").child(Data.getIdUserForRemoteDb()).child("username").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("users").child(id).child("username").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String username = (String) dataSnapshot.getValue();
@@ -196,7 +138,7 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
             }
         });
 
-        databaseReference.child("users").child(Data.getIdUserForRemoteDb()).child("description").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child("users").child(id).child("description").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String description = (String) dataSnapshot.getValue();
@@ -210,19 +152,19 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
             }
         });
 
-        databaseReference.child("news").child(Data.getIdUserForRemoteDb()).addListenerForSingleValueEvent(
+        databaseReference.child("news").child(id).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         newsList.clear();
-                        for(DataSnapshot idSnapshot: dataSnapshot.getChildren()) {
-                            RSSFeed tmp =new RSSFeed();
+                        for (DataSnapshot idSnapshot : dataSnapshot.getChildren()) {
+                            RSSFeed tmp = new RSSFeed();
                             tmp.setDescription((String) idSnapshot.child("description").getValue());
                             tmp.setGuid((String) idSnapshot.child("guid").getValue());
                             tmp.setImageLink((String) idSnapshot.child("imageLink").getValue());
                             tmp.setPubdate((String) idSnapshot.child("pubdate").getValue());
                             tmp.setTitle((String) idSnapshot.child("title").getValue());
-                            tmp.setIdForFirebase((String)idSnapshot.child("idForFirebase").getValue());
+                            tmp.setIdForFirebase((String) idSnapshot.child("idForFirebase").getValue());
 
                             newsList.add(tmp);
 
@@ -239,15 +181,16 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
                 }
         );
 
-        databaseReference.child("news").child(Data.getIdUserForRemoteDb()).addListenerForSingleValueEvent(
+        databaseReference.child("news").child(id).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.getChildrenCount()>0){
+                        if (dataSnapshot.getChildrenCount() > 0) {
                             numberNews.setText(Long.toString(dataSnapshot.getChildrenCount()));
                         }
 
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
@@ -255,15 +198,16 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
                 }
         );
 
-        databaseReference.child("game").child(Data.getIdUserForRemoteDb()).addListenerForSingleValueEvent(
+        databaseReference.child("game").child(id).addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.getChildrenCount()>0){
+                        if (dataSnapshot.getChildrenCount() > 0) {
                             numberWish.setText(Long.toString(dataSnapshot.getChildrenCount()));
                         }
 
                     }
+
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
@@ -271,18 +215,61 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
                 }
         );
 
+    }
 
+    private void enableModify(boolean b) {
+        final ImageView editProfile = (ImageView) view.findViewById(R.id.edit_profile);
 
+        if (!b) {
+            editProfile.setVisibility(View.GONE);
+            return;
+        }
+        editProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Animation animFadeOut = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_out);
+                Animation animFadeIn = AnimationUtils.loadAnimation(getActivity(), R.anim.fade_in);
+                final EditText editName = (EditText) getActivity().findViewById(R.id.user_name);
+                EditText editDescription = getActivity().findViewById(R.id.description_user);
+                if (!editName.isEnabled()) {
+                    animFadeOut.reset();
+                    editProfile.clearAnimation();
+                    editProfile.startAnimation(animFadeOut);
+                    editName.setEnabled(true);
+                    editDescription.setEnabled(true);
+                    new Handler().postDelayed(new Runnable() {
+                        public void run() {
+                            editName.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, 0, 0, 0));
+                            editName.dispatchTouchEvent(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, 0, 0, 0));
+                        }
+                    }, 200);
 
+                    editProfile.setImageResource(R.drawable.checked);
+                    animFadeIn.reset();
+                    editProfile.clearAnimation();
+                    editProfile.startAnimation(animFadeIn);
 
+                } else {
+                    animFadeOut.reset();
+                    editProfile.clearAnimation();
+                    editProfile.startAnimation(animFadeOut);
+                    editName.setEnabled(false);
+                    editDescription.setEnabled(false);
+                    onModified();
+                    editProfile.setImageResource(R.drawable.user_edit);
+                    animFadeIn.reset();
+                    editProfile.clearAnimation();
+                    editProfile.startAnimation(animFadeIn);
+                }
 
+            }
+        });
 
-        return view;
     }
 
     @Override
     public void onResume() {
-        if (getActivity()instanceof HomePage) {
+        if (getActivity() instanceof HomePage) {
             HomePage activity = (HomePage) getActivity();
             activity.HighlightSection("Profile");
         }
@@ -290,7 +277,7 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
     }
 
 
-    public void setSwipe(){
+    public void setSwipe() {
 
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
 
@@ -302,15 +289,16 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 int position = viewHolder.getAdapterPosition();
-                RSSFeed tmp=newsList.get(position);
-                Toast.makeText(view.getContext(),"News removed from your read more list", Toast.LENGTH_SHORT).show();
-                DatabaseReference databaseWishGame= FirebaseDatabase.getInstance().getReference("news");
+                RSSFeed tmp = newsList.get(position);
+                Toast.makeText(view.getContext(), "News removed from your read more list", Toast.LENGTH_SHORT).show();
+                DatabaseReference databaseWishGame = FirebaseDatabase.getInstance().getReference("news");
                 databaseWishGame.child(Data.getIdUserForRemoteDb()).child(tmp.getIdForFirebase()).removeValue();
                 newsList.remove(position);
                 mAdapter.notifyItemRemoved(position);
 
 
             }
+
             public static final float ALPHA_FULL = 1.0f;
 
             @Override
@@ -332,7 +320,7 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
                     icon = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.garbage);
                     c.drawBitmap(icon,
                             (float) itemView.getRight() - convertDpToPx(16) - icon.getWidth(),
-                            (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight())/2,
+                            (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight()) / 2,
                             p);
 
 
@@ -351,20 +339,20 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
-    private int convertDpToPx(int dp){
+    private int convertDpToPx(int dp) {
         return Math.round(dp * (getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
-    public void onModified(){
+    public void onModified() {
         User user = Data.getUser();
         DatabaseReference databaseUsers;
-        databaseUsers= FirebaseDatabase.getInstance().getReference("users");
-        EditText userEdit=getActivity().findViewById(R.id.user_name);
+        databaseUsers = FirebaseDatabase.getInstance().getReference("users");
+        EditText userEdit = getActivity().findViewById(R.id.user_name);
         Editable text = userEdit.getText();
         user.setUsername(text.toString());
 
-        EditText descriptionEdit=getActivity().findViewById(R.id.description_user);
-        Editable textDescription  = descriptionEdit.getText();
+        EditText descriptionEdit = getActivity().findViewById(R.id.description_user);
+        Editable textDescription = descriptionEdit.getText();
         user.setDescription(textDescription.toString());
 
         databaseUsers.child(user.getId()).setValue(user);
@@ -376,7 +364,6 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         getActivity().startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
     }
-
 
 
     private static Bitmap addBorder(Bitmap resource, Context context) {
@@ -398,5 +385,40 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
         p.setStrokeWidth(15);
         c.drawCircle((w / 2) + 4, (h / 2) + 4, radius, p);
         return output;
+    }
+
+    public void setProfile(User user) {
+        this.user = user;
+        this.anotherUser = true;
+    }
+
+    public void loadImageProfile(String id) {
+        final ImageView imageProfile = view.findViewById(R.id.user_profile_photo);
+
+        imageProfile.setBackgroundColor(getResources().getColor(R.color.transparent));
+
+        Glide.with(getActivity()).asBitmap().load(R.drawable.avatar).apply(RequestOptions.circleCropTransform()).into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), addBorder(resource, getActivity()));
+                circularBitmapDrawable.setCircular(true);
+                imageProfile.setImageDrawable(circularBitmapDrawable);
+            }
+        });
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+        storageReference.child("images/" + id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                System.out.println("URI :" + uri.toString());
+                Glide.with(getActivity()).asBitmap().load(uri).apply(RequestOptions.circleCropTransform()).into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), addBorder(resource, getActivity()));
+                        circularBitmapDrawable.setCircular(true);
+                        imageProfile.setImageDrawable(circularBitmapDrawable);
+                    }
+                });
+            }
+        });
     }
 }
