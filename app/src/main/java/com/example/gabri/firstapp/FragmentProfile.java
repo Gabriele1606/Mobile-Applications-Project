@@ -80,7 +80,10 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
     private User user;
     private boolean anotherUser = false;
     private Context context;
-
+    ImageView editProfile;
+    EditText editName;
+    EditText editDescription;
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -94,9 +97,9 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
         this.mContext = container.getContext();
-
-
-
+        editProfile = (ImageView) view.findViewById(R.id.edit_profile);
+        editName = (EditText) view.findViewById(R.id.user_name);
+        editDescription = view.findViewById(R.id.description_user);
         return view;
     }
 
@@ -202,7 +205,7 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
     }
 
     private void enableModify(boolean b) {
-        final ImageView editProfile = (ImageView) view.findViewById(R.id.edit_profile);
+
 
         if (!b) {
             editProfile.setVisibility(View.GONE);
@@ -213,8 +216,6 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
             public void onClick(View view) {
                 Animation animFadeOut = AnimationUtils.loadAnimation(view.getContext(), R.anim.fade_out);
                 Animation animFadeIn = AnimationUtils.loadAnimation(view.getContext(), R.anim.fade_in);
-                final EditText editName = (EditText) view.findViewById(R.id.user_name);
-                EditText editDescription = view.findViewById(R.id.description_user);
                 if (!editName.isEnabled()) {
                     animFadeOut.reset();
                     editProfile.clearAnimation();
