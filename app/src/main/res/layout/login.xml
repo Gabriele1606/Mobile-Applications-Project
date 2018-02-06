@@ -1,99 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@color/black"
+    android:id="@+id/layoutmain"
     >
 
+    <ImageView
+        android:id="@+id/back_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        />
 
-    <View
-        android:id="@+id/myRectangleView"
-        android:layout_width="350dp"
-        android:layout_height="100dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="3dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/rectangular"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <View
-        android:id="@+id/myCircleMail"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome to"
+            android:textColor="@color/lightGray"
+            android:textSize="50sp"
+            android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DB"
+            android:textColor="@color/definitiveText"
+            android:textSize="70sp"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="game"
+            android:textColor="@color/lightGray"
+            android:textSize="50sp"
+            android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="@drawable/rectangularovernewsimage"
+        android:layout_centerVertical="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More than"
+                android:textAlignment="center"
+                android:textColor="@color/lightGray"
+                android:textSize="40dp" />
+
+            <TextView
+                android:id="@+id/counter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:textAlignment="center"
+                android:textColor="@color/definitiveTextSelected"
+                android:textSize="70dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Games on your phone"
+                android:textAlignment="center"
+                android:textColor="@color/lightGray"
+                android:textSize="30dp" />
+        </LinearLayout>
+
+</RelativeLayout>
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:id="@+id/layoutcontent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:id="@+id/layoutbutton">
+
+    <LinearLayout
+        android:id="@+id/buttons_content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/backgroundlogin"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/facebook_img"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/facebooklogin"/>
+
+        <ImageView
+            android:id="@+id/mail_img"
+            android:layout_width="70dp"
+            android:layout_marginTop="50dp"
+            android:layout_height="70dp"
+            android:src="@drawable/maillogin"/>
+    </LinearLayout>
+
+    </RelativeLayout>
+</RelativeLayout>
+
+    <ImageView
+        android:id="@+id/fab"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:layout_marginBottom="1dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="1dp"
-        android:background="@drawable/circleloginbutton"
-        app:layout_constraintBottom_toBottomOf="@+id/myRectangleView"
-        app:layout_constraintEnd_toEndOf="@+id/myRectangleView"
-        app:layout_constraintHorizontal_bias="0.09"
-        app:layout_constraintStart_toStartOf="@+id/myRectangleView"
-        app:layout_constraintTop_toTopOf="@+id/myRectangleView" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="65dp"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/logbutton" />
 
-    <View
-        android:id="@+id/myCircleFacebok"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginBottom="1dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="1dp"
-        android:background="@drawable/circleloginbutton"
-        app:layout_constraintBottom_toBottomOf="@+id/myRectangleView"
-        app:layout_constraintEnd_toEndOf="@+id/myRectangleView"
-        app:layout_constraintHorizontal_bias="0.9"
-        app:layout_constraintStart_toStartOf="@+id/myRectangleView"
-        app:layout_constraintTop_toTopOf="@+id/myRectangleView" />
-
-    <ImageView
-        android:id="@+id/mail_img"
-        android:layout_width="47dp"
-        android:layout_height="51dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/myCircleMail"
-        app:layout_constraintEnd_toEndOf="@+id/myCircleMail"
-        app:layout_constraintStart_toStartOf="@+id/myCircleMail"
-        app:layout_constraintTop_toTopOf="@+id/myCircleMail"
-        app:srcCompat="@drawable/maillogin" />
-
-    <ImageView
-        android:id="@+id/facebook_img"
-        android:layout_width="51dp"
-        android:layout_height="49dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/myCircleFacebok"
-        app:layout_constraintEnd_toEndOf="@+id/myCircleFacebok"
-        app:layout_constraintStart_toStartOf="@+id/myCircleFacebok"
-        app:layout_constraintTop_toTopOf="@+id/myCircleFacebok"
-        app:srcCompat="@drawable/facebooklogin" />
-
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="238dp"
-        android:layout_height="139dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.35000002"
-        app:srcCompat="@drawable/logoimage" />
-
-
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>
