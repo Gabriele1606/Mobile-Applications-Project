@@ -196,8 +196,6 @@ public class APIManager {
     public void getPlatformFactory() {
         final List<Platform> platformList =new ArrayList<Platform>();
 
-
-
         Retrofit retrofitObject = new Retrofit.Builder().baseUrl(BASE_URL)
                 .addConverterFactory(SimpleXmlConverterFactory.create())
                 .build();
@@ -210,6 +208,17 @@ public class APIManager {
             public void onResponse(Call<PlatformXML> call, Response<PlatformXML> response) {
 
                 List<Platform> tempPlatformList = response.body().getPlatformList();
+                List<Platform> tempPlatformList2 = new ArrayList<Platform>();
+                for (int j=0;j<tempPlatformList.size();j++) {
+                    Integer i = Integer.valueOf(tempPlatformList.get(j).getId());
+                    if (i==4916||i==4915||i==14||i==15||i==4920||i==4912||
+                            i==3||i==8||i==7||i==4||i==5||i==41||
+                            i==4971||i==9||i==38||i==10||i==11||i==12||
+                            i==4919||i==13||i==39||i==6){
+                        tempPlatformList2.add(tempPlatformList.get(j));
+                    }
+                }
+                tempPlatformList=tempPlatformList2;
 
                 List<Platform> platforms = SQLite.select().from(Platform.class).queryList();
                 List<PlatformDetail> platformDetails = SQLite.select().from(PlatformDetail.class).queryList();

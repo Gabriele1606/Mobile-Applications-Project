@@ -9,14 +9,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,7 +38,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.gabri.firstapp.Controller.APIManager;
 import com.example.gabri.firstapp.DBQuery;
 import com.example.gabri.firstapp.FragmentGameDetail;
@@ -47,6 +54,7 @@ import com.example.gabri.firstapp.Model.Game_Table;
 import com.example.gabri.firstapp.Model.Platform;
 import com.example.gabri.firstapp.Model.RSSFeed;
 import com.example.gabri.firstapp.R;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -244,38 +252,45 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
         Matcher matcher = pattern.matcher(string);
         if (matcher.find())
         System.out.println("MATCH: "+matcher.group(1));*/
+        Pattern pattern=null;
+        Matcher matcher=null;
 
+         String regex = "([0-9].*\\.jpg?)";
+         String string = dbQuery.getBoxArtFromGame(game).getThumb();
+        if (string!=null) {
+              pattern = Pattern.compile(regex);
+              matcher = pattern.matcher(string);
+        }
+        if (string!=null){
+            if (matcher.find()) {
+                System.out.println("Group " + ": " + matcher.group(1));
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                storageReference.child("thumbs/" + matcher.group(1)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        System.out.println("LOADED FROM FIREBASE :" + uri.toString());
+                        Glide.with(mContext).asBitmap().load(uri).listener(new RequestListener<Bitmap>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
+                                return false;
+                            }
 
-       /*
-        final String regex = "([0-9].*\\.jpg?)";
-        final String string = "boxart/thumb/original/front/9040-1.jpg";
-
-        final Pattern pattern = Pattern.compile(regex);
-        final Matcher matcher = pattern.matcher(string);
-
-        while (matcher.find()) {
-            System.out.println("Full match: " + matcher.group(0));
-            for (int i = 1; i <= matcher.groupCount(); i++) {
-                System.out.println("Group " + i + ": " + matcher.group(i));
+                            @Override
+                            public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
+                                holder.progressBar.setVisibility(View.GONE);
+                                return false;
+                            }
+                        }).into(holder.thumbnail);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        loadFromTheGamesDb(holder, game);
+                    }
+                });
             }
-        }*/
-
-        Glide.with(mContext).load("http://thegamesdb.net/banners/"+dbQuery.getBoxArtFromGame(game).getThumb()).listener(new RequestListener<Drawable>() {
-            @Override
-            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                return false;
-            }
-
-            @Override
-            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                holder.progressBar.setVisibility(View.GONE);
-                return false;
-            }
-        }).into(holder.thumbnail);
-
-
-
-
+        }else
+            loadFromTheGamesDb(holder,game);
 
     }
 
@@ -308,5 +323,23 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
     }
     public void setLoaded() {
         isLoading = false;
+    }
+
+
+
+    private void loadFromTheGamesDb(final MyViewHolder holder, Game game){
+        DBQuery dbQuery= new DBQuery();
+        Glide.with(mContext).load("http://thegamesdb.net/banners/"+dbQuery.getBoxArtFromGame(game).getThumb()).listener(new RequestListener<Drawable>() {
+            @Override
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                return false;
+            }
+
+            @Override
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                holder.progressBar.setVisibility(View.GONE);
+                return false;
+            }
+        }).into(holder.thumbnail);
     }
 }
