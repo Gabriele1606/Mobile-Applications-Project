@@ -1,13 +1,24 @@
 
 package com.example.gabri.firstapp.Controller;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.User;
@@ -29,15 +40,35 @@ import java.util.Map;
 public class Login extends AppCompatActivity {
 
     DatabaseReference databaseUsers;
+    private ImageView fab;
+    private ImageView backImage;
+    private RelativeLayout layoutMain;
+    private RelativeLayout layoutButton;
+    private RelativeLayout layoutContent;
+    private LinearLayout buttonsContentLayout;
+    private TextView counter;
+    private boolean isOpen=false;
 
     private static final int RC_SIGN_IN = 123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setOnClickOnLoginButton();
+
         setContentView(R.layout.login);
         Window w= getWindow();
+        layoutMain=(RelativeLayout) findViewById(R.id.layoutmain);
+        layoutButton=(RelativeLayout) findViewById(R.id.layoutbutton);
+        layoutContent=(RelativeLayout) findViewById(R.id.layoutcontent);
+        buttonsContentLayout=(LinearLayout)findViewById(R.id.buttons_content_layout);
+        counter=(TextView)findViewById(R.id.counter); 
+        backImage=(ImageView)findViewById(R.id.back_image);
+        Glide.with(this).load(R.drawable.loginback).into(backImage);
+
+        fab=(ImageView)findViewById(R.id.fab);
+
+        clickOnButton();
+        setCounter();
 
         databaseUsers= FirebaseDatabase.getInstance().getReference("users");
 
@@ -91,7 +122,80 @@ public class Login extends AppCompatActivity {
 
     }
 
-    private void setOnClickOnLoginButton() {
+    private void setCounter() {
+        final ValueAnimator animator=ValueAnimator.ofInt(0,48954);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                int currentValue=(Integer)animator.getAnimatedValue();
+                counter.setText(Integer.toString(currentValue));
+            }
+        });
+        animator.setDuration(3000);
+        animator.start();
+    }
+
+    private void clickOnButton() {
+        fab.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onClick(View view) {
+                viewMenu();
+            }
+        });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void viewMenu(){
+
+        if(!isOpen){
+
+            int X = layoutMain.getRight();
+            int Y = layoutMain.getBottom();
+            int startRadius = 0;
+            int endRadius = (int) Math.hypot(layoutMain.getWidth(),layoutMain.getHeight());
+
+            Animator anim = ViewAnimationUtils.createCircularReveal(layoutButton, X, Y, startRadius, endRadius);
+            layoutButton.setVisibility(View.VISIBLE);
+            anim.start();
+
+            isOpen=true;
+
+
+        }else{
+            int X = layoutMain.getRight();
+            int Y = layoutMain.getBottom();
+            int startRadius = Math.max(layoutMain.getWidth(),layoutMain.getHeight());
+            int endRadius =0;
+
+            Animator anim = ViewAnimationUtils.createCircularReveal(layoutButton, X, Y, startRadius, endRadius);
+            anim.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    layoutButton.setVisibility(View.GONE);
+
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animator) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animator) {
+
+                }
+            });
+
+            anim.start();
+            isOpen=false;
+
+        }
     }
 
     @Override
