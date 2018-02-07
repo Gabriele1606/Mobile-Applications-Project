@@ -336,7 +336,7 @@ public class APIManager {
     }
 
     public class MyAsyncTask extends AsyncTask<List<Platform>, Void, Bitmap> {
-        private int MAX = 5;
+        private int MAX = 10;
         private SampleFragmentPagerAdapter observer;
         private String developName=null;
         @Override
