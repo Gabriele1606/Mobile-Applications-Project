@@ -368,21 +368,17 @@ public class FragmentMap extends Fragment implements OnMapReadyCallback, Locatio
 
     @Override
     public void onDestroy() {
-            if (!(ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)&&mMap != null) {
-                mMap.setMyLocationEnabled(false);
-            }
-        mGoogleApiClient.disconnect();
-        try{
+        if (!(ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) && mMap != null) {
+            mMap.setMyLocationEnabled(false);
+        }
+        if (mGoogleApiClient != null) {
+            mGoogleApiClient.disconnect();
+        }
+        if (fragmentMap != null)
             getChildFragmentManager().beginTransaction().remove(mapFragment);
 
-        }catch (Error e){
-            System.out.println("DESTROY: Fragment");
-        }
-
-        try{
+        if (getNearbyPlacesData!=null) {
             getNearbyPlacesData.cancel(true);
-        }catch (Error e){
-            System.out.println("CANCEL: AsyncTask");
         }
         super.onDestroy();
     }

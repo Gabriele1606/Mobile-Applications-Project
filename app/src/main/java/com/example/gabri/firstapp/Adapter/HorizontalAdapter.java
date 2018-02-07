@@ -188,9 +188,10 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
         DBQuery dbQuery=new DBQuery();
         final Game game = gameList.get(position);
         index=game.getGameTitle().indexOf(":");
+        Glide.with(mContext).asBitmap().load(R.color.transparent).into(holder.thumbnail);
+
         // when click on game
         HorizontalAdapter old= this;
-
         holder.view.setOnClickListener(new View.OnClickListener(){
             @Override
 
@@ -238,12 +239,6 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
             holder.pubdate.setText(game.getReleaseDate());
         }
 
-
-//FINIRE
-
-
-
-
         //Check if thumb is in Firebase
 
        /* String string="http://thegamesdb.net/banners/boxart/thumb/original/front/9040-1.jpg";
@@ -257,6 +252,7 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
 
          String regex = "([0-9].*\\.jpg?)";
          String string = dbQuery.getBoxArtFromGame(game).getThumb();
+        final String thumb = dbQuery.getBoxArtFromGame(game).getThumb();
         if (string!=null) {
               pattern = Pattern.compile(regex);
               matcher = pattern.matcher(string);
@@ -268,7 +264,7 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
                 storageReference.child("thumbs/" + matcher.group(1)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        System.out.println("LOADED FROM FIREBASE :" + uri.toString());
+                        //System.out.println("LOADED FROM FIREBASE :" + uri.toString());
                         Glide.with(mContext).asBitmap().load(uri).listener(new RequestListener<Bitmap>() {
                             @Override
                             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
@@ -285,6 +281,7 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        System.out.println("NOT LOADED FROM FIREBASE :" +"http://thegamesdb.net/banners/"+ thumb);
                         loadFromTheGamesDb(holder, game);
                     }
                 });

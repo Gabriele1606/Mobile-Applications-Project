@@ -50,6 +50,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.gabri.firstapp.Adapter.CoverFlowAdapter;
 import com.example.gabri.firstapp.FragmentMap;
+import com.example.gabri.firstapp.FragmentPageGames;
 import com.example.gabri.firstapp.FragmentProfile;
 import com.example.gabri.firstapp.FragmentReadLater;
 import com.example.gabri.firstapp.FragmentSearch;
@@ -103,9 +104,17 @@ public class HomePage extends AppCompatActivity {
     private ConstraintSet toRightConstraint = new ConstraintSet();
     StorageReference storageReference;
     boolean isTwoPanes;
-    private final int PICK_IMAGE_REQUEST=71;
+    private final int PICK_IMAGE_REQUEST = 71;
     private Uri filePath;
     FirebaseStorage storage;
+
+    public static final String GAME_LIST = "Game";
+    public static final String PROFILE_LIST = "Profile";
+    public static final String NEWS_LIST = "News";
+    public static final String MAP_LIST = "Map";
+    public static final String SEARCH_LIST = "Search";
+    public static final String HOME_LIST = "Home";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,11 +144,11 @@ public class HomePage extends AppCompatActivity {
         }
 
         //Take user image from FireBase
-        final ImageView userPhoto=(ImageView)findViewById(R.id.user_image_3);
-        final Context context=this;
+        final ImageView userPhoto = (ImageView) findViewById(R.id.user_image_3);
+        final Context context = this;
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         Glide.with(this).load(R.drawable.avatar).into(userPhoto);
-        storageReference.child("images/"+ Data.getUser().getId()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        storageReference.child("images/" + Data.getUser().getId()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 Glide.with(context).load(uri).into(userPhoto);
@@ -171,39 +180,8 @@ public class HomePage extends AppCompatActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
-                Fragment fragment = getSupportFragmentManager().findFragmentByTag("Newslist");
-
-                if (fragment == null){
-                    Fragment gamelist = getSupportFragmentManager().findFragmentByTag("Gamelist");
-                Fragment maplist = getSupportFragmentManager().findFragmentByTag("Maplist");
-                Fragment profileLayout = getSupportFragmentManager().findFragmentByTag("ProfileLayout");
-                if (gamelist != null) {
-                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Gamelist")).commitNow();
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
-                if (maplist != null) {
-                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Maplist")).commitNow();
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
-
-                if (profileLayout != null) {
-                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("ProfileLayout")).commitNow();
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
-                HighlightSection("News");
-
-
-                FragmentReadLater fragmentReadLater = new FragmentReadLater();
-                FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentReadLater, "Newslist");
-                transaction.addToBackStack("TABLAYOUT");
-                transaction.commit();
-                if (!TWOPANELS) {
-                    FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
-                    mDrawer.closeMenu(true);
-                }
+                selectedMenu(NEWS_LIST);
             }
-        }
 
         });
 
@@ -211,36 +189,7 @@ public class HomePage extends AppCompatActivity {
         textHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
-
-                Fragment profile = getSupportFragmentManager().findFragmentByTag("Profile");
-                Fragment gamelist = getSupportFragmentManager().findFragmentByTag("Gamelist");
-                Fragment maplist = getSupportFragmentManager().findFragmentByTag("Maplist");
-                Fragment newslist = getSupportFragmentManager().findFragmentByTag("Newslist");
-                Fragment profileLayout = getSupportFragmentManager().findFragmentByTag("ProfileLayout");
-                if (gamelist!=null) {
-                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Gamelist")).commitNow();
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
-                if (maplist!=null) {
-                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Maplist")).commitNow();
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
-                if (newslist!=null) {
-                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Newslist")).commitNow();
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
-                if (profileLayout!=null) {
-                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("ProfileLayout")).commitNow();
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
-
-                HighlightSection("Home");
-
-                if (!TWOPANELS) {
-                    FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
-                    mDrawer.closeMenu(true);
-                }
+                selectedMenu(HOME_LIST);
             }
         });
 
@@ -248,39 +197,7 @@ public class HomePage extends AppCompatActivity {
         textviewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
-
-                Fragment profile = getSupportFragmentManager().findFragmentByTag("Profile");
-
-                if (profile == null){
-                    Fragment gamelist = getSupportFragmentManager().findFragmentByTag("Gamelist");
-                Fragment maplist = getSupportFragmentManager().findFragmentByTag("Maplist");
-                Fragment newslist = getSupportFragmentManager().findFragmentByTag("Newslist");
-                if (gamelist != null) {
-                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Gamelist")).commitNow();
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
-                if (maplist != null) {
-                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Maplist")).commitNow();
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
-                if (newslist != null) {
-                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Newslist")).commitNow();
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
-
-                HighlightSection("Profile");
-
-                FragmentProfile fragmentProfile = new FragmentProfile();
-                FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentProfile, "ProfileLayout");
-                transaction.addToBackStack("TABLAYOUT");
-                transaction.commit();
-                if (!TWOPANELS) {
-                    FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
-                    mDrawer.closeMenu(true);
-                }
-
-            }
+                selectedMenu(PROFILE_LIST);
             }
         });
 
@@ -289,38 +206,7 @@ public class HomePage extends AppCompatActivity {
         textViewGames.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
-                Fragment fragment = getSupportFragmentManager().findFragmentByTag("Gamelist");
-
-                if (fragment == null){
-                    Fragment newslist = getSupportFragmentManager().findFragmentByTag("Newslist");
-                Fragment maplist = getSupportFragmentManager().findFragmentByTag("Maplist");
-                Fragment profileLayout = getSupportFragmentManager().findFragmentByTag("ProfileLayout");
-                if (newslist != null) {
-                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Newslist")).commitNow();
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
-
-                if (maplist != null) {
-                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Maplist")).commitNow();
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
-
-                if (profileLayout != null) {
-                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("ProfileLayout")).commitNow();
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
-                HighlightSection("Game");
-
-                FragmentWishList fragmentWishList = new FragmentWishList();
-                FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentWishList, "Gamelist");
-                transaction.addToBackStack("TABLAYOUT");
-                transaction.commit();
-                if (!TWOPANELS) {
-                    FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
-                    mDrawer.closeMenu(true);
-                }
-            }
+                selectedMenu(GAME_LIST);
             }
         });
 
@@ -329,76 +215,18 @@ public class HomePage extends AppCompatActivity {
         textViewMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
-                Fragment fragment = getSupportFragmentManager().findFragmentByTag("Maplist");
-
-
-                if (fragment==null) {
-                    Fragment newslist = getSupportFragmentManager().findFragmentByTag("Newslist");
-                    Fragment gamelist = getSupportFragmentManager().findFragmentByTag("Gamelist");
-                    Fragment profileLayout = getSupportFragmentManager().findFragmentByTag("ProfileLayout");
-                    if (newslist != null) {
-                        getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Newslist")).commitNow();
-                        getSupportFragmentManager().popBackStackImmediate();
-                    }
-                    if (gamelist != null) {
-                        getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Gamelist")).commitNow();
-                        getSupportFragmentManager().popBackStackImmediate();
-                    }
-                    if (profileLayout != null) {
-                        getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("ProfileLayout")).commitNow();
-                        getSupportFragmentManager().popBackStackImmediate();
-                    }
-
-                    HighlightSection("Map");
-
-                    FragmentMap fragmentMap = new FragmentMap();
-                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentMap, "Maplist");
-                    transaction.addToBackStack("TABLAYOUT");
-                    transaction.commit();
-                    if (!TWOPANELS) {
-                        FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
-                        mDrawer.closeMenu(true);
-                    }
-                }
-
+                selectedMenu(MAP_LIST);
             }
 
 
         });
 
 
-
-
         TextView textViewSearch = (TextView) findViewById(R.id.text_Search);
         textViewSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
-                Fragment newslist = getSupportFragmentManager().findFragmentByTag("Newslist");
-                Fragment maplist = getSupportFragmentManager().findFragmentByTag("Maplist");
-                Fragment fragment = getSupportFragmentManager().findFragmentByTag("Gamelist");
-                if (newslist!=null) {
-                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Newslist")).commitNow();
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
-
-                if (maplist!=null) {
-                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().findFragmentByTag("Maplist")).commitNow();
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
-
-                HighlightSection("Search");
-
-                FragmentSearch fragmentSearch = new FragmentSearch();
-                FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentSearch, "Searchlist");
-                transaction.addToBackStack("TABLAYOUT");
-                transaction.commit();
-                if (!TWOPANELS) {
-                    FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
-                    mDrawer.closeMenu(true);
-                }
-
+                selectedMenu(SEARCH_LIST);
             }
         });
 
@@ -452,7 +280,7 @@ public class HomePage extends AppCompatActivity {
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-               System.out.println("NETWORK INFO Changed"+ "Current location: "+location.getLatitude()+ " "+location.getLongitude());
+                System.out.println("NETWORK INFO Changed" + "Current location: " + location.getLatitude() + " " + location.getLongitude());
                 Data.getData().setLocation(location);
             }
 
@@ -476,7 +304,7 @@ public class HomePage extends AppCompatActivity {
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                    System.out.println("GPS INFO Changed"+ "Current location: "+location.getLatitude()+ " "+location.getLongitude());
+                System.out.println("GPS INFO Changed" + "Current location: " + location.getLatitude() + " " + location.getLongitude());
                 Data.getData().setLocation(location);
             }
 
@@ -518,16 +346,110 @@ public class HomePage extends AppCompatActivity {
         mCoverFlow.setAdapter(mAdapter);*/
 
 
-
-
-
-
-
-
     }
+
+    private void selectedMenu(String selectedMenu) {
+        removeOthersFragments(selectedMenu);
+        boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
+        Fragment fragment=null;
+        switch (selectedMenu){
+            case NEWS_LIST:
+                fragment=getSupportFragmentManager().findFragmentByTag("Newslist");
+                break;
+            case GAME_LIST:
+                fragment=getSupportFragmentManager().findFragmentByTag("Gamelist");
+                break;
+            case PROFILE_LIST:
+                fragment=getSupportFragmentManager().findFragmentByTag("Profilelayout");
+                break;
+            case MAP_LIST:
+                fragment=getSupportFragmentManager().findFragmentByTag("Maplist");
+                break;
+            case SEARCH_LIST:
+                fragment=getSupportFragmentManager().findFragmentByTag("Searchlist");
+                break;
+            default:
+
+        }
+        if (fragment == null) {
+            HighlightSection(selectedMenu);
+            loadFragment(selectedMenu);
+            if (!TWOPANELS) {
+                FlowingDrawer mDrawer = (FlowingDrawer) findViewById(R.id.flowingdrawer);
+                mDrawer.closeMenu(true);
+            }
+        }
+    }
+
+    private void loadFragment(String selectedMenu) {
+        FragmentTransaction transaction=null;
+        switch (selectedMenu){
+            case NEWS_LIST:
+                FragmentReadLater fragmentReadLater = new FragmentReadLater();
+                transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentReadLater, selectedMenu);
+                break;
+            case GAME_LIST:
+                FragmentWishList fragmentWishList= new FragmentWishList();
+                transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentWishList, selectedMenu);
+                break;
+            case PROFILE_LIST:
+                FragmentProfile fragmentProfile= new FragmentProfile();
+                transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentProfile, selectedMenu);
+                break;
+            case MAP_LIST:
+                FragmentMap fragmentMap= new FragmentMap();
+                transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentMap, selectedMenu);
+                break;
+            case SEARCH_LIST:
+                FragmentSearch fragmentSearch= new FragmentSearch();
+                transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentSearch, selectedMenu);
+                break;
+            default:
+        }
+        if (transaction != null) {
+            transaction.addToBackStack("TABLAYOUT");
+            transaction.commit();
+        }
+    }
+
+
+    private void removeOthersFragments(String selectedMenu) {
+        Fragment fragmentNews = getSupportFragmentManager().findFragmentByTag(NEWS_LIST);
+        Fragment fragmentSearch = getSupportFragmentManager().findFragmentByTag(SEARCH_LIST);
+        Fragment fragmentGame = getSupportFragmentManager().findFragmentByTag(SEARCH_LIST);
+        Fragment fragmentMap = getSupportFragmentManager().findFragmentByTag(MAP_LIST);
+        Fragment fragmentProfile = getSupportFragmentManager().findFragmentByTag(PROFILE_LIST);
+        if (selectedMenu != SEARCH_LIST && fragmentSearch != null) {
+            getSupportFragmentManager().beginTransaction().remove(fragmentSearch).commit();
+            getSupportFragmentManager().popBackStack();
+        }
+        if (selectedMenu != PROFILE_LIST && fragmentProfile != null) {
+            getSupportFragmentManager().beginTransaction().remove(fragmentProfile).commit();
+            getSupportFragmentManager().popBackStack();
+        }
+
+        if (selectedMenu != NEWS_LIST && fragmentNews != null) {
+            getSupportFragmentManager().beginTransaction().remove(fragmentNews).commit();
+            getSupportFragmentManager().popBackStack();
+        }
+        if (selectedMenu != GAME_LIST && fragmentGame != null) {
+            getSupportFragmentManager().beginTransaction().remove(fragmentGame).commit();
+            getSupportFragmentManager().popBackStack();
+        }
+        if (selectedMenu != MAP_LIST && fragmentMap != null) {
+            getSupportFragmentManager().beginTransaction().remove(fragmentMap).commit();
+            getSupportFragmentManager().popBackStack();
+        }
+        if (selectedMenu==HOME_LIST){
+            getSupportFragmentManager().popBackStack("TABLAYOUT",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+    }
+
+
 
     public void HighlightSection(String name) {
         Fragment fragmentNews = getSupportFragmentManager().findFragmentByTag("Newslist");
+        Fragment fragmentSearch = getSupportFragmentManager().findFragmentByTag("Searchlist");
         Fragment fragmentGame = getSupportFragmentManager().findFragmentByTag("Gamelist");
         Fragment fragmentMap = getSupportFragmentManager().findFragmentByTag("Maplist");
         Fragment fragmentProfile = getSupportFragmentManager().findFragmentByTag("Profile");
@@ -536,27 +458,33 @@ public class HomePage extends AppCompatActivity {
         TextView textMap = findViewById(R.id.text_Map);
         TextView textProfile = findViewById(R.id.text_Profile);
         TextView textHome= findViewById(R.id.text_Home);
+        TextView textSearch= findViewById(R.id.text_Search);
+
         int highlight = getResources().getColor(R.color.definitiveText);
         int dark = getResources().getColor(R.color.transparent);
 
-        if (name=="Home")
+        if (name==SEARCH_LIST)
+            textSearch.setBackgroundColor(highlight);
+        else
+            textSearch.setBackgroundColor(dark);
+        if (name==HOME_LIST)
             textHome.setBackgroundColor(highlight);
         else
             textHome.setBackgroundColor(dark);
-        if (name=="Profile")
+        if (name==PROFILE_LIST)
             textProfile.setBackgroundColor(highlight);
         else
             textProfile.setBackgroundColor(dark);
 
-        if (name=="News")
+        if (name==NEWS_LIST)
             textNews.setBackgroundColor(highlight);
         else
             textNews.setBackgroundColor(dark);
-        if (name=="Game")
+        if (name==GAME_LIST)
             textGames.setBackgroundColor(highlight);
         else
             textGames.setBackgroundColor(dark);
-        if (name=="Map")
+        if (name==MAP_LIST)
             textMap.setBackgroundColor(highlight);
         else
             textMap.setBackgroundColor(dark);

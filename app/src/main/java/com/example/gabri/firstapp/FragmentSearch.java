@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import com.example.gabri.firstapp.Adapter.RecyclerAdapter;
 import com.example.gabri.firstapp.Adapter.RecyclerSearch;
 import com.example.gabri.firstapp.Adapter.SearchAdapter;
+import com.example.gabri.firstapp.Controller.HomePage;
 import com.example.gabri.firstapp.Model.Data;
 import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.RSSFeed;
@@ -95,6 +96,15 @@ public class FragmentSearch extends Fragment {
             }
         });
 
+    }
+
+    @Override
+    public void onResume() {
+        if (getActivity() instanceof HomePage) {
+            HomePage activity = (HomePage) getActivity();
+            activity.HighlightSection("Search");
+        }
+        super.onResume();
     }
 
     public void findGame(String query){

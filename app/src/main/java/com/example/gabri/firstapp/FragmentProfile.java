@@ -83,7 +83,8 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
     ImageView editProfile;
     EditText editName;
     EditText editDescription;
-    
+    ImageView profileImage;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -100,6 +101,25 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
         editProfile = (ImageView) view.findViewById(R.id.edit_profile);
         editName = (EditText) view.findViewById(R.id.user_name);
         editDescription = view.findViewById(R.id.description_user);
+
+        profileImage = view.findViewById(R.id.user_profile_photo);
+
+        if (!anotherUser) {
+            enableModify(true);
+            profileImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    chooseImage();
+                }
+            });
+            setSwipe();
+            loadImageProfile(Data.getUser().getId());
+            fillUserData(Data.getUser().getId());
+        } else {
+            enableModify(false);
+            loadImageProfile(user.getId());
+            fillUserData(user.getId());
+        }
         return view;
     }
 
@@ -254,24 +274,7 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
 
     @Override
     public void onResume() {
-        ImageView profileImage = view.findViewById(R.id.user_profile_photo);
 
-        if (!anotherUser) {
-            enableModify(true);
-            profileImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    chooseImage();
-                }
-            });
-            setSwipe();
-            loadImageProfile(Data.getUser().getId());
-            fillUserData(Data.getUser().getId());
-        } else {
-            enableModify(false);
-            loadImageProfile(user.getId());
-            fillUserData(user.getId());
-        }
         if (view.getContext() instanceof HomePage) {
             HomePage activity = (HomePage) view.getContext();
             activity.HighlightSection("Profile");
@@ -409,9 +412,12 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
         Glide.with(view).asBitmap().load(R.drawable.avatar).apply(RequestOptions.circleCropTransform()).into(new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), addBorder(resource, getContext()));
-                circularBitmapDrawable.setCircular(true);
-                imageProfile.setImageDrawable(circularBitmapDrawable);
+                Context context = getContext();
+                if (context!=null) {
+                    RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), addBorder(resource, context));
+                    circularBitmapDrawable.setCircular(true);
+                    imageProfile.setImageDrawable(circularBitmapDrawable);
+                }
             }
         });
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
@@ -422,9 +428,12 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
                 Glide.with(view).asBitmap().load(uri).apply(RequestOptions.circleCropTransform()).into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), addBorder(resource, getContext()));
-                        circularBitmapDrawable.setCircular(true);
-                        imageProfile.setImageDrawable(circularBitmapDrawable);
+                        Context context = getContext();
+                        if (context!=null) {
+                            RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), addBorder(resource, context));
+                            circularBitmapDrawable.setCircular(true);
+                            imageProfile.setImageDrawable(circularBitmapDrawable);
+                        }
                     }
                 });
             }
