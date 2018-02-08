@@ -251,7 +251,8 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
         Pattern pattern=null;
         Matcher matcher=null;
 
-         String regex = "([0-9].*\\.jpg?)";
+         //String regex = "([0-9].*\\.jpg?)";
+        final String regex = "([0-9].*(\\.(jpg)|(png))?)";
          String string = dbQuery.getBoxArtFromGame(game).getThumb();
         final String thumb = dbQuery.getBoxArtFromGame(game).getThumb();
         if (string!=null) {
