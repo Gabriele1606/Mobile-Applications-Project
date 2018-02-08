@@ -149,15 +149,28 @@ public class HomePage extends AppCompatActivity {
 
         //Take user image from FireBase
         final ImageView userPhoto = (ImageView) findViewById(R.id.user_image_3);
-        final Context context = this;
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-        Glide.with(this).load(R.drawable.avatar).into(userPhoto);
+        StorageReference child = storageReference.child("images/" + Data.getUser().getId());
+        final Context context=this;
         storageReference.child("images/" + Data.getUser().getId()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Glide.with(context).load(uri).into(userPhoto);
+                System.out.println("URI :" + uri.toString());
+                if (context!=null) {
+                    Glide.with(context).asBitmap().load(uri).apply(RequestOptions.circleCropTransform()).into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            if (context != null) {
+                                RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), addBorder(resource, context));
+                                circularBitmapDrawable.setCircular(true);
+                                userPhoto.setImageDrawable(circularBitmapDrawable);
+                            }
+                        }
+                    });
+                }
             }
         });
+
 
         FlowManager.init(this);
         //To RESET DATABASE ---- PAY ATTENTION
@@ -261,24 +274,10 @@ public class HomePage extends AppCompatActivity {
         criteria.setPowerRequirement(Criteria.POWER_LOW);
         String bestProvider = locationManager.getBestProvider(criteria, true);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         Data.getData().setLocation(locationManager.getLastKnownLocation(bestProvider));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
@@ -533,6 +532,28 @@ public class HomePage extends AppCompatActivity {
             }
             catch (IOException e)
             {
+                e.printStackTrace();
+            }
+
+            //Take user image from FireBase
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                final ImageView imageProfile=findViewById(R.id.user_image_3);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                if (imageProfile!=null) {
+                    Glide.with(this).asBitmap().load(stream.toByteArray()).apply(RequestOptions.circleCropTransform()).into(new SimpleTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(imageProfile.getContext().getResources(), addBorder(resource, imageProfile.getContext()));
+                            circularBitmapDrawable.setCircular(true);
+                            imageProfile.setImageDrawable(circularBitmapDrawable);
+                        }
+                    });
+                    imageProfile.setBackgroundColor(getResources().getColor(R.color.transparent));
+                }
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
