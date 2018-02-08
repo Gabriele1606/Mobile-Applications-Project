@@ -46,19 +46,11 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_toLeftOf="@+id/drop_down_option_menu"
+                android:layout_marginTop="32dp"
+                android:layout_marginRight="32dp"
+                android:layout_alignParentRight="true"
                 android:src="@drawable/user_edit" />
 
-            <ImageView
-                android:id="@+id/drop_down_option_menu"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:src="@drawable/menu" />
 
             <EditText
                 android:id="@+id/user_name"

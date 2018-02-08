@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -84,6 +85,8 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
     EditText editName;
     EditText editDescription;
     ImageView profileImage;
+    ImageView imageNewsLater;
+    ImageView imageWishList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -101,9 +104,30 @@ public class FragmentProfile extends android.support.v4.app.Fragment {
         editProfile = (ImageView) view.findViewById(R.id.edit_profile);
         editName = (EditText) view.findViewById(R.id.user_name);
         editDescription = view.findViewById(R.id.description_user);
-
+        imageNewsLater= view.findViewById(R.id.image_news_profile);
+        imageWishList=view.findViewById(R.id.image_wishlist);
         profileImage = view.findViewById(R.id.user_profile_photo);
 
+        if (!anotherUser) {
+            imageNewsLater.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FragmentReadLater fragmentReadLater = new FragmentReadLater();
+                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentReadLater, "Newslist");
+                    transaction.addToBackStack(HomePage.PROFILE_LIST);
+                    transaction.commit();
+                }
+            });
+            imageWishList.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FragmentWishList fragmentWishList = new FragmentWishList();
+                    FragmentTransaction transaction = Data.getData().getHomePageActivity().getSupportFragmentManager().beginTransaction().replace(R.id.mainframeLayout, fragmentWishList, "Gamelist");
+                    transaction.addToBackStack(HomePage.PROFILE_LIST);
+                    transaction.commit();
+                }
+            });
+        }
         if (!anotherUser) {
             enableModify(true);
             profileImage.setOnClickListener(new View.OnClickListener() {
