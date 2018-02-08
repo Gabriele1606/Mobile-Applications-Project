@@ -43,6 +43,8 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.gabri.firstapp.Controller.APIManager;
+import com.example.gabri.firstapp.Controller.GlideApp;
+import com.example.gabri.firstapp.Controller.MyAppGlideModule;
 import com.example.gabri.firstapp.DBQuery;
 import com.example.gabri.firstapp.FragmentGameDetail;
 import com.example.gabri.firstapp.FragmentPage1;
@@ -188,7 +190,6 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
         DBQuery dbQuery=new DBQuery();
         final Game game = gameList.get(position);
         index=game.getGameTitle().indexOf(":");
-        Glide.with(mContext).asBitmap().load(R.color.transparent).into(holder.thumbnail);
 
         // when click on game
         HorizontalAdapter old= this;
@@ -251,7 +252,8 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
         Pattern pattern=null;
         Matcher matcher=null;
 
-         String regex = "([0-9].*\\.jpg?)";
+         //String regex = "([0-9].*\\.jpg?)";
+        final String regex = "([0-9].*(\\.(jpg)|(png))?)";
          String string = dbQuery.getBoxArtFromGame(game).getThumb();
         final String thumb = dbQuery.getBoxArtFromGame(game).getThumb();
         if (string!=null) {
@@ -260,6 +262,31 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
         }
         if (string!=null){
             if (matcher.find()) {
+                System.out.println("Group " + ": " + matcher.group(1));
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                StorageReference child = storageReference.child("thumbs/" + matcher.group(1));
+                child.getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        loadFromTheGamesDb(holder, game);
+                    }
+                });
+                GlideApp.with(mContext).load(child).listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        loadFromTheGamesDb(holder, game);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        holder.progressBar.setVisibility(View.GONE);
+                        return false;
+                    }
+                }).into(holder.thumbnail);
+
+                //Hold Solution
+                /*
                 System.out.println("Group " + ": " + matcher.group(1));
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference();
                 storageReference.child("thumbs/" + matcher.group(1)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -286,10 +313,14 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
                         loadFromTheGamesDb(holder, game);
                     }
                 });
-            }
-        }else
-            loadFromTheGamesDb(holder,game);
+                */
 
+
+            }
+        }else {
+            System.out.println("ENTRATO");
+            loadFromTheGamesDb(holder, game);
+        }
     }
 
     /**
