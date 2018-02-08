@@ -6,6 +6,7 @@ package com.example.gabri.firstapp.Adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,9 +25,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.gabri.firstapp.Controller.GlideApp;
 import com.example.gabri.firstapp.DBQuery;
 import com.example.gabri.firstapp.FragmentGameDetail;
 import com.example.gabri.firstapp.FragmentProfile;
@@ -35,6 +41,7 @@ import com.example.gabri.firstapp.Model.Game;
 import com.example.gabri.firstapp.Model.RowGame;
 import com.example.gabri.firstapp.Model.User;
 import com.example.gabri.firstapp.R;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -42,6 +49,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import jp.wasabeef.recyclerview.animators.SlideInUpAnimator;
 
@@ -93,55 +102,6 @@ public class RecyclerSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder
             dateGame.setVisibility(View.GONE);
             this.view=view;
 
-        }
-    }
-
-
-    public class RecHolder extends RecyclerView.ViewHolder {
-        public RecyclerView recelement;
-       public HorizontalAdapter adapter;
-
-        public RecHolder(View view) {
-            super(view);
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL,false);
-            recelement=(RecyclerView) view.findViewById(R.id.rec_element_id);
-            recelement.setLayoutManager(mLayoutManager);
-            recelement.setItemAnimator(new DefaultItemAnimator());
-            //System.out.println(this.adapter);
-        }
-    }
-
-
-    public class RssFeedHolder extends RecyclerView.ViewHolder{
-        public TextView rssText;
-        public TextView rssTitle;
-        public TextView rssPubDate;
-        public ImageView imageView;
-        public ImageView readLaterButton;
-        public Boolean isFavorite;
-        public View view;
-        public RssFeedHolder(View itemView) {
-            super(itemView);
-            view=itemView;
-            //rssText = (TextView) itemView.findViewById(R.id.text_news);
-            //rssText = (TextView) itemView.findViewById(R.id.text_news);
-            rssTitle=(TextView) itemView.findViewById(R.id.title_news);
-            rssPubDate=(TextView) itemView.findViewById(R.id.pubdate);
-            imageView=(ImageView)itemView.findViewById(R.id.image_rss);
-            //readLaterButton=(ImageView) itemView.findViewById(R.id.read_later);
-
-        }
-    }
-
-
-    public class TitleHolder extends RecyclerView.ViewHolder{
-        TextView textView;
-        public TitleHolder(View itemView) {
-            super(itemView);
-            this.textView= (TextView) itemView.findViewById(R.id.title_section);
-        }
-        public void setTitle(String title){
-            this.textView.setText(title);
         }
     }
 
@@ -204,7 +164,23 @@ public class RecyclerSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder
         final Game game = (Game) listObject.get(position);
 
         Glide.with(mContext).load(R.drawable.gamecontroller).apply(new RequestOptions().circleCrop()).into(gameHolder.wishGameCover);
-        Glide.with(mContext).load("http://thegamesdb.net/banners/"+dbQuery.getBoxArtFromGame(game).getThumb()).apply(new RequestOptions().circleCrop()).into(gameHolder.wishGameCover);
+
+        Pattern pattern=null;
+        Matcher matcher=null;
+
+        String regex = "([0-9].*\\.jpg?)";
+        String string = dbQuery.getBoxArtFromGame(game).getThumb();
+        final String thumb = dbQuery.getBoxArtFromGame(game).getThumb();
+        if (string!=null) {
+            pattern = Pattern.compile(regex);
+            matcher = pattern.matcher(string);
+            if (matcher.find()){
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                StorageReference child = storageReference.child("thumbs/" + matcher.group(1));
+                GlideApp.with(mContext).load(child).apply(RequestOptions.circleCropTransform()).into(gameHolder.wishGameCover);
+            }
+        }
+
         gameHolder.consoleGame.setText(game.getPlatform());
         gameHolder.gameTitle.setText(game.getGameTitle());
         gameHolder.dateGame.setText(game.getReleaseDate());
@@ -252,16 +228,6 @@ public class RecyclerSearch extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
 
-    private void configureGridHolder(RecyclerAdapter.GridHolder gridHolder, int position) {
-        boolean TWOPANELS = Data.getData().getHomePageActivity().getResources().getBoolean(R.bool.has_two_panes);
-        RowGame rowGame=(RowGame)listObject.get(position);
-        gridHolder.adapter=new GridAdapter(mContext,rowGame.getList());
-        if (TWOPANELS)
-            gridHolder.SPANCOUNT=5;
-        gridHolder.recelement.setAdapter(gridHolder.adapter);
-        gridHolder.recelement.setNestedScrollingEnabled(false);
-        gridHolder.recelement.setItemAnimator(new SlideInUpAnimator());
-    }
 
     @Override
     public int getItemCount() {
