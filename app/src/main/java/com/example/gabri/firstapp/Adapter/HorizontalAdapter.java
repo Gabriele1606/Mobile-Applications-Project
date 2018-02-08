@@ -197,6 +197,7 @@ public class HorizontalAdapter extends RecyclerView.Adapter<HorizontalAdapter.My
             @Override
 
             public void onClick(View v) {
+                System.out.println("Questo è l'id-->>: "+game.getId());
                 FragmentGameDetail fragmentGameDetail=new FragmentGameDetail();
                 Bundle bundle=new Bundle();
                 bundle.putSerializable("REALGAMEOBJECT",game);
