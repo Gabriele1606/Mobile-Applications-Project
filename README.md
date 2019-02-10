@@ -20,7 +20,7 @@ The idea of this project was to create a social network based on videogames.
 * User registration (usinf Firebase APIs)
 * User personal page editable (personal photo, personal status)
 
-### Techical feature
+### Technical feature
 
 * Nice and simple GUI
 * Local database (DBFlow) to speed-up the information loading
